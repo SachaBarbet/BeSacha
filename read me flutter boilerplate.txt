@@ -1,0 +1,17 @@
+read me flutter boilerplate
+
+requirement
+	nodejs npm ?
+	flutter install
+	flutter doctor
+	android studio sdk command line tools
+	firebase intall with flutterfire and firebasse ? cli with login
+	powershell execution policy
+
+install
+	fork the repo
+	flutterfire configure (create project) in firebase (others mate need to do also this after the project is create in 	firebase and others added to team in this project on firebase console)
+		- app id (not name)
+		- register os / device (android [+ other])
+
+fonctionnalités
