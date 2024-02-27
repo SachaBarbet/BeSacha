@@ -1,13 +1,13 @@
-import 'package:android_flutter_app_boilerplate/pages/authentication/authentication_page.dart';
-import 'package:android_flutter_app_boilerplate/widgets/app_text_form_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
+import '../../pages/authentication/authentication_page.dart';
 import '../../services/app_firebase.dart';
 import '../../services/app_user_service.dart';
 import '../../utilities/toast_util.dart';
+import '../app_text_form_field.dart';
 
 class AlertWarningDeleteAccount extends StatefulWidget {
   const AlertWarningDeleteAccount({super.key});
@@ -18,7 +18,6 @@ class AlertWarningDeleteAccount extends StatefulWidget {
 
 class _AlertWarningDeleteAccount extends State<AlertWarningDeleteAccount> {
   final TextEditingController _passwordController = TextEditingController();
-  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +55,7 @@ class _AlertWarningDeleteAccount extends State<AlertWarningDeleteAccount> {
             child: AppTextFormField(
               controller: _passwordController,
               hintText: 'Mot de passe',
-              obscureText: _obscureText,
+              obscureText: true,
             ),
           ),
           Padding(

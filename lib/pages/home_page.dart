@@ -1,10 +1,8 @@
-import 'package:android_flutter_app_boilerplate/widgets/app_elevated_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:be_sacha/properties/app_properties.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../widgets/alert_dialogs/alert_leave_app.dart';
-import 'user_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -32,7 +30,7 @@ class _HomePage extends State<HomePage> {
       onPopInvoked: (_) => alertLeaveApp(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Flutter Boilerplate'),
+          title: const Text(AppProperties.appName),
           centerTitle: true,
           actions: [
             Padding(

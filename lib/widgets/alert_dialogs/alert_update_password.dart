@@ -1,8 +1,8 @@
-import 'package:android_flutter_app_boilerplate/assets/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
 import '../../services/app_user_service.dart';
 import '../../utilities/toast_util.dart';

@@ -1,8 +1,5 @@
 import 'dart:async';
 
-import 'package:android_flutter_app_boilerplate/properties/app_properties.dart';
-import 'package:android_flutter_app_boilerplate/services/app_firebase.dart';
-import 'package:android_flutter_app_boilerplate/widgets/alert_dialogs/alert_leave_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +14,8 @@ import 'pages/authentication/register_page.dart';
 import 'pages/home_page.dart';
 import 'pages/loading_page.dart';
 import 'pages/user_page.dart';
+import 'properties/app_properties.dart';
+import 'services/app_firebase.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +31,7 @@ Future<void> main() async {
     systemNavigationBarColor: AppColors.lightGrey,
     systemNavigationBarIconBrightness: Brightness.dark,
   ));
-  runApp(const FlutterBoilerplate());
+  runApp(const BeSacha());
 }
 
 final GoRouter _router = GoRouter(
@@ -81,8 +80,8 @@ final GoRouter _router = GoRouter(
   ],
 );
 
-class FlutterBoilerplate extends StatelessWidget {
-  const FlutterBoilerplate({super.key});
+class BeSacha extends StatelessWidget {
+  const BeSacha({super.key});
 
   @override
   Widget build(BuildContext context) {

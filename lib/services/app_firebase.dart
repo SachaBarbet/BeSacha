@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:android_flutter_app_boilerplate/services/app_user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../models/app_user.dart';
+import 'app_user_service.dart';
 
 class AppFirebase {
   static FirebaseFirestore database = FirebaseFirestore.instance;

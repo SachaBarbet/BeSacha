@@ -8,7 +8,6 @@ import 'package:flutter/cupertino.dart';
 
 import '../models/app_user.dart';
 import '../utilities/app_utils.dart';
-import '../utilities/toast_util.dart';
 import 'app_firebase.dart';
 
 class AppUserService {

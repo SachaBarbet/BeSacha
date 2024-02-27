@@ -1,7 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- TODO: Change this to your application name -->
     <application
-        android:label="Boilerplate"
+        android:label="BeSacha"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
