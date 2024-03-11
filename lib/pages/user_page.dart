@@ -47,7 +47,6 @@ class _UserPage extends State<UserPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.lightGrey,
         leading: BackButton(onPressed: () => context.pop(),),
       ),
 
@@ -82,49 +81,20 @@ class _UserPage extends State<UserPage> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Votre compte',
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1.2),
-                    textAlign: TextAlign.left,
-                  ),
                   Text(
                     'Bonjour ${user.displayName}',
-                    style: const TextStyle(fontSize: 20, height: 1),
+                    style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1.2),
+                    textAlign: TextAlign.left,
+                  ),
+                  const Text(
+                    'Vos paramètres',
+                    style: TextStyle(fontSize: 20, height: 1),
                     textAlign: TextAlign.start,
                   ),
                   const SizedBox(height: 40),
-                  ElevatedButton(
-                    onPressed: () => openPopupChangeUsername(),
-                    child: const Text('Change Username'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => openPopupChangePassword(),
-                    child: const Text('Change Password'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => openPopupDeleteAccount(),
-                    child: const Text('Delete Account'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      try {
-                        await AppUserService.updateUserPhoto(context, user);
-                        ToastUtil.showInfoToast(context, 'Photo mise à jour avec succès');
-                      } catch (e) {
-                        print(e);
-                        ToastUtil.showErrorToast(context, 'Une erreur est survenue');
-                      }
-                    },
-                    child: const Text('Update Photo'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () { AppUserService.logout().then((value) => context.go('/authentication')); },
-                    child: const Text('Logout'),
-                  ),
                 ],
               );
             }
-
             return const Center(
               child: Text('No user found'),
             );

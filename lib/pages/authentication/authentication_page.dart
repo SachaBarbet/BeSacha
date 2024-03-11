@@ -1,5 +1,9 @@
+import 'dart:ui';
+
+import 'package:be_sacha/assets/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
@@ -10,28 +14,36 @@ class AuthenticationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-            ),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: AppColors.primary,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
             child: ListView(
               shrinkWrap: true,
               padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
               children: [
+                Image.asset(
+                  AppImages.appIconNoBackground,
+                  height: 192,
+                ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 32.0),
-                  child: Text('Bienvenue', style: TextStyle(fontSize: 24), textAlign: TextAlign.center),
+                  padding: EdgeInsets.only(
+                    bottom: AppDesignSystem.defaultPadding * 7,
+                    top: AppDesignSystem.defaultPadding,
+                  ),
+                  child: Text('Bienvenue sur BeSacha !', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppDesignSystem.defaultPadding,
+                    vertical: AppDesignSystem.defaultPadding * 0.5,
                   ),
                   child: AppElevatedButton(
+                    buttonColor: AppColors.black,
+                    textColor: AppColors.white,
                     onPressed: () {
                       context.pushNamed('login');
                     },
@@ -41,7 +53,8 @@ class AuthenticationPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
                   child: AppElevatedButton(
-                    buttonColor: AppColors.lightPrimary,
+                    buttonColor: AppColors.white,
+                    textColor: AppColors.black,
                     onPressed: () {
                       context.pushNamed('register');
                     },

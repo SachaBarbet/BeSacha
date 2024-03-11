@@ -2,9 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 
 import '../models/app_user.dart';
 import '../utilities/app_utils.dart';
@@ -23,16 +21,14 @@ class AppUserService {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       User user = userCredential.user!;
-      displayName ??= "user_${AppUtil.getRandomString(8)}";
+      displayName ??= 'user_${AppUtil.getRandomString(8)}';
       AppUser appUser = AppUser(
         uid: user.uid,
         email: email,
         displayName: displayName,
         phoneNumber: phoneNumber,
-        photoUrl: photoUrl,
       );
       await user.updateDisplayName(displayName); // Need firebase app check
-      if (photoUrl != null) await user.updatePhotoURL(photoUrl);
       await AppFirebase.userCollectionRef.doc(user.uid).set(appUser);
       return appUser;
     } on FirebaseAuthException {
@@ -105,36 +101,10 @@ class AppUserService {
     return await AppFirebase.userCollectionRef.doc(uid).get().then((value) => value.data());
   }
 
-  static Future<void> updateUserPhotoUrl(String url) async {
-    await FirebaseAuth.instance.currentUser!.updatePhotoURL(url);
-    await AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid).update({'photo_url': url});
-  }
-
   static Future<void> updateDisplayName(String displayName) async {
     displayName = displayName.trim();
     await FirebaseAuth.instance.currentUser!.updateDisplayName(displayName);
     await AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid)
         .update({'display_name': displayName});
-  }
-
-  static Future<void> updatePhoneNumber(String phoneNumber) async {
-    phoneNumber = phoneNumber.trim();
-    await AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid)
-        .update({'phone_number': phoneNumber});
-  }
-
-  static Future<void> updateUserPhoto(BuildContext context, AppUser user) async {
-    final FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png'],
-    );
-
-    if (result != null) {
-      final File file = File(result.files.single.path!);
-      final String? url = await AppFirebase.uploadFile(file, user.uid);
-      if (url != null) {
-        await AppUserService.updateUserPhotoUrl(url);
-      }
-    }
   }
 }

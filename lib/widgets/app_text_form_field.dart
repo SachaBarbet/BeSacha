@@ -25,6 +25,9 @@ class AppTextFormField extends StatefulWidget {
 class _AppTextFormField extends State<AppTextFormField> {
   bool _obscureText = false;
 
+  static const double borderWidth = 2;
+  Color foregroundColor = AppColors.black;
+
   @override
   void initState() {
     _obscureText = widget.obscureText;
@@ -33,35 +36,38 @@ class _AppTextFormField extends State<AppTextFormField> {
 
   @override
   Widget build(BuildContext context) {
+    foregroundColor = View.of(context).platformDispatcher.platformBrightness == Brightness.dark ?
+      AppColors.white : AppColors.black;
+
     return TextFormField(
       obscureText: _obscureText,
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-          borderSide: const BorderSide(color: AppColors.lightGrey, width: 2),
+          borderSide: const BorderSide(color: AppColors.grey, width: borderWidth),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-          borderSide: const BorderSide(color: AppColors.lightGrey, width: 2),
+          borderSide: const BorderSide(color: AppColors.grey, width: borderWidth),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-          borderSide: const BorderSide(color: AppColors.black, width: 2),
+          borderSide: BorderSide(color: foregroundColor, width: borderWidth),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-          borderSide: const BorderSide(color: AppColors.red, width: 2),
+          borderSide: const BorderSide(color: AppColors.red, width: borderWidth),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-          borderSide: const BorderSide(color: AppColors.red, width: 2),
+          borderSide: const BorderSide(color: AppColors.red, width: borderWidth),
         ),
         errorStyle: const TextStyle(color: AppColors.red),
         hintStyle: const TextStyle(color: AppColors.grey),
-        labelStyle: const TextStyle(color: AppColors.black),
+        labelStyle: TextStyle(color: foregroundColor),
         hintText: widget.hintText,
-        fillColor: AppColors.grey.withOpacity(0.2),
+        fillColor: AppColors.grey.withOpacity(0.25),
         filled: true,
         contentPadding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
         suffixIcon: widget.obscureText ? Material(
@@ -73,12 +79,12 @@ class _AppTextFormField extends State<AppTextFormField> {
                 _obscureText = !_obscureText;
               });
             },
-            icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off, color: AppColors.black, size: 20),
+            icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off, color: foregroundColor, size: 20),
           ),
         ) : null,
       ),
-      style: const TextStyle(color: AppColors.black),
-      cursorColor: AppColors.black,
+      style: TextStyle(color: foregroundColor),
+      cursorColor: foregroundColor,
       validator: widget.validator,
       controller: widget.controller,
     );

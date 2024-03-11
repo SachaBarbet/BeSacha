@@ -1,3 +1,4 @@
+import 'package:be_sacha/assets/app_design_system.dart';
 import 'package:be_sacha/properties/app_properties.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -30,13 +31,12 @@ class _HomePage extends State<HomePage> {
       onPopInvoked: (_) => alertLeaveApp(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(AppProperties.appName),
           centerTitle: true,
           actions: [
             Padding(
-              padding: const EdgeInsets.only(right: 8.0),
+              padding: const EdgeInsets.only(right: AppDesignSystem.defaultPadding),
               child: IconButton(
-                icon: const Icon(Icons.person),
+                icon: const Icon(Icons.settings),
                 onPressed: () {
                    context.pushNamed('user');
                 },

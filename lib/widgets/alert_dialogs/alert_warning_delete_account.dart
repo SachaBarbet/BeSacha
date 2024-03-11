@@ -74,9 +74,9 @@ class _AlertWarningDeleteAccount extends State<AlertWarningDeleteAccount> {
                         Navigator.pop(context);
                         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AuthenticationPage()));
                         AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid).delete().whenComplete(() {
-                          FirebaseAuth.instance.currentUser!.delete().whenComplete(() {
-                            AppFirebase.usersImagesStorageRef.child("${FirebaseAuth.instance.currentUser!.uid}.png").delete().whenComplete(() => ToastUtil.showSuccessToast(context, 'Account deleted'));
-                          });
+                          FirebaseAuth.instance.currentUser!.delete().whenComplete(
+                            () => ToastUtil.showSuccessToast(context, 'Account deleted')
+                          );
                         });
                       } else {
                         ToastUtil.showShortErrorToast(context, 'Error: Invalid password');

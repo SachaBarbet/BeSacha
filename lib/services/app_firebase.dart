@@ -12,10 +12,6 @@ class AppFirebase {
   static CollectionReference<AppUser> userCollectionRef = AppFirebase.database.collection('users').withConverter(
     fromFirestore: AppUser.fromFirestore, toFirestore: (AppUser user, _) => user.toFirestore(),);
 
-  static FirebaseStorage storage = FirebaseStorage.instance;
-  static Reference storageRef = storage.ref();
-  static Reference usersImagesStorageRef = storageRef.child('users/images/');
-
   static bool isUserConnected = false;
 
   static Future<void> initFirebaseAuth() async {
@@ -24,19 +20,5 @@ class AppFirebase {
     });
 
     isUserConnected = await AppUserService.checkIfUserConnected();
-  }
-
-  static Future<String?> uploadFile(File file, String? userUUID) async {
-    try {
-      final String fileName = 'profile_image_$userUUID';
-      final Reference ref = usersImagesStorageRef.child(fileName);
-      final UploadTask uploadTask = ref.putFile(file);
-      final TaskSnapshot taskSnapshot = await uploadTask;
-      final String downloadURL = await taskSnapshot.ref.getDownloadURL();
-      return downloadURL;
-    } catch (e) {
-      print(e);
-      return null;
-    }
   }
 }
