@@ -1,9 +1,6 @@
 import 'package:be_sacha/assets/app_design_system.dart';
-import 'package:be_sacha/properties/app_properties.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../widgets/alert_dialogs/alert_leave_app.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,11 +11,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePage extends State<HomePage> {
 
-  Future alertLeaveApp() => showDialog(
-    context: context,
-    builder: (BuildContext context) => const AlertLeaveApp(),
-  );
-
   @override
   void initState() {
     super.initState();
@@ -28,7 +20,6 @@ class _HomePage extends State<HomePage> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (_) => alertLeaveApp(),
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
