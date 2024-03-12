@@ -22,14 +22,13 @@ class _HomePage extends State<HomePage> {
       canPop: false,
       child: Scaffold(
         appBar: AppBar(
-          centerTitle: true,
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: AppDesignSystem.defaultPadding),
               child: IconButton(
                 icon: const Icon(Icons.settings),
                 onPressed: () {
-                   context.pushNamed('user');
+                   context.pushNamed('settings');
                 },
               ),
             ),

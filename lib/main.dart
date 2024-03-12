@@ -13,7 +13,13 @@ import 'pages/authentication/login_page.dart';
 import 'pages/authentication/register_page.dart';
 import 'pages/home_page.dart';
 import 'pages/loading_page.dart';
-import 'pages/user_page.dart';
+import 'pages/settings/about_page.dart';
+import 'pages/settings/cgu_page.dart';
+import 'pages/settings/confidentiality_page.dart';
+import 'pages/settings/contact_page.dart';
+import 'pages/settings/setting_page.dart';
+import 'pages/settings/settings_home_page.dart';
+import 'pages/settings/user_page.dart';
 import 'properties/app_properties.dart';
 import 'services/app_firebase.dart';
 
@@ -46,10 +52,42 @@ final GoRouter _router = GoRouter(
       builder: (context, state) => const HomePage(),
       routes: [
         GoRoute(
-          path: 'user',
-          name: 'user',
+          path: 'settings',
+          name: 'settings',
           redirect: (_, __) => AppFirebase.isUserConnected ? null : '/authentication',
-          builder: (context, state) => const UserPage(),
+          builder: (context, state) => const SettingsHomePage(),
+          routes: [
+            GoRoute(
+              path: 'user',
+              name: 'user',
+              builder: (context, state) => const UserPage(),
+            ),
+            GoRoute(
+              path: 'setting',
+              name: 'setting',
+              builder: (context, state) => const SettingPage(),
+            ),
+            GoRoute(
+              path: 'cgu',
+              name: 'cgu',
+              builder: (context, state) => const CGUPage(),
+            ),
+            GoRoute(
+              path: 'confidentiality',
+              name: 'confidentiality',
+              builder: (context, state) => const ConfidentialityPage(),
+            ),
+            GoRoute(
+              path: 'about',
+              name: 'about',
+              builder: (context, state) => const AboutPage(),
+            ),
+            GoRoute(
+              path: 'contact',
+              name: 'contact',
+              builder: (context, state) => const ContactPage(),
+            ),
+          ],
         ),
       ],
     ),
@@ -108,6 +146,8 @@ class BeSacha extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
+            backgroundColor: MaterialStateColor.resolveWith((states) => AppColors.white),
+            foregroundColor: MaterialStateColor.resolveWith((states) => AppColors.black),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
             )),
@@ -151,6 +191,8 @@ class BeSacha extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
+            backgroundColor: MaterialStateColor.resolveWith((states) => AppColors.black),
+            foregroundColor: MaterialStateColor.resolveWith((states) => AppColors.white),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
             )),
