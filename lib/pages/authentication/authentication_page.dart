@@ -1,9 +1,6 @@
-import 'dart:ui';
-
 import 'package:be_sacha/assets/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
