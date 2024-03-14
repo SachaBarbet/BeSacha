@@ -3,9 +3,13 @@ class Validators {
   static final RegExp _emailRegExp = RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$');
   static final RegExp _passwordRegExp = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$');
 
-  static String? validateEmail(String? value) {
+  static String? validateEmail(String? value, [String? actualEmail]) {
     if (value == null || value.isEmpty) {
       return 'Entrer votre adresse mail';
+    }
+
+    if (actualEmail != null && value == actualEmail) {
+      return 'L\'adresse mail est identique à l\'ancienne';
     }
 
     if (!_emailRegExp.hasMatch(value.toLowerCase().trim())) {
@@ -15,9 +19,13 @@ class Validators {
     return null;
   }
 
-  static String? validateDisplayName(String? value) {
+  static String? validateDisplayName(String? value, [String? actualDisplayName]) {
     if (value == null || value.isEmpty) {
       return 'Entrer votre nom';
+    }
+
+    if (actualDisplayName != null && value == actualDisplayName) {
+      return 'Le nom est identique à l\'ancien';
     }
 
     if (value.length < 3) {

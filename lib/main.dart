@@ -13,10 +13,8 @@ import 'pages/authentication/login_page.dart';
 import 'pages/authentication/register_page.dart';
 import 'pages/home_page.dart';
 import 'pages/loading_page.dart';
-import 'pages/settings/about_page.dart';
 import 'pages/settings/cgu_page.dart';
 import 'pages/settings/confidentiality_page.dart';
-import 'pages/settings/contact_page.dart';
 import 'pages/settings/setting_page.dart';
 import 'pages/settings/settings_home_page.dart';
 import 'pages/settings/user_page.dart';
@@ -76,16 +74,6 @@ final GoRouter _router = GoRouter(
               path: 'confidentiality',
               name: 'confidentiality',
               builder: (context, state) => const ConfidentialityPage(),
-            ),
-            GoRoute(
-              path: 'about',
-              name: 'about',
-              builder: (context, state) => const AboutPage(),
-            ),
-            GoRoute(
-              path: 'contact',
-              name: 'contact',
-              builder: (context, state) => const ContactPage(),
             ),
           ],
         ),

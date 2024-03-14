@@ -107,4 +107,15 @@ class AppUserService {
     await AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid)
         .update({'display_name': displayName});
   }
+
+  static Future<void> updateEmail(String email) async {
+    email = email.toLowerCase().trim();
+    await FirebaseAuth.instance.currentUser!.updateEmail(email);
+    await AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({'email': email});
+  }
+
+  static Future<void> updatePassword(String password) async {
+    await FirebaseAuth.instance.currentUser!.updatePassword(password);
+  }
 }

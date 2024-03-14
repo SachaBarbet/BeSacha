@@ -58,9 +58,9 @@ class AppElevatedButton extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(isSmall ? AppDesignSystem.defaultPadding * 0.5 : AppDesignSystem.defaultPadding),
         child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: rowChildren
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: rowChildren,
         ),
       ),
     );

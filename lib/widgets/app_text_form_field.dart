@@ -9,6 +9,8 @@ class AppTextFormField extends StatefulWidget {
   final TextEditingController? controller;
   final bool obscureText;
   final TextInputType? keyboardType;
+  final bool enabled;
+  final void Function()? onChanged;
 
   const AppTextFormField({
     super.key, this.hintText,
@@ -16,6 +18,8 @@ class AppTextFormField extends StatefulWidget {
     this.controller,
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
+    this.enabled = true,
+    this.onChanged,
   });
 
   @override
@@ -40,6 +44,7 @@ class _AppTextFormField extends State<AppTextFormField> {
       AppColors.white : AppColors.black;
 
     return TextFormField(
+      enabled: widget.enabled,
       obscureText: _obscureText,
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
@@ -87,6 +92,7 @@ class _AppTextFormField extends State<AppTextFormField> {
       cursorColor: foregroundColor,
       validator: widget.validator,
       controller: widget.controller,
+      onChanged: (value) => widget.onChanged?.call(),
     );
   }
 }

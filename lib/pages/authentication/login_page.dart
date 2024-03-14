@@ -17,7 +17,7 @@ class LoginPage extends StatelessWidget {
 
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
 
-  static const double appBarHeight = 50;
+  static const double _appBarHeight = 50;
 
 
   @override
@@ -34,13 +34,13 @@ class LoginPage extends StatelessWidget {
               Navigator.of(context).pop();
             },
           ),
-          toolbarHeight: appBarHeight,
+          toolbarHeight: _appBarHeight,
         ),
 
         body: Center(
           child: Padding(
             padding: const EdgeInsets.only(
-              bottom: appBarHeight,
+              bottom: _appBarHeight,
               top: AppDesignSystem.defaultPadding,
               left: AppDesignSystem.defaultPadding,
               right: AppDesignSystem.defaultPadding,

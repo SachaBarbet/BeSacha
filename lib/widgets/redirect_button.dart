@@ -35,7 +35,7 @@ class RedirectButton extends StatelessWidget {
       Icon(
         Icons.arrow_forward,
         color: textColorB,
-        size: isSmall ? AppDesignSystem.defaultFontSize * 0.8 : AppDesignSystem.defaultFontSize,
+        size: isSmall ? AppDesignSystem.defaultFontSize : AppDesignSystem.defaultFontSize * 1.5,
       )
     ];
 
@@ -48,7 +48,7 @@ class RedirectButton extends StatelessWidget {
       },
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: isSmall ? AppDesignSystem.defaultPadding * 0.5 : AppDesignSystem.defaultPadding,
+          horizontal: isSmall ? AppDesignSystem.defaultPadding * 0.25 : AppDesignSystem.defaultPadding * 0.5,
           vertical: isSmall ? AppDesignSystem.defaultPadding * 0.75 : AppDesignSystem.defaultPadding * 1.5,
         ),
         child: Row(
