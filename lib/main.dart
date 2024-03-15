@@ -1,7 +1,6 @@
 import 'dart:async';
 
-import 'package:be_sacha/services/app_settings.dart';
-import 'package:be_sacha/services/local_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +21,8 @@ import 'pages/settings/settings_page.dart';
 import 'pages/settings/user_page.dart';
 import 'properties/app_properties.dart';
 import 'services/app_firebase.dart';
+import 'services/app_settings.dart';
+import 'services/local_storage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,7 +56,7 @@ final GoRouter _router = GoRouter(
         GoRoute(
           path: 'settings',
           name: 'settings',
-          redirect: (_, __) => AppFirebase.isUserConnected ? null : '/authentication',
+          redirect: (_, __) => FirebaseAuth.instance.currentUser != null ? null : '/authentication',
           builder: (context, state) => const SettingsHomePage(),
           routes: [
             GoRoute(
@@ -185,6 +186,11 @@ class _BeSacha extends State<BeSacha> {
           iconTheme: IconThemeData(color: AppColors.black),
           actionsIconTheme: IconThemeData(color: AppColors.black),
         ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateColor.resolveWith((states) => AppColors.black),
+          ),
+        ),
         useMaterial3: true,
       ),
 
@@ -238,6 +244,11 @@ class _BeSacha extends State<BeSacha> {
           titleTextStyle: TextStyle(color: AppColors.white),
           iconTheme: IconThemeData(color: AppColors.white),
           actionsIconTheme: IconThemeData(color: AppColors.white),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateColor.resolveWith((states) => AppColors.white),
+          ),
         ),
         useMaterial3: true,
       ),

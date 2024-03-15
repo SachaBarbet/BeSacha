@@ -18,4 +18,8 @@ class AppFirebase {
 
     isUserConnected = await AppUserService.checkIfUserConnected();
   }
+
+  static Future<void> updateUserConnected() async {
+    isUserConnected = await AppUserService.checkIfUserConnected();
+  }
 }

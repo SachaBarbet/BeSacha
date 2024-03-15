@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
+import '../../services/app_firebase.dart';
 import '../../services/app_user_service.dart';
 import '../../utilities/toast_util.dart';
 import '../../utilities/validators.dart';
@@ -98,8 +99,10 @@ class LoginPage extends StatelessWidget {
                                   if (value != null) {
                                     _emailController.clear();
                                     _passwordController.clear();
-                                    context.pop();
-                                    context.go('/home');
+                                    AppFirebase.updateUserConnected().then((value) {
+                                      context.pop();
+                                      context.go('/home');
+                                    });
                                   } else {
                                     context.pop();
                                     ToastUtil.showErrorToast(context, 'Email ou mot de passe incorrect');

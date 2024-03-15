@@ -11,21 +11,22 @@ import 'app_firebase.dart';
 class AppUserService {
 
   /// Register a new user with email and password in Firebase Authentication and Firestore
-  static Future<AppUser?> register(String email, String password, [String? displayName, String? phoneNumber, String? photoUrl]) async {
+  static Future<AppUser?> register(String email, String password, [String? displayName, String? username]) async {
     email = email.toLowerCase().trim();
     displayName = displayName?.trim();
-    phoneNumber = phoneNumber?.trim();
-    photoUrl = photoUrl?.trim();
+    username = username?.trim();
 
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       User user = userCredential.user!;
-      displayName ??= 'user_${AppUtil.getRandomString(8)}';
+      displayName ??= 'user_${AppUtil.getRandomString(4)}';
+      username ??= '$displayName#${AppUtil.getRandomString(4)}';
       AppUser appUser = AppUser(
         uid: user.uid,
         email: email,
         displayName: displayName,
+        username: username,
       );
       await user.updateDisplayName(displayName); // Need firebase app check
       await AppFirebase.userCollectionRef.doc(user.uid).set(appUser);

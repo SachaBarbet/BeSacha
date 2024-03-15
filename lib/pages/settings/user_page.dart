@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:be_sacha/widgets/alert_dialogs/alert_warning_delete_account.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../assets/app_colors.dart';
@@ -79,6 +80,19 @@ class _UserPageState extends State<UserPage> {
                 const Text(
                   'Vos informations',
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1.2),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await Clipboard.setData(ClipboardData(text: appUser.username!));
+                    if (context.mounted) {
+                      ToastUtil.showSuccessToast(context, 'Nom d\'utilisateur copié dans le presse-papier');
+                    }
+                  },
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    alignment: Alignment.centerLeft,
+                  ),
+                  child: Text('Appui pour copier : ${appUser.username!}', style: const TextStyle(fontSize: 16), textAlign: TextAlign.left,),
                 ),
                 const SizedBox(height: _dividerHeight),
                 const Padding(
