@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:be_sacha/widgets/alert_dialogs/alert_warning_delete_account.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -38,6 +41,10 @@ class _UserPageState extends State<UserPage> {
   Color _usernameButtonBackgroundColor = AppColors.grey;
   Color _emailButtonBackgroundColor = AppColors.grey;
 
+  void openWarningDeleteAccountAlertDialog(BuildContext context) {
+    showDialog(context: context, builder: (context) => const AlertWarningDeleteAccount(),);
+  }
+
   @override
   void initState() {
     _appUser = AppUserService.getUser();
@@ -47,9 +54,7 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: BackButton(onPressed: () => context.pop(),),
-      ),
+      appBar: AppBar(leading: BackButton(onPressed: () => context.pop(),),),
 
       body: FutureBuilder(
         future: _appUser,
@@ -62,7 +67,7 @@ class _UserPageState extends State<UserPage> {
             return Center(child: Text('Erreur: ${snapshot.error}'));
           }
 
-          final AppUser appUser = snapshot.data as AppUser;
+          AppUser appUser = snapshot.data as AppUser;
 
           return Padding(
             padding: const EdgeInsets.symmetric(
@@ -73,16 +78,12 @@ class _UserPageState extends State<UserPage> {
               children: [
                 const Text(
                   'Vos informations',
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.left,
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1.2),
                 ),
                 const SizedBox(height: _dividerHeight),
                 const Padding(
                   padding: EdgeInsets.only(bottom: AppDesignSystem.defaultPadding * 0.6),
-                  child: Text(
-                    'Nom d\'utilisateur',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
+                  child: Text('Nom d\'utilisateur', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                 ),
                 Form(
                   key: _usernameFormKey,
@@ -112,6 +113,9 @@ class _UserPageState extends State<UserPage> {
                             context.pushNamed('loading');
 
                             AppUserService.updateDisplayName(_usernameController.text).then((value) {
+                              setState(() {
+                                appUser.displayName = _usernameController.text;
+                              });
                               _usernameController.clear();
                               context.pop();
                               ToastUtil.showSuccessToast(context, 'Votre nom d\'utilisateur a été mis à jour');
@@ -132,10 +136,7 @@ class _UserPageState extends State<UserPage> {
                 ),
                 const Padding(
                   padding: EdgeInsets.only(bottom: AppDesignSystem.defaultPadding * 0.6),
-                  child: Text(
-                    'Adresse email',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
+                  child: Text('Adresse email', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                 ),
                 Form(
                   key: _emailFormKey,
@@ -165,6 +166,9 @@ class _UserPageState extends State<UserPage> {
                             context.pushNamed('loading');
 
                             AppUserService.updateEmail(_emailController.text).then((value) {
+                              setState(() {
+                                appUser.email = _emailController.text;
+                              });
                               _emailController.clear();
                               context.pop();
                               ToastUtil.showSuccessToast(context, 'Votre adresse email a été mise à jour');
@@ -185,10 +189,7 @@ class _UserPageState extends State<UserPage> {
                 ),
                 const Padding(
                   padding: EdgeInsets.only(bottom: AppDesignSystem.defaultPadding),
-                  child: Text(
-                    'Changer de mot de passe',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
+                  child: Text('Changer de mot de passe', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                 ),
                 Form(
                   key: _passwordFormKey,
@@ -216,7 +217,7 @@ class _UserPageState extends State<UserPage> {
                         obscureText: true,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: AppDesignSystem.defaultPadding * 1.5),
+                        padding: const EdgeInsets.only(top: AppDesignSystem.defaultPadding * 1.5),
                         child: AppElevatedButton(
                           onPressed: () {
                             if (!_passwordFormKey.currentState!.validate()) return;
@@ -228,17 +229,43 @@ class _UserPageState extends State<UserPage> {
                               _confirmNewPasswordController.clear();
                               context.pop();
                               ToastUtil.showSuccessToast(context, 'Votre mot de passe a été mis à jour');
-
                             }).onError((error, stackTrace) {
                               context.pop();
                               ToastUtil.showErrorToast(context, 'Erreur de connexion');
                             });
                           },
                           buttonText: 'Changer de mot de passe',
+                          buttonColor: PlatformDispatcher.instance.platformBrightness
+                              == Brightness.dark ? AppColors.black : AppColors.white,
                         ),
                       )
                     ],
                   ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
+                  child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
+                ),
+                AppElevatedButton(
+                  onPressed: () {
+                    context.pushNamed('loading');
+                    AppUserService.logout().then((value) {
+                      context.pop();
+                      context.go('/authentication');
+                    }).onError((error, stackTrace) {
+                      context.pop();
+                      ToastUtil.showErrorToast(context, 'Erreur de connexion');
+                    });
+                  },
+                  buttonText: 'Se déconnecter',
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
+                  child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
+                ),
+                AppElevatedButton(
+                  onPressed: () => openWarningDeleteAccountAlertDialog(context),
+                  buttonText: 'Supprimer mon compte',
                 ),
               ],
             ),

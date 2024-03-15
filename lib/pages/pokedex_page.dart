@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../assets/app_colors.dart';
-
 class PokedexPage extends StatelessWidget {
   const PokedexPage({super.key});
 

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -47,9 +49,8 @@ class LoginPage extends StatelessWidget {
             ),
             child: Container(
               decoration: BoxDecoration(
-                color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark
-                    ? AppColors.black
-                    : AppColors.white,
+                color: PlatformDispatcher.instance.platformBrightness
+                    == Brightness.dark ? AppColors.black : AppColors.white,
                 borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
               ),
               child: ListView(

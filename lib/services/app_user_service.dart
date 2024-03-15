@@ -26,7 +26,6 @@ class AppUserService {
         uid: user.uid,
         email: email,
         displayName: displayName,
-        phoneNumber: phoneNumber,
       );
       await user.updateDisplayName(displayName); // Need firebase app check
       await AppFirebase.userCollectionRef.doc(user.uid).set(appUser);

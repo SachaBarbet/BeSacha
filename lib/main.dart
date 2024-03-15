@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:be_sacha/services/app_settings.dart';
+import 'package:be_sacha/services/local_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,8 +17,8 @@ import 'pages/home_page.dart';
 import 'pages/loading_page.dart';
 import 'pages/settings/cgu_page.dart';
 import 'pages/settings/confidentiality_page.dart';
-import 'pages/settings/setting_page.dart';
 import 'pages/settings/settings_home_page.dart';
+import 'pages/settings/settings_page.dart';
 import 'pages/settings/user_page.dart';
 import 'properties/app_properties.dart';
 import 'services/app_firebase.dart';
@@ -26,6 +28,7 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await AppFirebase.initFirebaseAuth();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await LocalStorage.init();
   // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
   //   statusBarColor: AppColors.white,
   //   statusBarIconBrightness: Brightness.dark,
@@ -63,7 +66,7 @@ final GoRouter _router = GoRouter(
             GoRoute(
               path: 'setting',
               name: 'setting',
-              builder: (context, state) => const SettingPage(),
+              builder: (context, state) => const SettingsPage(),
             ),
             GoRoute(
               path: 'cgu',
@@ -104,8 +107,27 @@ final GoRouter _router = GoRouter(
   ],
 );
 
-class BeSacha extends StatelessWidget {
+class BeSacha extends StatefulWidget {
   const BeSacha({super.key});
+
+  @override
+  State<BeSacha> createState() => _BeSacha();
+
+  static void updateTheme(BuildContext context) {
+    context.findAncestorStateOfType<_BeSacha>()!.changeTheme();
+  }
+}
+
+class _BeSacha extends State<BeSacha> {
+  ThemeMode _themeMode = AppSettings.getBrightnessMode() == 'system' ?
+    ThemeMode.system : AppSettings.getBrightnessMode() == 'light' ? ThemeMode.light : ThemeMode.dark;
+
+  void changeTheme() {
+    setState(() {
+      _themeMode = AppSettings.getBrightnessMode() == 'system' ?
+        ThemeMode.system : AppSettings.getBrightnessMode() == 'light' ? ThemeMode.light : ThemeMode.dark;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +168,15 @@ class BeSacha extends StatelessWidget {
           bodyLarge: TextStyle(color: AppColors.black),
           bodyMedium: TextStyle(color: AppColors.black),
           bodySmall: TextStyle(color: AppColors.black),
+          labelLarge: TextStyle(color: AppColors.black),
+          labelMedium: TextStyle(color: AppColors.black),
+          labelSmall: TextStyle(color: AppColors.black),
+          displayLarge: TextStyle(color: AppColors.black),
+          displayMedium: TextStyle(color: AppColors.black),
+          displaySmall: TextStyle(color: AppColors.black),
+        ),
+        dropdownMenuTheme: const DropdownMenuThemeData(
+          textStyle: TextStyle(color: AppColors.black),
         ),
         appBarTheme: const AppBarTheme(
           backgroundColor: AppColors.white,
@@ -191,6 +222,15 @@ class BeSacha extends StatelessWidget {
           bodyLarge: TextStyle(color: AppColors.white),
           bodyMedium: TextStyle(color: AppColors.white),
           bodySmall: TextStyle(color: AppColors.white),
+          labelLarge: TextStyle(color: AppColors.white),
+          labelMedium: TextStyle(color: AppColors.white),
+          labelSmall: TextStyle(color: AppColors.white),
+          displayLarge: TextStyle(color: AppColors.white),
+          displayMedium: TextStyle(color: AppColors.white),
+          displaySmall: TextStyle(color: AppColors.white),
+        ),
+        dropdownMenuTheme: const DropdownMenuThemeData(
+          textStyle: TextStyle(color: AppColors.white),
         ),
         appBarTheme: const AppBarTheme(
           backgroundColor: AppColors.lightBlack,
@@ -201,6 +241,7 @@ class BeSacha extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
+      themeMode: _themeMode,
       routerConfig: _router,
     );
   }

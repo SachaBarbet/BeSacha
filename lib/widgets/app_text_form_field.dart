@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import '../assets/app_colors.dart';
@@ -30,7 +32,8 @@ class _AppTextFormField extends State<AppTextFormField> {
   bool _obscureText = false;
 
   static const double borderWidth = 2;
-  Color foregroundColor = AppColors.black;
+  Color foregroundColor = PlatformDispatcher.instance.platformBrightness
+      == Brightness.dark ? AppColors.white : AppColors.black;
 
   @override
   void initState() {
@@ -40,9 +43,6 @@ class _AppTextFormField extends State<AppTextFormField> {
 
   @override
   Widget build(BuildContext context) {
-    foregroundColor = View.of(context).platformDispatcher.platformBrightness == Brightness.dark ?
-      AppColors.white : AppColors.black;
-
     return TextFormField(
       enabled: widget.enabled,
       obscureText: _obscureText,

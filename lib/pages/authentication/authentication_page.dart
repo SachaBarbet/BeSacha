@@ -1,9 +1,9 @@
-import 'package:be_sacha/assets/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
+import '../../assets/app_images.dart';
 import '../../widgets/app_elevated_button.dart';
 
 class AuthenticationPage extends StatelessWidget {
