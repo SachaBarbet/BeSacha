@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../assets/app_colors.dart';
 import '../assets/app_design_system.dart';
+import '../services/app_settings.dart';
 
 class AppTextFormField extends StatefulWidget {
   final String? hintText;
@@ -31,9 +32,10 @@ class AppTextFormField extends StatefulWidget {
 class _AppTextFormField extends State<AppTextFormField> {
   bool _obscureText = false;
 
+  String _brightnessMode = AppSettings.getBrightnessMode();
+
   static const double borderWidth = 2;
-  Color foregroundColor = PlatformDispatcher.instance.platformBrightness
-      == Brightness.dark ? AppColors.white : AppColors.black;
+  Color? foregroundColor;
 
   @override
   void initState() {
@@ -43,6 +45,11 @@ class _AppTextFormField extends State<AppTextFormField> {
 
   @override
   Widget build(BuildContext context) {
+    if (_brightnessMode != 'system') {
+      foregroundColor = _brightnessMode == 'dark' ? AppColors.white : AppColors.black;
+    } else {
+      foregroundColor = MediaQuery.of(context).platformBrightness == Brightness.dark ? AppColors.white : AppColors.black;
+    }
     return TextFormField(
       enabled: widget.enabled,
       obscureText: _obscureText,
@@ -58,7 +65,7 @@ class _AppTextFormField extends State<AppTextFormField> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-          borderSide: BorderSide(color: foregroundColor, width: borderWidth),
+          borderSide: BorderSide(color: foregroundColor!, width: borderWidth),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),

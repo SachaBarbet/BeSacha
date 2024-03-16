@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:be_sacha/pages/friends/add_friend_page.dart';
+import 'package:be_sacha/pages/friends/friend_add_list_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +14,10 @@ import 'firebase_options.dart';
 import 'pages/authentication/authentication_page.dart';
 import 'pages/authentication/login_page.dart';
 import 'pages/authentication/register_page.dart';
+import 'pages/friends/friends_page.dart';
 import 'pages/home_page.dart';
 import 'pages/loading_page.dart';
+import 'pages/pokedex_page.dart';
 import 'pages/settings/cgu_page.dart';
 import 'pages/settings/confidentiality_page.dart';
 import 'pages/settings/settings_home_page.dart';
@@ -56,7 +60,7 @@ final GoRouter _router = GoRouter(
         GoRoute(
           path: 'settings',
           name: 'settings',
-          redirect: (_, __) => FirebaseAuth.instance.currentUser != null ? null : '/authentication',
+          redirect: (_, __) => AppFirebase.isUserConnected ? null : '/authentication',
           builder: (context, state) => const SettingsHomePage(),
           routes: [
             GoRoute(
@@ -78,6 +82,28 @@ final GoRouter _router = GoRouter(
               path: 'confidentiality',
               name: 'confidentiality',
               builder: (context, state) => const ConfidentialityPage(),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: 'pokedex',
+          name: 'pokedex',
+          builder: (context, state) => const PokedexPage(),
+        ),
+        GoRoute(
+          path: 'friends',
+          name: 'friends',
+          builder: (context, state) => const FriendsPage(),
+          routes: [
+            GoRoute(
+              path: 'add-friend-list',
+              name: 'add-friend-list',
+              builder: (context, state) => const FriendAddListPage(),
+            ),
+            GoRoute(
+              path: 'add-friend',
+              name: 'add-friend',
+              builder: (context, state) => const AddFriendPage(),
             ),
           ],
         ),
@@ -140,6 +166,33 @@ class _BeSacha extends State<BeSacha> {
         iconButtonTheme: IconButtonThemeData(
           style: ButtonStyle(iconColor: MaterialStateColor.resolveWith((states) => AppColors.black)),
         ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
+            borderSide: const BorderSide(color: AppColors.grey, width: 2),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: AppColors.black),
+            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+          ),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: AppColors.black),
+            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+          ),
+          errorBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: AppColors.red),
+            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+          ),
+          focusedErrorBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: AppColors.red),
+            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+          ),
+          hintStyle: const TextStyle(color: AppColors.grey),
+          labelStyle: const TextStyle(color: AppColors.black),
+          fillColor: AppColors.grey.withOpacity(0.25),
+          filled: true,
+          contentPadding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+        ),
         dialogBackgroundColor: AppColors.white,
         dialogTheme: const DialogTheme(
           shape: RoundedRectangleBorder(
@@ -191,6 +244,11 @@ class _BeSacha extends State<BeSacha> {
             foregroundColor: MaterialStateColor.resolveWith((states) => AppColors.black),
           ),
         ),
+        listTileTheme: const ListTileThemeData(
+          tileColor: AppColors.white,
+          iconColor: AppColors.black,
+          textColor: AppColors.black,
+        ),
         useMaterial3: true,
       ),
 
@@ -198,6 +256,33 @@ class _BeSacha extends State<BeSacha> {
         scaffoldBackgroundColor: AppColors.lightBlack,
         iconButtonTheme: IconButtonThemeData(
           style: ButtonStyle(iconColor: MaterialStateColor.resolveWith((states) => AppColors.white)),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
+            borderSide: const BorderSide(color: AppColors.grey, width: 2),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: AppColors.white),
+            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+          ),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: AppColors.white),
+            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+          ),
+          errorBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: AppColors.red),
+            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+          ),
+          focusedErrorBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: AppColors.red),
+            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+          ),
+          hintStyle: const TextStyle(color: AppColors.grey),
+          labelStyle: const TextStyle(color: AppColors.white),
+          fillColor: AppColors.grey.withOpacity(0.25),
+          filled: true,
+          contentPadding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
         ),
         dialogBackgroundColor: AppColors.lightBlack,
         dialogTheme: const DialogTheme(
@@ -249,6 +334,11 @@ class _BeSacha extends State<BeSacha> {
           style: ButtonStyle(
             foregroundColor: MaterialStateColor.resolveWith((states) => AppColors.white),
           ),
+        ),
+        listTileTheme: const ListTileThemeData(
+          tileColor: AppColors.lightBlack,
+          iconColor: AppColors.white,
+          textColor: AppColors.white,
         ),
         useMaterial3: true,
       ),

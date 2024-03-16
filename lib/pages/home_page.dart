@@ -1,10 +1,11 @@
-import 'package:be_sacha/models/app_user.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../assets/app_colors.dart';
 import '../assets/app_design_system.dart';
+import '../models/app_user.dart';
 import '../services/app_user_service.dart';
+import '../widgets/redirect_button.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -59,15 +60,24 @@ class _HomePage extends State<HomePage> {
 
               final AppUser appUser = snapshot.data!;
 
-              return Column(
-                children: [
-                  Text('Bonjour ${appUser.displayName}', style: const TextStyle(fontSize: 24),),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 5),
-                    child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
-                  ),
-
-                ],
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDesignSystem.defaultPadding * 1.5,
+                  vertical: AppDesignSystem.defaultPadding,
+                ),
+                child: Column(
+                  children: [
+                    Text('Bonjour ${appUser.displayName}', style: const TextStyle(fontSize: 24),),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 4),
+                      child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
+                    ),
+                    const SizedBox(height: AppDesignSystem.defaultPadding * 2), // Spacer
+                    const RedirectButton(redirectName: 'pokedex',buttonText: 'Pokedex',),
+                    const SizedBox(height: AppDesignSystem.defaultPadding * 2), // Spacer
+                    const RedirectButton(redirectName: 'friends',buttonText: 'Mes amis',),
+                  ],
+                ),
               );
             }
           ),

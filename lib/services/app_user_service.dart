@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/app_user.dart';
@@ -21,7 +18,7 @@ class AppUserService {
           .createUserWithEmailAndPassword(email: email, password: password);
       User user = userCredential.user!;
       displayName ??= 'user_${AppUtil.getRandomString(4)}';
-      username ??= '$displayName#${AppUtil.getRandomString(4)}';
+      username ??= '$displayName#${AppUtil.getRandomString(4)}'.toLowerCase();
       AppUser appUser = AppUser(
         uid: user.uid,
         email: email,
@@ -56,6 +53,7 @@ class AppUserService {
   static Future<void> deleteCurrentUser() async {
     await FirebaseAuth.instance.currentUser!.delete();
     await AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid).delete();
+    // TODO: Delete all user's data (friends, pokemon, etc.)
   }
 
   static Future<bool> checkIfUserConnected() async {
@@ -66,39 +64,33 @@ class AppUserService {
     }
 
     User? user = FirebaseAuth.instance.currentUser;
-    if (FirebaseAuth.instance.currentUser == null) return false;
-    return await AppFirebase.userCollectionRef.doc(user!.uid).get().then((value) => value.exists);
-  }
-
-  static Future<bool> isEmailInDB(String email) async {
-    // check si connecté à internet
-    bool connectedToInternet = false;
-    try {
-      DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-      await deviceInfoPlugin.webBrowserInfo;
-      connectedToInternet = true;
-    } catch (e) {
-      List<InternetAddress> result = await InternetAddress.lookup('8.8.8.8');
-      connectedToInternet = result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    }
-
-    if (!connectedToInternet) return false;
-
-    QuerySnapshot<AppUser> snapshot = await AppFirebase.userCollectionRef.where('email', isEqualTo: email).get();
-    return snapshot.docs.isNotEmpty;
-  }
-
-  static Future<String> getCurrentDisplayName() async {
-    try {
-      return FirebaseAuth.instance.currentUser!.displayName!;
-    } catch (e) {
-      return e.toString();
-    }
+    if (user == null) return false;
+    return await AppFirebase.userCollectionRef.doc(user.uid).get().then((value) => value.exists);
   }
 
   static Future<AppUser?> getUser([String? uid]) async {
     uid ??= FirebaseAuth.instance.currentUser!.uid;
-    return await AppFirebase.userCollectionRef.doc(uid).get().then((value) => value.data());
+    return await AppFirebase.userCollectionRef.doc(uid).get().then((value) {
+      AppUser? appUser = value.data();
+      if (appUser != null) appUser.uid = value.id;
+      return appUser;
+    });
+  }
+
+  static Future<List<AppUser?>> getUsersByUsername(String username) async {
+    List<String> usernameSplit = username.split('#');
+    if (usernameSplit.length != 2) return [];
+    String displayName = usernameSplit[0];
+    String tag = usernameSplit[1];
+
+    username = '${displayName.toLowerCase().trim()}#${tag.trim()}';
+    QuerySnapshot<AppUser> snapshot = await AppFirebase.userCollectionRef
+        .where('username', isEqualTo: username).get();
+    return snapshot.docs.map((e) {
+      AppUser appUser = e.data();
+      appUser.uid = e.id;
+      return appUser;
+    }).toList();
   }
 
   static Future<void> updateDisplayName(String displayName) async {
@@ -117,5 +109,9 @@ class AppUserService {
 
   static Future<void> updatePassword(String password) async {
     await FirebaseAuth.instance.currentUser!.updatePassword(password);
+  }
+
+  static updateUser(AppUser appUser) {
+    AppFirebase.userCollectionRef.doc(appUser.uid).set(appUser);
   }
 }

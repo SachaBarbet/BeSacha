@@ -5,8 +5,9 @@ class AppUser {
   late String? email;
   late String? username;
   late String? displayName;
+  late List<String>? friends;
 
-  AppUser({this.uid, this.email, this.username, this.displayName});
+  AppUser({this.uid, this.email, this.username, this.displayName, this.friends});
 
   factory AppUser.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -17,6 +18,7 @@ class AppUser {
       email: data?['email'],
       username: data?['username'],
       displayName: data?['display_name'],
+      friends: List<String>.from(data?['friends'] ?? []),
     );
   }
 
@@ -25,6 +27,7 @@ class AppUser {
       'email': email,
       'username': username,
       'display_name': displayName,
+      'friends': friends ?? [],
     };
   }
 }

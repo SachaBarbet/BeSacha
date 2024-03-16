@@ -31,7 +31,7 @@ class AuthenticationPage extends StatelessWidget {
                     bottom: AppDesignSystem.defaultPadding * 7,
                     top: AppDesignSystem.defaultPadding,
                   ),
-                  child: Text('Bienvenue sur BeSacha !', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                  child: Text('Bienvenue sur BeSacha !', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.white), textAlign: TextAlign.center),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
