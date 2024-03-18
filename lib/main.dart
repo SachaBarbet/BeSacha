@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:be_sacha/services/pokemon_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,6 +35,8 @@ Future<void> main() async {
   await AppFirebase.initFirebaseAuth();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await SharedPreferencesService.init();
+  await SettingsService.init();
+  await PokemonService.initPokemonDatabase();
   // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
   //   statusBarColor: AppColors.white,
   //   statusBarIconBrightness: Brightness.dark,

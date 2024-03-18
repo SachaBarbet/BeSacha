@@ -8,7 +8,6 @@ class SharedPreferencesService {
   // Initialize the shared preferences and app settings
   static Future<void> init() async {
     sharedPreferences = await SharedPreferences.getInstance();
-    await SettingsService.init();
   }
 
   static Future<void> write(String key, dynamic value) async {

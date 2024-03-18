@@ -48,6 +48,7 @@ dependencies:
   infinite_scroll_pagination: ^4.0.0
   sqflite: ^2.3.2
   path: ^1.9.0
+  firebase_storage: ^11.6.10
 
 dev_dependencies:
   flutter_test:

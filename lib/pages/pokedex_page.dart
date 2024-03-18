@@ -5,8 +5,8 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../assets/app_colors.dart';
 import '../assets/app_design_system.dart';
 import '../models/pokemon.dart';
+import '../services/pokemon_service.dart';
 import '../services/settings_service.dart';
-import '../services/pokeapi.dart';
 
 class PokedexPage extends StatefulWidget {
   const PokedexPage({super.key});
@@ -32,14 +32,17 @@ class _PokedexPageState extends State<PokedexPage> {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      final List<Pokemon> newItems = await PokeApi.fetchPokemons(pageKey, _pageSize);
+      final List<Pokemon> newItems = await PokemonService.fetchPokemons(pageKey, _pageSize);
       if (newItems.length < _pageSize) {
         _pagingController.appendLastPage(newItems);
+        print('appendLastPage');
       } else {
         final nextPageKey = pageKey + newItems.length;
         _pagingController.appendPage(newItems, nextPageKey);
+        print('appendPage');
       }
     } catch (error) {
+      print('error: $error');
       _pagingController.error = error;
     }
   }
@@ -100,9 +103,9 @@ class _PokedexPageState extends State<PokedexPage> {
                       ),
                       child: Column(
                         children: [
-                          Image.network(item.defaultSprite),
-                          Text(item.name[0].toUpperCase() + item.name.substring(1)),
-                          Text('Type : ${item.type[0].toUpperCase() + item.type.substring(1)}')
+                          // Image.network(item.defaultSprite),
+                          // Text(item.name[0].toUpperCase() + item.name.substring(1)),
+                          // Text('Type : ${item.type[0].toUpperCase() + item.type.substring(1)}')
                         ],
                       ),
                     );

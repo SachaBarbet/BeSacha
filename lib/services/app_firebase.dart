@@ -17,12 +17,6 @@ class AppFirebase {
     toFirestore: (AskFriend askFriend, _) => askFriend.toFirestore(),
   );
 
-  static CollectionReference<Pokemon> pokemonCollectionRef = AppFirebase.database.collection('pokemons')
-      .withConverter(
-    fromFirestore: Pokemon.fromFirestore,
-    toFirestore: (Pokemon pokemon, _) => pokemon.toJson(),
-  );
-
   static bool isUserConnected = false;
 
   static Future<void> initFirebaseAuth() async {
