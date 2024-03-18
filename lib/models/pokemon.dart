@@ -1,10 +1,12 @@
 class Pokemon {
+  final int ID;
   final String name;
   final String imageUrl;
   final String? type;
   final String? description;
 
   Pokemon({
+    required this.ID,
     required this.name,
     required this.imageUrl,
     this.type,
@@ -13,6 +15,7 @@ class Pokemon {
 
   factory Pokemon.fromJson(Map<String, dynamic> json) {
     return Pokemon(
+      ID: json['id'],
       name: json['name'],
       imageUrl: json['sprites']['front_default'],
       type: json['types'][0]['type']['name'],
@@ -22,6 +25,6 @@ class Pokemon {
 
   @override
   String toString() {
-    return 'Pokemon{name: $name, imageUrl: $imageUrl, type: $type, description: $description}';
+    return 'Pokemon{id:$ID, name: $name, imageUrl: $imageUrl, type: $type, description: $description}';
   }
 }
