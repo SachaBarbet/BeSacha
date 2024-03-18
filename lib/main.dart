@@ -51,11 +51,18 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/',
       builder: (context, state) => const LoadingPage(),
-      redirect: (_, __) => AppFirebase.isUserConnected ? '/home' : '/authentication',
+      redirect: (_, __) {
+        bool? hadRules = LocalStorage.read('rules');
+        return hadRules!=null && hadRules ? AppFirebase.isUserConnected ? '/home' : '/authentication' : '/rules';
+      },
     ),
     GoRoute(path: '/rules',
     name:'rules',
     builder: (context, state) => const GameExplanationPage(),
+    redirect: (_, __) {
+        bool? hadRules = LocalStorage.read('rules');
+        return hadRules!=null && hadRules ? null : AppFirebase.isUserConnected ? '/home' : '/authentication';
+     },
     ),
     GoRoute(
       path: '/home',
