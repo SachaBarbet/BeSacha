@@ -19,7 +19,10 @@ class ConfidentialityPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.pop(),),
+        title: const Text('Politique de confidentialité', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        centerTitle: true,
       ),
+
       body: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppDesignSystem.defaultPadding * 1.5,
@@ -27,7 +30,6 @@ class ConfidentialityPage extends StatelessWidget {
         ),
         child: ListView(
           children: const [
-            Text('Politique de confidentialité', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),),
             Text('Dernière mise à jour: 13/03/2024', style: TextStyle(fontSize: 16, color: AppColors.grey),),
             Text('Attention, la politique de confidentialité ici présente n\'est pas définitive et n\'est pas à prendre'
                 ' en compte comme telles. Elle est là à titre d\'exemple.'

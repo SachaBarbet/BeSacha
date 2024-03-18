@@ -1,9 +1,9 @@
-import 'package:be_sacha/services/local_storage.dart';
+import 'package:be_sacha/services/shared_preferences_service.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
 
-class AppSettings {
+class SettingsService {
 
   static final Map<String, dynamic> _defaultSettings = {
     'brightnessMode': 'system',
@@ -12,9 +12,9 @@ class AppSettings {
   // Initialize the shared preferences and set the default settings
   static Future<void> init() async {
     for (String key in _defaultSettings.keys) {
-      if (LocalStorage.read(key) == null) {
+      if (SharedPreferencesService.read(key) == null) {
         dynamic value = _defaultSettings[key];
-        await LocalStorage.write(key, value);
+        await SharedPreferencesService.write(key, value);
       }
     }
   }
@@ -23,13 +23,13 @@ class AppSettings {
     if (value != 'system' && value != 'light' && value != 'dark') {
       throw 'Invalid value for brightnessMode';
     }
-    await LocalStorage.write('brightnessMode', value);
+    await SharedPreferencesService.write('brightnessMode', value);
     if (context.mounted) {
       BeSacha.updateTheme(context);
     }
   }
 
   static String getBrightnessMode() {
-    return LocalStorage.read('brightnessMode') as String;
+    return SharedPreferencesService.read('brightnessMode') as String;
   }
 }

@@ -55,7 +55,11 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(leading: BackButton(onPressed: () => context.pop(),),),
+      appBar: AppBar(
+        leading: BackButton(onPressed: () => context.pop(),),
+        title: const Text('Vos informations', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        centerTitle: true,
+      ),
 
       body: FutureBuilder(
         future: _appUser,
@@ -77,10 +81,6 @@ class _UserPageState extends State<UserPage> {
             ),
             child: ListView(
               children: [
-                const Text(
-                  'Vos informations',
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1.2),
-                ),
                 TextButton(
                   onPressed: () async {
                     await Clipboard.setData(ClipboardData(text: appUser.username!));
@@ -92,7 +92,7 @@ class _UserPageState extends State<UserPage> {
                     padding: EdgeInsets.zero,
                     alignment: Alignment.centerLeft,
                   ),
-                  child: Text('Appui pour copier : ${appUser.username!}', style: const TextStyle(fontSize: 16), textAlign: TextAlign.left,),
+                  child: Text('Appuie pour copier : ${appUser.username!}', style: const TextStyle(fontSize: 16), textAlign: TextAlign.left,),
                 ),
                 const SizedBox(height: _dividerHeight),
                 const Padding(

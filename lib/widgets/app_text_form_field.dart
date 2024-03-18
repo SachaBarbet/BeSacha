@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../assets/app_colors.dart';
 import '../assets/app_design_system.dart';
-import '../services/app_settings.dart';
+import '../services/settings_service.dart';
 
 class AppTextFormField extends StatefulWidget {
   final String? hintText;
@@ -30,7 +30,7 @@ class AppTextFormField extends StatefulWidget {
 class _AppTextFormField extends State<AppTextFormField> {
   bool _obscureText = false;
 
-  String _brightnessMode = AppSettings.getBrightnessMode();
+  String _brightnessMode = SettingsService.getBrightnessMode();
 
   static const double borderWidth = 2;
   Color? foregroundColor;

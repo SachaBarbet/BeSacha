@@ -80,7 +80,7 @@ class _FriendsPageState extends State<FriendsPage> {
                         borderRadius: BorderRadius.circular(AppDesignSystem.defaultPadding),
                       ),
                       leading: IconButton(
-                        icon: const Icon(Icons.close, color: Colors.black),
+                        icon: const Icon(Icons.close, color: AppColors.white),
                         onPressed: () async {
                           await FriendsService.removeFriend(friend!);
                           setState(() {

@@ -1,29 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../assets/app_colors.dart';
 import '../assets/app_design_system.dart';
-import '../models/app_user.dart';
-import '../services/app_user_service.dart';
 import '../widgets/redirect_button.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePage();
-}
-
-class _HomePage extends State<HomePage> {
+class HomePage extends StatelessWidget {
   static const double _dividerHeight = 50;
 
-  late final Future<AppUser?> _appUser;
-
-  @override
-  void initState() {
-    _appUser = AppUserService.getUser();
-    super.initState();
-  }
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -45,41 +30,24 @@ class _HomePage extends State<HomePage> {
         ),
 
         body: Center(
-          child: FutureBuilder(
-            future: _appUser,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-                );
-              }
-
-              if (snapshot.hasError) {
-                return const Text('Une erreur est survenue');
-              }
-
-              final AppUser appUser = snapshot.data!;
-
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppDesignSystem.defaultPadding * 1.5,
-                  vertical: AppDesignSystem.defaultPadding,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDesignSystem.defaultPadding * 1.5,
+              vertical: AppDesignSystem.defaultPadding,
+            ),
+            child: Column(
+              children: [
+                Text('Bonjour ${FirebaseAuth.instance.currentUser!.displayName}', style: const TextStyle(fontSize: 24),),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 4),
+                  child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
                 ),
-                child: Column(
-                  children: [
-                    Text('Bonjour ${appUser.displayName}', style: const TextStyle(fontSize: 24),),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 4),
-                      child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
-                    ),
-                    const SizedBox(height: AppDesignSystem.defaultPadding * 2), // Spacer
-                    const RedirectButton(redirectName: 'pokedex',buttonText: 'Pokedex',),
-                    const SizedBox(height: AppDesignSystem.defaultPadding * 2), // Spacer
-                    const RedirectButton(redirectName: 'friends',buttonText: 'Mes amis',),
-                  ],
-                ),
-              );
-            }
+                const SizedBox(height: AppDesignSystem.defaultPadding * 2), // Spacer
+                const RedirectButton(redirectName: 'pokedex',buttonText: 'Pokedex',),
+                const SizedBox(height: AppDesignSystem.defaultPadding * 2), // Spacer
+                const RedirectButton(redirectName: 'friends',buttonText: 'Mes amis',),
+              ],
+            ),
           ),
         ),
       ),
