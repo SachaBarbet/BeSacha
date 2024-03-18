@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../assets/app_colors.dart';
 import '../assets/app_design_system.dart';
+import '../services/app_settings.dart';
 
 class AppTextFormField extends StatefulWidget {
   final String? hintText;
@@ -9,6 +10,8 @@ class AppTextFormField extends StatefulWidget {
   final TextEditingController? controller;
   final bool obscureText;
   final TextInputType? keyboardType;
+  final bool enabled;
+  final void Function()? onChanged;
 
   const AppTextFormField({
     super.key, this.hintText,
@@ -16,6 +19,8 @@ class AppTextFormField extends StatefulWidget {
     this.controller,
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
+    this.enabled = true,
+    this.onChanged,
   });
 
   @override
@@ -25,6 +30,11 @@ class AppTextFormField extends StatefulWidget {
 class _AppTextFormField extends State<AppTextFormField> {
   bool _obscureText = false;
 
+  String _brightnessMode = AppSettings.getBrightnessMode();
+
+  static const double borderWidth = 2;
+  Color? foregroundColor;
+
   @override
   void initState() {
     _obscureText = widget.obscureText;
@@ -33,35 +43,41 @@ class _AppTextFormField extends State<AppTextFormField> {
 
   @override
   Widget build(BuildContext context) {
+    if (_brightnessMode != 'system') {
+      foregroundColor = _brightnessMode == 'dark' ? AppColors.white : AppColors.black;
+    } else {
+      foregroundColor = MediaQuery.of(context).platformBrightness == Brightness.dark ? AppColors.white : AppColors.black;
+    }
     return TextFormField(
+      enabled: widget.enabled,
       obscureText: _obscureText,
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-          borderSide: const BorderSide(color: AppColors.lightGrey, width: 2),
+          borderSide: const BorderSide(color: AppColors.grey, width: borderWidth),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-          borderSide: const BorderSide(color: AppColors.lightGrey, width: 2),
+          borderSide: const BorderSide(color: AppColors.grey, width: borderWidth),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-          borderSide: const BorderSide(color: AppColors.black, width: 2),
+          borderSide: BorderSide(color: foregroundColor!, width: borderWidth),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-          borderSide: const BorderSide(color: AppColors.red, width: 2),
+          borderSide: const BorderSide(color: AppColors.red, width: borderWidth),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-          borderSide: const BorderSide(color: AppColors.red, width: 2),
+          borderSide: const BorderSide(color: AppColors.red, width: borderWidth),
         ),
         errorStyle: const TextStyle(color: AppColors.red),
         hintStyle: const TextStyle(color: AppColors.grey),
-        labelStyle: const TextStyle(color: AppColors.black),
+        labelStyle: TextStyle(color: foregroundColor),
         hintText: widget.hintText,
-        fillColor: AppColors.grey.withOpacity(0.2),
+        fillColor: AppColors.grey.withOpacity(0.25),
         filled: true,
         contentPadding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
         suffixIcon: widget.obscureText ? Material(
@@ -73,14 +89,15 @@ class _AppTextFormField extends State<AppTextFormField> {
                 _obscureText = !_obscureText;
               });
             },
-            icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off, color: AppColors.black, size: 20),
+            icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off, color: foregroundColor, size: 20),
           ),
         ) : null,
       ),
-      style: const TextStyle(color: AppColors.black),
-      cursorColor: AppColors.black,
+      style: TextStyle(color: foregroundColor),
+      cursorColor: foregroundColor,
       validator: widget.validator,
       controller: widget.controller,
+      onChanged: (value) => widget.onChanged?.call(),
     );
   }
 }

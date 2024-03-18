@@ -3,11 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AppUser {
   late String? uid;
   late String? email;
+  late String? username;
   late String? displayName;
-  late String? phoneNumber;
-  late String? photoUrl;
+  late List<String>? friends;
 
-  AppUser({this.uid, this.email, this.displayName, this.phoneNumber, this.photoUrl});
+  AppUser({this.uid, this.email, this.username, this.displayName, this.friends});
 
   factory AppUser.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -15,19 +15,19 @@ class AppUser {
       ) {
     Map<String, dynamic>? data = snapshot.data();
     return AppUser(
-      email: data?["email"],
-      displayName: data?["display_name"],
-      phoneNumber: data?["phone_number"],
-      photoUrl: data?["photo_url"],
+      email: data?['email'],
+      username: data?['username'],
+      displayName: data?['display_name'],
+      friends: List<String>.from(data?['friends'] ?? []),
     );
   }
 
   Map<String, dynamic> toFirestore() {
     return {
-      "email": email,
-      "display_name": displayName,
-      "phone_number": phoneNumber,
-      "photo_url": photoUrl,
+      'email': email,
+      'username': username,
+      'display_name': displayName,
+      'friends': friends ?? [],
     };
   }
 }

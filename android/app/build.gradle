@@ -41,8 +41,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Change to application ID of your app.
-        applicationId "io.github.sachabarbet.android_flutter_app_boilerplate"
+        applicationId "io.github.sachabarbet.be_sacha"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 21

@@ -1,13 +1,13 @@
-import 'package:android_flutter_app_boilerplate/utilities/validators.dart';
-import 'package:android_flutter_app_boilerplate/widgets/app_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
+import '../../services/app_firebase.dart';
 import '../../services/app_user_service.dart';
 import '../../utilities/toast_util.dart';
+import '../../utilities/validators.dart';
 import '../../widgets/app_elevated_button.dart';
+import '../../widgets/app_text_form_field.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -16,6 +16,8 @@ class LoginPage extends StatelessWidget {
   final TextEditingController _passwordController = TextEditingController();
 
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
+
+  static const double _appBarHeight = 50;
 
 
   @override
@@ -26,38 +28,29 @@ class LoginPage extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: AppColors.lightGrey,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          toolbarHeight: 50,
+          leading: BackButton(onPressed: () {context.pop();},),
+          toolbarHeight: _appBarHeight,
         ),
 
         body: Center(
           child: Padding(
             padding: const EdgeInsets.only(
-              bottom: 50.0,
+              bottom: _appBarHeight,
               top: AppDesignSystem.defaultPadding,
               left: AppDesignSystem.defaultPadding,
               right: AppDesignSystem.defaultPadding,
             ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-              ),
-              child: ListView(
-                shrinkWrap: true,
-                padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: AppDesignSystem.defaultPadding),
-                    child: Text('Connexion', style: TextStyle(fontSize: 24), textAlign: TextAlign.center),
-                  ),
-                  Form(
+            child: ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: AppDesignSystem.defaultPadding),
+                  child: Text('Connexion', style: TextStyle(fontSize: 24), textAlign: TextAlign.center),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: AppDesignSystem.defaultPadding),
+                  child: Form(
                     key: _loginFormKey,
                     child: Column(
                       children: [
@@ -82,11 +75,7 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(
-                            left: AppDesignSystem.defaultPadding,
-                            right: AppDesignSystem.defaultPadding,
-                            bottom: AppDesignSystem.defaultPadding,
-                          ),
+                          padding: const EdgeInsets.all(AppDesignSystem.defaultPadding,),
                           child: AppElevatedButton(
                             onPressed: () {
                               if (!_loginFormKey.currentState!.validate()) return;
@@ -96,8 +85,10 @@ class LoginPage extends StatelessWidget {
                                 if (value != null) {
                                   _emailController.clear();
                                   _passwordController.clear();
-                                  context.pop();
-                                  context.go('/home');
+                                  AppFirebase.updateUserConnected().then((value) {
+                                    context.pop();
+                                    context.go('/home');
+                                  });
                                 } else {
                                   context.pop();
                                   ToastUtil.showErrorToast(context, 'Email ou mot de passe incorrect');
@@ -113,8 +104,8 @@ class LoginPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

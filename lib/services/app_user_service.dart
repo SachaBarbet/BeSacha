@@ -1,39 +1,31 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 
 import '../models/app_user.dart';
 import '../utilities/app_utils.dart';
-import '../utilities/toast_util.dart';
 import 'app_firebase.dart';
 
 class AppUserService {
 
   /// Register a new user with email and password in Firebase Authentication and Firestore
-  static Future<AppUser?> register(String email, String password, [String? displayName, String? phoneNumber, String? photoUrl]) async {
+  static Future<AppUser?> register(String email, String password, [String? displayName, String? username]) async {
     email = email.toLowerCase().trim();
     displayName = displayName?.trim();
-    phoneNumber = phoneNumber?.trim();
-    photoUrl = photoUrl?.trim();
+    username = username?.trim();
 
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       User user = userCredential.user!;
-      displayName ??= "user_${AppUtil.getRandomString(8)}";
+      displayName ??= 'user_${AppUtil.getRandomString(4)}';
+      username ??= '$displayName#${AppUtil.getRandomString(4)}'.toLowerCase();
       AppUser appUser = AppUser(
         uid: user.uid,
         email: email,
         displayName: displayName,
-        phoneNumber: phoneNumber,
-        photoUrl: photoUrl,
+        username: username,
       );
       await user.updateDisplayName(displayName); // Need firebase app check
-      if (photoUrl != null) await user.updatePhotoURL(photoUrl);
       await AppFirebase.userCollectionRef.doc(user.uid).set(appUser);
       return appUser;
     } on FirebaseAuthException {
@@ -61,6 +53,7 @@ class AppUserService {
   static Future<void> deleteCurrentUser() async {
     await FirebaseAuth.instance.currentUser!.delete();
     await AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid).delete();
+    // TODO: Delete all user's data (friends, pokemon, etc.)
   }
 
   static Future<bool> checkIfUserConnected() async {
@@ -71,44 +64,33 @@ class AppUserService {
     }
 
     User? user = FirebaseAuth.instance.currentUser;
-    if (FirebaseAuth.instance.currentUser == null) return false;
-    return await AppFirebase.userCollectionRef.doc(user!.uid).get().then((value) => value.exists);
-  }
-
-  static Future<bool> isEmailInDB(String email) async {
-    // check si connecté à internet
-    bool connectedToInternet = false;
-    try {
-      DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-      await deviceInfoPlugin.webBrowserInfo;
-      connectedToInternet = true;
-    } catch (e) {
-      List<InternetAddress> result = await InternetAddress.lookup('8.8.8.8');
-      connectedToInternet = result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    }
-
-    if (!connectedToInternet) return false;
-
-    QuerySnapshot<AppUser> snapshot = await AppFirebase.userCollectionRef.where('email', isEqualTo: email).get();
-    return snapshot.docs.isNotEmpty;
-  }
-
-  static Future<String> getCurrentDisplayName() async {
-    try {
-      return FirebaseAuth.instance.currentUser!.displayName!;
-    } catch (e) {
-      return e.toString();
-    }
+    if (user == null) return false;
+    return await AppFirebase.userCollectionRef.doc(user.uid).get().then((value) => value.exists);
   }
 
   static Future<AppUser?> getUser([String? uid]) async {
     uid ??= FirebaseAuth.instance.currentUser!.uid;
-    return await AppFirebase.userCollectionRef.doc(uid).get().then((value) => value.data());
+    return await AppFirebase.userCollectionRef.doc(uid).get().then((value) {
+      AppUser? appUser = value.data();
+      if (appUser != null) appUser.uid = value.id;
+      return appUser;
+    });
   }
 
-  static Future<void> updateUserPhotoUrl(String url) async {
-    await FirebaseAuth.instance.currentUser!.updatePhotoURL(url);
-    await AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid).update({'photo_url': url});
+  static Future<List<AppUser?>> getUsersByUsername(String username) async {
+    List<String> usernameSplit = username.split('#');
+    if (usernameSplit.length != 2) return [];
+    String displayName = usernameSplit[0];
+    String tag = usernameSplit[1];
+
+    username = '${displayName.toLowerCase().trim()}#${tag.trim()}';
+    QuerySnapshot<AppUser> snapshot = await AppFirebase.userCollectionRef
+        .where('username', isEqualTo: username).get();
+    return snapshot.docs.map((e) {
+      AppUser appUser = e.data();
+      appUser.uid = e.id;
+      return appUser;
+    }).toList();
   }
 
   static Future<void> updateDisplayName(String displayName) async {
@@ -118,24 +100,18 @@ class AppUserService {
         .update({'display_name': displayName});
   }
 
-  static Future<void> updatePhoneNumber(String phoneNumber) async {
-    phoneNumber = phoneNumber.trim();
+  static Future<void> updateEmail(String email) async {
+    email = email.toLowerCase().trim();
+    await FirebaseAuth.instance.currentUser!.updateEmail(email);
     await AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid)
-        .update({'phone_number': phoneNumber});
+        .update({'email': email});
   }
 
-  static Future<void> updateUserPhoto(BuildContext context, AppUser user) async {
-    final FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png'],
-    );
+  static Future<void> updatePassword(String password) async {
+    await FirebaseAuth.instance.currentUser!.updatePassword(password);
+  }
 
-    if (result != null) {
-      final File file = File(result.files.single.path!);
-      final String? url = await AppFirebase.uploadFile(file, user.uid);
-      if (url != null) {
-        await AppUserService.updateUserPhotoUrl(url);
-      }
-    }
+  static updateUser(AppUser appUser) {
+    AppFirebase.userCollectionRef.doc(appUser.uid).set(appUser);
   }
 }

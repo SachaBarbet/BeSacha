@@ -1,13 +1,14 @@
-import 'package:android_flutter_app_boilerplate/pages/authentication/authentication_page.dart';
-import 'package:android_flutter_app_boilerplate/widgets/app_text_form_field.dart';
+import 'dart:ui';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
-import '../../services/app_firebase.dart';
 import '../../services/app_user_service.dart';
 import '../../utilities/toast_util.dart';
+import '../app_text_form_field.dart';
 
 class AlertWarningDeleteAccount extends StatefulWidget {
   const AlertWarningDeleteAccount({super.key});
@@ -18,7 +19,6 @@ class AlertWarningDeleteAccount extends StatefulWidget {
 
 class _AlertWarningDeleteAccount extends State<AlertWarningDeleteAccount> {
   final TextEditingController _passwordController = TextEditingController();
-  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -39,24 +39,24 @@ class _AlertWarningDeleteAccount extends State<AlertWarningDeleteAccount> {
       ),
       iconPadding: const EdgeInsets.only(
         top: AppDesignSystem.defaultPadding * 0.8,
-        bottom: AppDesignSystem.defaultPadding * 0.5,
+
       ),
-      title: const Padding(
-        padding: EdgeInsets.only(bottom: 8.0),
-        child: Text('ATTENTION', style: TextStyle(color: AppColors.red), textAlign: TextAlign.center,),
-      ),
+      title: const Text('ATTENTION', style: TextStyle(color: AppColors.red), textAlign: TextAlign.center,),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('Toutes vos données seront perdues et ne pourront être récupérer !\n'
-            'Entrez votre mot de passe pour confirmer la suppression de votre compte',
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Text('Toutes vos données seront perdues et ne pourront être récupérer !\n'
+              'Entrez votre mot de passe pour confirmer la suppression de votre compte',
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: AppTextFormField(
               controller: _passwordController,
               hintText: 'Mot de passe',
-              obscureText: _obscureText,
+              obscureText: true,
             ),
           ),
           Padding(
@@ -65,26 +65,37 @@ class _AlertWarningDeleteAccount extends State<AlertWarningDeleteAccount> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextButton(onPressed: () => Navigator.pop(context), child: const Text('CANCEL')),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    'ANNULER',
+                    style: TextStyle(color: PlatformDispatcher.instance.platformBrightness
+                        == Brightness.dark ? AppColors.white : AppColors.black,
+                    ),
+                  ),
+                ),
                 TextButton(
                   onPressed: () {
-                    AppUserService.login(FirebaseAuth.instance.currentUser!.email!, _passwordController.text).then((value) {
+                    AppUserService.login(FirebaseAuth.instance.currentUser!.email!, _passwordController.text)
+                        .then((value) {
                       if (value != null) {
-                        _passwordController.clear();
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AuthenticationPage()));
-                        AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid).delete().whenComplete(() {
-                          FirebaseAuth.instance.currentUser!.delete().whenComplete(() {
-                            AppFirebase.usersImagesStorageRef.child("${FirebaseAuth.instance.currentUser!.uid}.png").delete().whenComplete(() => ToastUtil.showSuccessToast(context, 'Account deleted'));
-                          });
+                        context.pushNamed('loading');
+                        AppUserService.deleteCurrentUser().then((value) {
+                          _passwordController.clear();
+                          ToastUtil.showSuccessToast(context, 'Votre compte a bien été supprimé.');
+                          context.pop();
+                          context.go('/authentication');
+                        }).onError((error, stackTrace) {
+                          context.pop();
+                          ToastUtil.showErrorToast(context, 'Erreur de connexion');
                         });
                       } else {
-                        ToastUtil.showShortErrorToast(context, 'Error: Invalid password');
+                        ToastUtil.showShortErrorToast(context, 'Mot de passe invalide');
                       }
                     });
                   },
-                  child: const Text('CONFIRM'))
+                  child: const Text('SUPPRIMER', style: TextStyle(color: AppColors.red),),
+                ),
               ],
             ),
           )

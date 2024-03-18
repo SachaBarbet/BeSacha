@@ -1,13 +1,12 @@
-import 'package:android_flutter_app_boilerplate/utilities/validators.dart';
-import 'package:android_flutter_app_boilerplate/widgets/app_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
 import '../../services/app_user_service.dart';
 import '../../utilities/toast_util.dart';
+import '../../utilities/validators.dart';
 import '../../widgets/app_elevated_button.dart';
+import '../../widgets/app_text_form_field.dart';
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
@@ -20,6 +19,9 @@ class RegisterPage extends StatelessWidget {
 
   final GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
 
+  static const double appBarHeight = 50;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,38 +31,34 @@ class RegisterPage extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: AppColors.lightGrey,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
-          toolbarHeight: 50,
+          toolbarHeight: appBarHeight,
         ),
 
         body: Center(
           child: Padding(
             padding: const EdgeInsets.only(
-              bottom: 50.0,
+              bottom: appBarHeight,
               top: AppDesignSystem.defaultPadding,
               left: AppDesignSystem.defaultPadding,
               right: AppDesignSystem.defaultPadding,
             ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-              ),
-              child: ListView(
-                shrinkWrap: true,
-                padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: AppDesignSystem.defaultPadding),
-                    child: Text('Inscription', style: TextStyle(fontSize: 24), textAlign: TextAlign.center),
-                  ),
-                  Form(
+            child: ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: AppDesignSystem.defaultPadding,),
+                  child: Text('Inscription', style: TextStyle(fontSize: 24), textAlign: TextAlign.center),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: AppDesignSystem.defaultPadding),
+                  child: Form(
                     key: _registerFormKey,
                     child: Column(
                       children: [
@@ -99,7 +97,11 @@ class RegisterPage extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding),
+                          padding: const EdgeInsets.only(
+                            left: AppDesignSystem.defaultPadding,
+                            right: AppDesignSystem.defaultPadding,
+                            bottom: AppDesignSystem.defaultPadding,
+                          ),
                           child: AppTextFormField(
                             controller: _confirmPasswordController,
                             hintText: 'Confirmez votre mot de passe',
@@ -140,8 +142,8 @@ class RegisterPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
