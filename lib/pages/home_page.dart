@@ -6,8 +6,6 @@ import '../assets/app_design_system.dart';
 import '../widgets/redirect_button.dart';
 
 class HomePage extends StatelessWidget {
-  static const double _dividerHeight = 50;
-
   const HomePage({super.key});
 
   @override
@@ -16,6 +14,10 @@ class HomePage extends StatelessWidget {
       canPop: false,
       child: Scaffold(
         appBar: AppBar(
+          title: Text('Bonjour ${FirebaseAuth.instance.currentUser!.displayName}',
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: AppDesignSystem.defaultPadding),
@@ -29,23 +31,18 @@ class HomePage extends StatelessWidget {
           ],
         ),
 
-        body: Center(
+        body: const Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
+            padding: EdgeInsets.symmetric(
               horizontal: AppDesignSystem.defaultPadding * 1.5,
               vertical: AppDesignSystem.defaultPadding,
             ),
             child: Column(
               children: [
-                Text('Bonjour ${FirebaseAuth.instance.currentUser!.displayName}', style: const TextStyle(fontSize: 24),),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 4),
-                  child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
-                ),
-                const SizedBox(height: AppDesignSystem.defaultPadding * 2), // Spacer
-                const RedirectButton(redirectName: 'pokedex',buttonText: 'Pokedex',),
-                const SizedBox(height: AppDesignSystem.defaultPadding * 2), // Spacer
-                const RedirectButton(redirectName: 'friends',buttonText: 'Mes amis',),
+                SizedBox(height: AppDesignSystem.defaultPadding * 2), // Spacer
+                RedirectButton(redirectName: 'pokedex',buttonText: 'Pokedex',),
+                SizedBox(height: AppDesignSystem.defaultPadding * 2), // Spacer
+                RedirectButton(redirectName: 'friends',buttonText: 'Mes amis',),
               ],
             ),
           ),

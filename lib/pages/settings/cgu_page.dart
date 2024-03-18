@@ -19,7 +19,7 @@ class CGUPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.pop(),),
-        title: const Text('Conditions générales d\'utilisation', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        title: const Text('CGU', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
 

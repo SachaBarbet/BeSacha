@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AskFriend {
-  late String? uid;
-  late String? fromUser;
-  late String? toUser;
+  late final String id;
+  late final String fromUser;
+  late final String toUser;
 
-  AskFriend({this.uid, this.fromUser, this.toUser});
+  AskFriend({this.id = '', required this.fromUser, required this.toUser});
 
   factory AskFriend.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -13,6 +13,7 @@ class AskFriend {
       ) {
     Map<String, dynamic>? data = snapshot.data();
     return AskFriend(
+      id: snapshot.id,
       fromUser: data?['from_user'],
       toUser: data?['to_user'],
     );

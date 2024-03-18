@@ -69,30 +69,17 @@ class _PokedexPageState extends State<PokedexPage> {
               padding: const EdgeInsets.only(bottom: AppDesignSystem.defaultPadding),
               child: SearchBar(
                 controller: _searchController,
-                backgroundColor: MaterialStateColor.resolveWith((states) => AppColors.primary),
-                textStyle: MaterialStateTextStyle.resolveWith((states) => const TextStyle(color: AppColors.white)),
-                shadowColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
-                shape: MaterialStateProperty.resolveWith((states) => const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
-                )),
-                hintText: 'Rechercher un ami',
-                leading: BackButton(
-                  color: AppColors.white,
-                  onPressed: () => context.pop(),
-                  style: ButtonStyle(iconColor: MaterialStateColor.resolveWith((states) => AppColors.white)),
+                hintText: 'Rechercher un pokemon',
+                leading: IconButton(
+                  icon: const Icon(Icons.search, color: AppColors.white),
+                  onPressed: () {
+                    setState(() {
+                      _pagingController.refresh();
+                      // _fetchPage(pageKey);
+                      // _friendsToAdd = FriendsService.searchNewFriend(_searchController.text);
+                    });
+                  },
                 ),
-                trailing: [
-                  IconButton(
-                    icon: const Icon(Icons.search, color: AppColors.white),
-                    onPressed: () {
-                      setState(() {
-                        _pagingController.refresh();
-                        // _fetchPage(pageKey);
-                        // _friendsToAdd = FriendsService.searchNewFriend(_searchController.text);
-                      });
-                    },
-                  )
-                ],
                 onChanged: (search) {
                   setState(() {
                     // _friendsToAdd = FriendsService.searchNewFriend(search);
@@ -113,7 +100,7 @@ class _PokedexPageState extends State<PokedexPage> {
                       ),
                       child: Column(
                         children: [
-                          Image.network(item.imageUrl),
+                          Image.network(item.defaultSprite),
                           Text(item.name[0].toUpperCase() + item.name.substring(1)),
                           Text('Type : ${item.type[0].toUpperCase() + item.type.substring(1)}')
                         ],

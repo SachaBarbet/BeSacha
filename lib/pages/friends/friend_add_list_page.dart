@@ -92,8 +92,8 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
                     itemBuilder: (context, index) {
                       AppUser friend = friends[index];
                       return ListTile(
-                        title: Text(friend.displayName!),
-                        subtitle: Text(friend.username!),
+                        title: Text(friend.displayName),
+                        subtitle: Text(friend.username),
                         leading: IconButton(
                           icon: const Icon(Icons.close),
                           onPressed: () {
@@ -124,8 +124,8 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
                     itemBuilder: (context, index) {
                       AppUser friend = friends[index];
                       return ListTile(
-                        title: Text(friend.displayName!),
-                        subtitle: Text(friend.username!),
+                        title: Text(friend.displayName),
+                        subtitle: Text(friend.username),
                         trailing: ElevatedButton(
                           onPressed: () {
                             FriendsService.cancelAskFriend(friend);

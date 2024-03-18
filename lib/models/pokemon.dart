@@ -4,14 +4,16 @@ class Pokemon {
   final DocumentSnapshot? snapshot;
   final int id;
   final String name;
-  final String imageUrl;
+  final String defaultSprite;
+  final String? shinySprite;
   final String type;
 
   Pokemon({
     required this.id,
     required this.name,
-    required this.imageUrl,
+    required this.defaultSprite,
     required this.type,
+    required this.shinySprite,
     this.snapshot,
   });
 
@@ -19,7 +21,8 @@ class Pokemon {
     return Pokemon(
       id: json['id'],
       name: json['name'],
-      imageUrl: json['sprites']['front_default'],
+      defaultSprite: json['sprites']['front_default'],
+      shinySprite: json['sprites']['front_shiny'],
       type: json['types'][0]['type']['name'],
     );
   }
@@ -32,7 +35,8 @@ class Pokemon {
     return Pokemon(
       id: data?['id'],
       name: data?['name'],
-      imageUrl: data?['imageUrl'],
+      defaultSprite: data?['imageUrl'],
+      shinySprite: data?['shinySprite'],
       type: data?['type'],
     );
   }
@@ -41,13 +45,14 @@ class Pokemon {
     return {
       'id': id,
       'name': name,
-      'imageUrl': imageUrl,
+      'default_sprite': defaultSprite,
       'type': type,
+      'shiny_sprite': shinySprite,
     };
   }
 
   @override
   String toString() {
-    return 'Pokemon{id:$id, name: $name, imageUrl: $imageUrl, type: $type}';
+    return 'Pokemon{id:$id, name: $name, imageUrl: $defaultSprite, type: $type}';
   }
 }

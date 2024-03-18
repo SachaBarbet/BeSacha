@@ -1,26 +1,26 @@
-import 'package:be_sacha/services/app_user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/app_user.dart';
 import '../models/ask_friend.dart';
 import 'app_firebase.dart';
+import 'app_user_service.dart';
 
 class FriendsService {
 
-  static Future<List<AppUser?>> getFriends() async {
+  static Future<List<AppUser>> getFriends() async {
     AppUser? appUser = await AppUserService.getUser();
     if (appUser == null) return [];
 
     List<String>? friendsIds = appUser.friends;
     if (friendsIds == null || friendsIds.isEmpty) return [];
 
-    List<AppUser?> friends = [];
+    List<AppUser>? friends = [];
     for (String friendId in friendsIds) {
       AppUser? friend = await AppUserService.getUser(friendId);
-      friends.add(friend);
+      if (friend != null) friends.add(friend);
     }
-    return friends;
+    return friends.isEmpty ? [] : friends;
   }
 
   static Future<List<AppUser>> getAskToFriends() async {
@@ -53,21 +53,19 @@ class FriendsService {
     return users;
   }
 
-  static Future<List<AppUser?>> searchNewFriend(String search) async {
+  static Future<List<AppUser>> searchNewFriend(String search) async {
     if (search.isEmpty) return [];
 
-    // Exclure les amis déjà ajoutés
-    List<AppUser?> friends = await getFriends();
-    List<AppUser?> users = await AppUserService.getUsersByUsername(search);
-    for (AppUser? friend in friends) {
-      users.removeWhere((user) => user?.uid == friend?.uid);
-    }
-
+    List<AppUser> users = await AppUserService.getUsersByUsername(search);
     if (users.isEmpty) return [];
 
-    // Exclure l'utilisateur connecté
+    // Exclure les amis déjà ajoutés
+    List<AppUser> friends = await getFriends();
+    if (friends.isNotEmpty) users.removeWhere((user) => friends.contains(user));
+
+    // Exclure l' utilisateur connecté
     AppUser? connectedUser = await AppUserService.getUser();
-    users.removeWhere((user) => user?.uid == connectedUser?.uid);
+    if (connectedUser != null) users.removeWhere((user) => user.uid == connectedUser.uid);
     return users;
   }
 
@@ -79,10 +77,10 @@ class FriendsService {
     appUser.friends ??= [];
     if (appUser.friends!.contains(friend.uid)) return;
 
-    appUser.friends!.add(friend.uid!);
+    appUser.friends!.add(friend.uid);
 
     friend.friends ??= [];
-    friend.friends!.add(appUser.uid!);
+    friend.friends!.add(appUser.uid);
 
     cancelAskFriend(appUser);
 

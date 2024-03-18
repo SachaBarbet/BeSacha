@@ -1,10 +1,9 @@
-import 'package:be_sacha/assets/app_colors.dart';
-import 'package:be_sacha/models/ask_friend.dart';
-import 'package:be_sacha/models/pokemon.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/app_user.dart';
+import '../models/ask_friend.dart';
+import '../models/pokemon.dart';
 import 'app_user_service.dart';
 
 class AppFirebase {

@@ -94,8 +94,8 @@ class _FriendsPageState extends State<FriendsPage> {
                           ToastUtil.showInfoToast(context, 'Fonctionnalité à venir');
                         },
                       ),
-                      title: Text(friend!.displayName!),
-                      subtitle: Text(friend.username!),
+                      title: Text(friend!.displayName),
+                      subtitle: Text(friend.username),
                     ),
                 ],
               );
