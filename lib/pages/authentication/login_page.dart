@@ -96,6 +96,7 @@ class LoginPage extends StatelessWidget {
                               }).onError((error, stackTrace) {
                                 context.pop();
                                 ToastUtil.showErrorToast(context, 'Erreur de connexion');
+                                print(error);
                               });
                             },
                             buttonText: 'Se connecter',

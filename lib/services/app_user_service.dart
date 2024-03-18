@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -24,6 +26,7 @@ class AppUserService {
         email: email,
         displayName: displayName,
         username: username,
+        dailyPokemonDate: DateTime.now().add(const Duration(days: -1)),
       );
       await user.updateDisplayName(displayName); // Need firebase app check
       await AppFirebase.userCollectionRef.doc(user.uid).set(appUser);

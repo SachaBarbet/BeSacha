@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:be_sacha/pages/daily_pokemon_page.dart';
+import 'package:be_sacha/services/pokeapi.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -93,6 +95,10 @@ final GoRouter _router = GoRouter(
               path: 'confidentiality',
               name: 'confidentiality',
               builder: (context, state) => const ConfidentialityPage(),
+            ),
+            GoRoute(path: 'daily_pokemon_page',
+              name: 'daily_pokemon_page',
+              builder: (context, state) => PokemonScreen(),
             ),
           ],
         ),
