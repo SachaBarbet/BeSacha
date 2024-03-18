@@ -1,18 +1,19 @@
-import 'package:be_sacha/models/pokemon.dart';
-import 'package:be_sacha/pages/pokedex_page.dart';
-import 'package:be_sacha/widgets/redirect_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../models/pokemon.dart';
 import '../services/pokeapi.dart';
+import '../widgets/redirect_button.dart';
 
-class PokemonScreen extends StatefulWidget {
+class DailyPokemonScreen extends StatefulWidget {
+  const DailyPokemonScreen({super.key});
+
   @override
-  _PokemonScreenState createState() => _PokemonScreenState();
+  State<DailyPokemonScreen> createState() => _DailyPokemonScreenState();
 }
 
-class _PokemonScreenState extends State<PokemonScreen> {
-  late Future<Pokemon> _pokemonDetailsFuture;
-  late Pokemon _pokemonData;
+class _DailyPokemonScreenState extends State<DailyPokemonScreen> {
+  late Future<Pokemon?> _pokemonDetailsFuture;
 
   @override
   void initState() {
@@ -20,10 +21,9 @@ class _PokemonScreenState extends State<PokemonScreen> {
     _fetchRandomPokemon();
   }
 
-  Future<void> _fetchRandomPokemon() async {
-    final randomId = await PokeApi.getRandomPokemonId();
+  void _fetchRandomPokemon() {
     setState(() {
-      _pokemonDetailsFuture = PokeApi.fetchPokemonApi(randomId);
+      _pokemonDetailsFuture = PokeApi.getDailyPokemon();
     });
   }
 
@@ -31,29 +31,38 @@ class _PokemonScreenState extends State<PokemonScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pokémon de jour'),
+        title: const Text('Pokémon du jour',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        leading: Container(),
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            FutureBuilder<Pokemon>(
+            FutureBuilder(
               future: _pokemonDetailsFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
-                  final pokemonData = snapshot.data!;
+                  final pokemonData = snapshot.data;
+                  if (pokemonData == null) {
+                    return const Text('Aucun Pokémon trouvé');
+                  }
+
                   return Column(
                     children: [
 
                       Image.network(pokemonData.imageUrl),
                       Text(
-                        'Pokémon de jour: ${pokemonData.name}',
-                        style: TextStyle(
+                        'Pokémon du jour: ${pokemonData.name}',
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -64,19 +73,13 @@ class _PokemonScreenState extends State<PokemonScreen> {
                 }
               },
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             RedirectButton(
               redirectName: 'pokedex',
               buttonText: 'Voir mon pokedex',
-              // onPressed: () {
-              //   // Navigate to PokedexPage and pass the Pokemon data
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) => PokedexPage(pokemon: _pokemonData),
-              //     ),
-              //   );
-              // },
+              onPressed: () {
+                context.pop();
+              },
             ),
           ],
         ),

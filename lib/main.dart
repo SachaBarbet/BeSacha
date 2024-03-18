@@ -1,7 +1,6 @@
 import 'dart:async';
 
-import 'package:be_sacha/pages/daily_pokemon_page.dart';
-import 'package:be_sacha/services/pokeapi.dart';
+import 'package:be_sacha/models/app_user.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +12,7 @@ import 'firebase_options.dart';
 import 'pages/authentication/authentication_page.dart';
 import 'pages/authentication/login_page.dart';
 import 'pages/authentication/register_page.dart';
+import 'pages/daily_pokemon_page.dart';
 import 'pages/friends/add_friend_page.dart';
 import 'pages/friends/friend_add_list_page.dart';
 import 'pages/friends/friends_page.dart';
@@ -28,6 +28,7 @@ import 'pages/settings/user_page.dart';
 import 'properties/app_properties.dart';
 import 'services/app_firebase.dart';
 import 'services/app_settings.dart';
+import 'services/app_user_service.dart';
 import 'services/local_storage.dart';
 
 Future<void> main() async {
@@ -69,7 +70,47 @@ final GoRouter _router = GoRouter(
       path: '/home',
       name: 'home',
       builder: (context, state) => const HomePage(),
+      redirect: (_, __) async {
+        AppUser? user = await AppUserService.getUser();
+        if (user == null) {
+          return '/authentication';
+        }
+
+        print('redirect');
+
+        if (DateTime.now().isAfter(user.dailyPokemonDate.add(const Duration(days: 1)))) {
+          print('redirect to daily_pokemon_page');
+          return '/home/daily_pokemon_page';
+        }
+        return null;
+      },
       routes: [
+        GoRoute(path: 'daily_pokemon_page',
+          name: 'daily_pokemon_page',
+          builder: (context, state) => const DailyPokemonScreen(),
+        ),
+        GoRoute(
+          path: 'pokedex',
+          name: 'pokedex',
+          builder: (context, state) => const PokedexPage(),
+        ),
+        GoRoute(
+          path: 'friends',
+          name: 'friends',
+          builder: (context, state) => const FriendsPage(),
+          routes: [
+            GoRoute(
+              path: 'add-friend-list',
+              name: 'add-friend-list',
+              builder: (context, state) => const FriendAddListPage(),
+            ),
+            GoRoute(
+              path: 'add-friend',
+              name: 'add-friend',
+              builder: (context, state) => const AddFriendPage(),
+            ),
+          ],
+        ),
         GoRoute(
           path: 'settings',
           name: 'settings',
@@ -95,32 +136,6 @@ final GoRouter _router = GoRouter(
               path: 'confidentiality',
               name: 'confidentiality',
               builder: (context, state) => const ConfidentialityPage(),
-            ),
-            GoRoute(path: 'daily_pokemon_page',
-              name: 'daily_pokemon_page',
-              builder: (context, state) => PokemonScreen(),
-            ),
-          ],
-        ),
-        GoRoute(
-          path: 'pokedex',
-          name: 'pokedex',
-          builder: (context, state) => const PokedexPage(),
-        ),
-        GoRoute(
-          path: 'friends',
-          name: 'friends',
-          builder: (context, state) => const FriendsPage(),
-          routes: [
-            GoRoute(
-              path: 'add-friend-list',
-              name: 'add-friend-list',
-              builder: (context, state) => const FriendAddListPage(),
-            ),
-            GoRoute(
-              path: 'add-friend',
-              name: 'add-friend',
-              builder: (context, state) => const AddFriendPage(),
             ),
           ],
         ),

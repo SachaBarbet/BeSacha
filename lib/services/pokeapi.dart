@@ -25,33 +25,17 @@ class PokeApi {
     return random.nextInt(1025) + 1;
   }
 
-  static Future<Pokemon?> savePokemonTofirebase(Pokemon pokemon) async {
-    try {
-      await FirebaseFirestore.instance.collection( 'daily_pokemons' ).add({
-        'name': pokemon.name,
-        'imageUrl': pokemon.imageUrl,
-        'type': pokemon.type,
-      });
-    } catch (error) {
-      print('Error saving Pokemon to Firebase: $error');
-      throw Exception('Failed to save Pokemon to Firebase');
-    }
-  }
-
   static Future<Pokemon?> getDailyPokemon() async {
     AppUser? appUser = await AppUserService.getUser();
-    if (appUser!.dailyPokemonDate!.day >= DateTime.now().day) return null;
+    if (appUser!.dailyPokemonDate.day >= DateTime.now().day) return null;
 
     int randomId = getRandomPokemonId();
     Pokemon pokemon = await fetchPokemonApi(randomId);
 
-    await savePokemonTofirebase(pokemon);
-
     appUser.dailyPokemonDate = DateTime.now();
+    appUser.pokemons ??= [];
+    appUser.pokemons!.add(pokemon.id);
     await AppUserService.updateUser(appUser);
     return pokemon;
   }
-
-
-
 }

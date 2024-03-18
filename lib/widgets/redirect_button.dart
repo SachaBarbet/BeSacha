@@ -46,7 +46,7 @@ class RedirectButton extends StatelessWidget {
       onPressed: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
         if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
-        if(onPressed!=null && enabled) onPressed;
+        if (onPressed!=null && enabled) onPressed;
         if (redirectName.isNotEmpty && enabled) context.pushNamed(redirectName);
       },
       child: Padding(
