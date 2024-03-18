@@ -1,9 +1,5 @@
 import 'dart:async';
 
-import 'package:be_sacha/pages/friends/add_friend_page.dart';
-import 'package:be_sacha/pages/friends/friend_add_list_page.dart';
-import 'package:be_sacha/pages/game_explanation_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,7 +11,10 @@ import 'firebase_options.dart';
 import 'pages/authentication/authentication_page.dart';
 import 'pages/authentication/login_page.dart';
 import 'pages/authentication/register_page.dart';
+import 'pages/friends/add_friend_page.dart';
+import 'pages/friends/friend_add_list_page.dart';
 import 'pages/friends/friends_page.dart';
+import 'pages/game_explanation_page.dart';
 import 'pages/home_page.dart';
 import 'pages/loading_page.dart';
 import 'pages/pokedex_page.dart';

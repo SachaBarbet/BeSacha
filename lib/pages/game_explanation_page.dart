@@ -1,7 +1,7 @@
-import 'package:be_sacha/services/local_storage.dart';
 import 'package:flutter/material.dart';
 
 import '../assets/app_design_system.dart';
+import '../services/local_storage.dart';
 import '../widgets/redirect_button.dart';
 
 class GameExplanationPage extends StatelessWidget {
