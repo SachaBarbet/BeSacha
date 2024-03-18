@@ -10,6 +10,7 @@ class RedirectButton extends StatelessWidget {
   final Color? buttonColor;
   final Color? textColor;
   final bool isSmall;
+  final void Function()? onPressed;
   final bool enabled;
 
   const RedirectButton({
@@ -18,6 +19,7 @@ class RedirectButton extends StatelessWidget {
     required this.buttonText,
     this.buttonColor,
     this.textColor,
+    this.onPressed,
     this.isSmall = false,
     this.enabled = true,
   });
@@ -44,6 +46,7 @@ class RedirectButton extends StatelessWidget {
       onPressed: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
         if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+        if(onPressed!=null && enabled) onPressed;
         if (redirectName.isNotEmpty && enabled) context.pushNamed(redirectName);
       },
       child: Padding(

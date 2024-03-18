@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:be_sacha/pages/friends/add_friend_page.dart';
 import 'package:be_sacha/pages/friends/friend_add_list_page.dart';
+import 'package:be_sacha/pages/game_explanation_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,18 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/',
       builder: (context, state) => const LoadingPage(),
-      redirect: (_, __) => AppFirebase.isUserConnected ? '/home' : '/authentication',
+      redirect: (_, __) {
+        bool? hadRules = LocalStorage.read('rules');
+        return hadRules!=null && hadRules ? AppFirebase.isUserConnected ? '/home' : '/authentication' : '/rules';
+      },
+    ),
+    GoRoute(path: '/rules',
+    name:'rules',
+    builder: (context, state) => const GameExplanationPage(),
+    redirect: (_, __) {
+        bool? hadRules = LocalStorage.read('rules');
+        return hadRules!=null && hadRules ? null : AppFirebase.isUserConnected ? '/home' : '/authentication';
+     },
     ),
     GoRoute(
       path: '/home',
