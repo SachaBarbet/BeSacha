@@ -6,8 +6,9 @@ class AppUser {
   late String username;
   late String displayName;
   late List<String>? friends;
+  late List<int>? pokemons;
 
-  AppUser({required this.uid, required this.email, required this.username, required this.displayName, this.friends});
+  AppUser({required this.uid, required this.email, required this.username, required this.displayName, this.friends, this.pokemons});
 
   factory AppUser.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -20,6 +21,7 @@ class AppUser {
       username: data?['username'],
       displayName: data?['display_name'],
       friends: List<String>.from(data?['friends'] ?? []),
+      pokemons: List<int>.from(data?['pokemons'] ?? []),
     );
   }
 
@@ -29,6 +31,7 @@ class AppUser {
       'username': username,
       'display_name': displayName,
       'friends': friends ?? [],
+      'pokemons': pokemons ?? [],
     };
   }
 }

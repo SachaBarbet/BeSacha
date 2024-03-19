@@ -25,17 +25,21 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     if (_brightnessMode != 'system') {
       _textColor = _brightnessMode == 'dark' ? AppColors.white : AppColors.black;
-      _dropdownColor = _brightnessMode == 'dark' ? AppColors.black : AppColors.white;
+      _dropdownColor = _brightnessMode == 'dark' ? AppColors.black : AppColors.lightGrey;
     } else {
       _textColor = MediaQuery.of(context).platformBrightness
           == Brightness.dark ? AppColors.white : AppColors.black;
       _dropdownColor = MediaQuery.of(context).platformBrightness
-          == Brightness.dark ? AppColors.black : AppColors.white;
+          == Brightness.dark ? AppColors.black : AppColors.lightGrey;
     }
 
 
     return Scaffold(
-      appBar: AppBar(leading: BackButton(onPressed: () => context.pop(),),),
+      appBar: AppBar(
+        leading: BackButton(onPressed: () => context.pop(),),
+        title: const Text('Paramètres de l\'application', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+        centerTitle: true,
+      ),
 
       body: Padding(
         padding: const EdgeInsets.symmetric(

@@ -263,6 +263,14 @@ class _BeSacha extends State<BeSacha> {
           iconColor: AppColors.black,
           textColor: AppColors.black,
         ),
+        searchBarTheme: SearchBarThemeData(
+          backgroundColor: MaterialStateColor.resolveWith((states) => AppColors.primary),
+          textStyle: MaterialStateTextStyle.resolveWith((states) => const TextStyle(color: AppColors.white)),
+          shadowColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
+          shape: MaterialStateProperty.resolveWith((states) => const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+          )),
+        ),
         useMaterial3: true,
       ),
 
@@ -354,7 +362,6 @@ class _BeSacha extends State<BeSacha> {
           iconColor: AppColors.white,
           textColor: AppColors.white,
         ),
-        useMaterial3: true,
         searchBarTheme: SearchBarThemeData(
           backgroundColor: MaterialStateColor.resolveWith((states) => AppColors.primary),
           textStyle: MaterialStateTextStyle.resolveWith((states) => const TextStyle(color: AppColors.white)),
@@ -363,6 +370,7 @@ class _BeSacha extends State<BeSacha> {
             borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
           )),
         ),
+        useMaterial3: true,
       ),
       themeMode: _themeMode,
       routerConfig: _router,

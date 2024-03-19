@@ -27,17 +27,13 @@ class Pokemon {
     );
   }
 
-  factory Pokemon.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> snapshot,
-      SnapshotOptions? options,
-      ) {
-    Map<String, dynamic>? data = snapshot.data();
+  factory Pokemon.fromDatabase(Map<String, dynamic> json) {
     return Pokemon(
-      id: data?['id'],
-      name: data?['name'],
-      defaultSprite: data?['imageUrl'],
-      shinySprite: data?['shinySprite'],
-      type: data?['type'],
+      id: json['id'],
+      name: json['name'],
+      defaultSprite: json['default_sprite'],
+      shinySprite: json['shiny_sprite'],
+      type: json['type'],
     );
   }
 
