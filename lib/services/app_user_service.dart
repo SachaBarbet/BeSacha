@@ -33,8 +33,8 @@ class AppUserService {
         email: email,
         displayName: displayName,
         username: username,
-        dailyPokemonDate: DateTime.now().add(const Duration(days: -1)),
-        pokemons: [],
+        dailyPokemonDate: getFormattedDate(DateTime.now().add(const Duration(days: -1))),
+        pokemons: {},
         friends: [],
       );
 

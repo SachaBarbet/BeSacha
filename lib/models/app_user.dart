@@ -5,9 +5,10 @@ class AppUser {
   late String email;
   late String username;
   late String displayName;
-  late DateTime dailyPokemonDate;
-  late List<int>? pokemons;
-  late List<String>? friends;
+  late String dailyPokemonDate;
+  late int dailyPokemonId;
+  late Map<int, String> pokemons;
+  late List<String> friends;
 
   AppUser({
     required this.uid,
@@ -24,19 +25,14 @@ class AppUser {
     SnapshotOptions? options,
   ) {
     Map<String, dynamic>? data = snapshot.data();
-    DateTime? dailyDate;
-    if (data != null) {
-      int? dailyDateInt = data['daily_pokemon_date'];
-      if (dailyDateInt != null) dailyDate = DateTime.fromMillisecondsSinceEpoch(dailyDateInt);
-    }
     return AppUser(
       uid: snapshot.id,
       email: data?['email'],
       username: data?['username'],
       displayName: data?['display_name'],
-      friends: List<String>.from(data?['friends'] ?? []),
-      pokemons: List<int>.from(data?['pokemons'] ?? []),
-      dailyPokemonDate: dailyDate ?? DateTime.now().add(const Duration(days: -1)),
+      friends: data?['friends'],
+      pokemons: data?['pokemons'],
+      dailyPokemonDate: data?['dailyPokemonDate'],
     );
   }
 
@@ -46,7 +42,7 @@ class AppUser {
       'username': username,
       'display_name': displayName,
       'friends': friends,
-      'daily_pokemon_date': dailyPokemonDate.millisecondsSinceEpoch,
+      'daily_pokemon_date': dailyPokemonDate,
       'pokemons': pokemons,
     };
   }

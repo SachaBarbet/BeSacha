@@ -126,10 +126,10 @@ class _PokedexPageState extends State<PokedexPage> {
               );
             }
 
-            List<int> unlockedPokemons = appUser.pokemons!;
+            List<int> unlockedPokemonIds = appUser.pokemons.keys.toList();
 
             _pagingController.addPageRequestListener((pageKey) {
-              _fetchPage(pageKey, unlockedPokemons);
+              _fetchPage(pageKey, unlockedPokemonIds);
             });
 
             return Column(
@@ -143,14 +143,14 @@ class _PokedexPageState extends State<PokedexPage> {
                     onPressed: () {
                       setState(() {
                         _pagingController.itemList = [];
-                        _fetchPage(1, unlockedPokemons);
+                        _fetchPage(1, unlockedPokemonIds);
                       });
                     },
                   ),
                   onChanged: (search) {
                     setState(() {
                       _pagingController.itemList = [];
-                      _fetchPage(1, unlockedPokemons);
+                      _fetchPage(1, unlockedPokemonIds);
                     });
                   },
                 ),
@@ -183,7 +183,7 @@ class _PokedexPageState extends State<PokedexPage> {
                           setState(() {
                             _ownedDropdown = value!;
                             _pagingController.itemList = [];
-                            _fetchPage(1, unlockedPokemons);
+                            _fetchPage(1, unlockedPokemonIds);
                           });
                         },
                       ),
@@ -277,7 +277,7 @@ class _PokedexPageState extends State<PokedexPage> {
                               setState(() {
                                 _typeDropdown = value!;
                                 _pagingController.itemList = [];
-                                _fetchPage(1, unlockedPokemons);
+                                _fetchPage(1, unlockedPokemonIds);
                               });
                             },
                           ),
@@ -291,7 +291,7 @@ class _PokedexPageState extends State<PokedexPage> {
                     pagingController: _pagingController,
                     builderDelegate: PagedChildBuilderDelegate<Pokemon>(
                       itemBuilder: (context, item, index) {
-                        bool isUnlocked = unlockedPokemons.contains(item.id);
+                        bool isUnlocked = unlockedPokemonIds.contains(item.id);
                         return Container(
                           padding: const EdgeInsets.all(kDefaultPadding),
                           decoration: BoxDecoration(

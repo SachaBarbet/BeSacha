@@ -31,6 +31,7 @@ import 'services/app_user_service.dart';
 import 'services/pokemon_service.dart';
 import 'services/settings_service.dart';
 import 'services/shared_preferences_service.dart';
+import 'utilities/app_utils.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -81,7 +82,7 @@ final GoRouter _router = GoRouter(
           return '/authentication';
         }
 
-        if (DateTime.now().isAfter(user.dailyPokemonDate.add(const Duration(days: 1)))) {
+        if (user.dailyPokemonDate != getFormattedDate()) {
           return '/home/daily_pokemon_page';
         }
         return null;

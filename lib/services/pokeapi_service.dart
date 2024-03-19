@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:be_sacha/utilities/app_utils.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/app_user.dart';
@@ -26,16 +27,15 @@ class PokeApiService {
 
   static Future<Pokemon?> getDailyPokemon() async {
     AppUser? appUser = await AppUserService.getUser();
-    if (appUser!.dailyPokemonDate.day >= DateTime
-        .now()
-        .day) return null;
+    String formattedDate = getFormattedDate();
+    if (appUser!.dailyPokemonDate != formattedDate) return null;
 
     int randomId = getRandomPokemonId();
     Pokemon pokemon = await fetchPokemonApi(randomId);
 
-    appUser.dailyPokemonDate = DateTime.now();
-    appUser.pokemons ??= [];
-    appUser.pokemons!.add(pokemon.id);
+    appUser.dailyPokemonDate = formattedDate;
+    appUser.dailyPokemonId = randomId;
+    appUser.pokemons[pokemon.id] = formattedDate;
     await AppUserService.updateUser(appUser);
     return pokemon;
   }
