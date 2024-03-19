@@ -12,28 +12,29 @@ class CGUPage extends StatelessWidget {
     fontWeight: FontWeight.bold,
   );
 
-  static const double _spacerHeight = AppDesignSystem.defaultPadding * 1.5;
+  static const double _spacerHeight = kDefaultPadding * 1.5;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.pop(),),
+        title: const Text('CGU', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        centerTitle: true,
       ),
 
       body: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: _spacerHeight,
-          vertical: AppDesignSystem.defaultPadding,
+          vertical: kDefaultPadding,
         ),
         child: ListView(
           children: const [
-            Text('Conditions générales d\'utilisation', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),),
-            Text('Dernière mise à jour: 13/03/2024', style: TextStyle(fontSize: 16, color: AppColors.grey),),
+            Text('Dernière mise à jour: 13/03/2024', style: TextStyle(fontSize: 16, color: kGreyColor),),
             Text('Attention, les conditions d\'utilisation ici présente ne sont pas définitives et ne sont pas à '
                 'prendre en comtpe comme telles. Elles sont là à titre d\'exemple.'
             ),
-            SizedBox(height: AppDesignSystem.defaultPadding * 2,), // Spacer
+            SizedBox(height: kDefaultPadding * 2,), // Spacer
             Text('1. Acceptation des conditions', style: _subTitleTextStyle,),
             Text('En accédant à cette application mobile, vous acceptez d\'être lié par ces conditions d\'utilisation, '
                 'toutes les lois et réglementations applicables, et acceptez que vous êtes responsable du respect des '

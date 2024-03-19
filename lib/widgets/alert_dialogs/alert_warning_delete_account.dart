@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
 import '../../services/app_user_service.dart';
-import '../../utilities/toast_util.dart';
 import '../app_text_form_field.dart';
 
 class AlertWarningDeleteAccount extends StatefulWidget {
@@ -20,6 +19,9 @@ class AlertWarningDeleteAccount extends StatefulWidget {
 class _AlertWarningDeleteAccount extends State<AlertWarningDeleteAccount> {
   final TextEditingController _passwordController = TextEditingController();
 
+  final GlobalKey<FormState> _passwordFormKey = GlobalKey<FormState>();
+
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -29,19 +31,19 @@ class _AlertWarningDeleteAccount extends State<AlertWarningDeleteAccount> {
         mainAxisSize: MainAxisSize.max,
         children: [
           Padding(
-            padding: const EdgeInsets.only(right: AppDesignSystem.defaultPadding * 0.8),
+            padding: const EdgeInsets.only(right: kDefaultPadding * 0.8),
             child: IconButton(
               onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.close_outlined, size: AppDesignSystem.defaultIconSize * 2,),
+              icon: const Icon(Icons.close_outlined, size: kDefaultIconSize * 2,),
             ),
           ),
         ],
       ),
       iconPadding: const EdgeInsets.only(
-        top: AppDesignSystem.defaultPadding * 0.8,
+        top: kDefaultPadding * 0.8,
 
       ),
-      title: const Text('ATTENTION', style: TextStyle(color: AppColors.red), textAlign: TextAlign.center,),
+      title: const Text('ATTENTION', style: TextStyle(color: kRedColor), textAlign: TextAlign.center,),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -51,12 +53,15 @@ class _AlertWarningDeleteAccount extends State<AlertWarningDeleteAccount> {
               'Entrez votre mot de passe pour confirmer la suppression de votre compte',
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: AppTextFormField(
-              controller: _passwordController,
-              hintText: 'Mot de passe',
-              obscureText: true,
+          Form(
+            key: _passwordFormKey,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+              child: AppTextFormField(
+                controller: _passwordController,
+                hintText: 'Mot de passe',
+                obscureText: true,
+              ),
             ),
           ),
           Padding(
@@ -70,7 +75,7 @@ class _AlertWarningDeleteAccount extends State<AlertWarningDeleteAccount> {
                   child: Text(
                     'ANNULER',
                     style: TextStyle(color: PlatformDispatcher.instance.platformBrightness
-                        == Brightness.dark ? AppColors.white : AppColors.black,
+                        == Brightness.dark ? kWhiteColor : kBlackColor,
                     ),
                   ),
                 ),
@@ -82,19 +87,38 @@ class _AlertWarningDeleteAccount extends State<AlertWarningDeleteAccount> {
                         context.pushNamed('loading');
                         AppUserService.deleteCurrentUser().then((value) {
                           _passwordController.clear();
-                          ToastUtil.showSuccessToast(context, 'Votre compte a bien été supprimé.');
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text('Votre compte a bien été supprimé.',
+                              textAlign:  TextAlign.center,
+                              style: TextStyle(color: kWhiteColor,),
+                            ),
+                            backgroundColor: kGreenColor,
+                          ));
                           context.pop();
-                          context.go('/authentication');
+                          context.goNamed('authentication');
                         }).onError((error, stackTrace) {
                           context.pop();
-                          ToastUtil.showErrorToast(context, 'Erreur de connexion');
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text('Erreur de connexion',
+                              textAlign:  TextAlign.center,
+                              style: TextStyle(color: kWhiteColor,),
+                            ),
+                            backgroundColor: kRedColor,
+                          ));
                         });
                       } else {
-                        ToastUtil.showShortErrorToast(context, 'Mot de passe invalide');
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text(
+                            'Mot de passe invalide',
+                            textAlign:  TextAlign.center,
+                            style: TextStyle(color: kWhiteColor,),
+                          ),
+                          backgroundColor: kRedColor
+                        ));
                       }
                     });
                   },
-                  child: const Text('SUPPRIMER', style: TextStyle(color: AppColors.red),),
+                  child: const Text('Supprimer', style: TextStyle(color: kRedColor),),
                 ),
               ],
             ),

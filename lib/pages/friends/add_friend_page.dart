@@ -1,4 +1,3 @@
-import 'package:be_sacha/utilities/toast_util.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,7 +15,7 @@ class AddFriendPage extends StatefulWidget {
 }
 
 class _AddFriendPageState extends State<AddFriendPage> {
-  late Future<List<AppUser?>> _friendsToAdd;
+  late Future<List<AppUser>> _friendsToAdd;
 
   final TextEditingController _searchController = TextEditingController();
 
@@ -32,23 +31,18 @@ class _AddFriendPageState extends State<AddFriendPage> {
       appBar: AppBar(
         leading: Container(),
         leadingWidth: 0,
+        centerTitle: true,
         title: SearchBar(
           controller: _searchController,
-          backgroundColor: MaterialStateColor.resolveWith((states) => AppColors.primary),
-          textStyle: MaterialStateTextStyle.resolveWith((states) => const TextStyle(color: AppColors.white)),
-          shadowColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
-          shape: MaterialStateProperty.resolveWith((states) => const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
-          )),
           hintText: 'Rechercher un ami',
           leading: BackButton(
-            color: AppColors.white,
+            color: kWhiteColor,
             onPressed: () => context.pop(),
-            style: ButtonStyle(iconColor: MaterialStateColor.resolveWith((states) => AppColors.white)),
+            style: ButtonStyle(iconColor: MaterialStateColor.resolveWith((states) => kWhiteColor)),
           ),
           trailing: [
             IconButton(
-              icon: const Icon(Icons.search, color: AppColors.white),
+              icon: const Icon(Icons.search, color: kWhiteColor),
               onPressed: () {
                 setState(() {
                   _friendsToAdd = FriendsService.searchNewFriend(_searchController.text);
@@ -66,8 +60,8 @@ class _AddFriendPageState extends State<AddFriendPage> {
 
       body: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppDesignSystem.defaultPadding * 1.5,
-          vertical: AppDesignSystem.defaultPadding,
+          horizontal: kDefaultPadding * 1.5,
+          vertical: kDefaultPadding,
         ),
         child: FutureBuilder(
           future: _friendsToAdd,
@@ -77,33 +71,41 @@ class _AddFriendPageState extends State<AddFriendPage> {
             }
 
             if (snapshot.hasError) {
-              print(snapshot.error);
               return const Center(
                 child: Text(
                   'Une erreur est survenue, Veuillez réessayer plus tard.',
-                  style: TextStyle(fontSize: 20, color: AppColors.primary),
+                  style: TextStyle(fontSize: 20, color: kPrimaryColor),
                   textAlign: TextAlign.center,
                 ),
               );
             }
 
-            List<AppUser?> friends = snapshot.data as List<AppUser?>;
+            List<AppUser> friends = snapshot.data as List<AppUser>;
 
             if (friends.isNotEmpty) {
               return ListView.builder(
                 itemCount: friends.length,
                 itemBuilder: (context, index) {
-                  AppUser? friend = friends[index];
+                  AppUser friend = friends[index];
                   return ListTile(
-                    title: Text(friend?.displayName ?? ''),
-                    subtitle: Text(friend?.username ?? ''),
+                    title: Text(friend.displayName),
+                    subtitle: Text(friend.username),
                     trailing: ElevatedButton(
+                      style: const ButtonStyle(
+                        padding: MaterialStatePropertyAll(EdgeInsets.zero),
+                      ),
                       onPressed: () {
-                        FriendsService.askFriend(friend!);
+                        FriendsService.askFriend(friend);
                         setState(() {
                           friends.removeAt(index);
                         });
-                        ToastUtil.showSuccessToast(context, 'Demande envoyée');
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Demande envoyée',
+                            textAlign:  TextAlign.center,
+                            style: TextStyle(color: kWhiteColor,),
+                          ),
+                          backgroundColor: kGreenColor,
+                        ));
                       },
                       child: const Text('Ajouter'),
                     ),

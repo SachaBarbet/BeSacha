@@ -6,35 +6,41 @@ import '../../widgets/redirect_button.dart';
 
 
 class SettingsHomePage extends StatelessWidget {
-  static const double _dividerHeight = 50;
-
   const SettingsHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(leading: BackButton(onPressed: () => context.pop(),),),
+      appBar: AppBar(
+        leading: BackButton(onPressed: () => context.pop(),),
+        title: const Text('Vos paramètres', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        centerTitle: true,
+      ),
 
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppDesignSystem.defaultPadding * 1.5,
-          vertical: AppDesignSystem.defaultPadding,
+      body: const Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: kDefaultPadding * 1.5,
+          vertical: kDefaultPadding,
         ),
-        child: ListView(
-          children: const [
-            Text('Vos paramètres', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1.2),),
-            SizedBox(height: _dividerHeight * 3),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
             Padding(
-              padding: EdgeInsets.only(bottom: AppDesignSystem.defaultPadding * 0.6),
+              padding: EdgeInsets.only(bottom: kDefaultPadding * 0.6),
               child: RedirectButton(redirectName: 'user', buttonText: 'Vos informations',),
             ),
             RedirectButton(redirectName: 'setting', buttonText: 'Paramètres de l\'application',),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
-              child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
+              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+              child: SizedBox(height: kDividerHeight, width: double.infinity, child: Divider()),
+            ),
+            RedirectButton(redirectName: 'rules', buttonText: 'Règles du jeu',),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+              child: SizedBox(height: kDividerHeight, width: double.infinity, child: Divider()),
             ),
             Padding(
-              padding: EdgeInsets.only(bottom: AppDesignSystem.defaultPadding * 0.6),
+              padding: EdgeInsets.only(bottom: kDefaultPadding * 0.6),
               child: RedirectButton(redirectName: 'cgu', buttonText: 'Conditions générales d\'utilisation',),
             ),
             RedirectButton(redirectName: 'confidentiality', buttonText: 'Politique de confidentialité',),

@@ -13,7 +13,7 @@ class LoadingPage extends StatelessWidget {
       child: Scaffold(
         body: Center(
           child: CircularProgressIndicator(
-            color: AppColors.primary,
+            color: kPrimaryColor,
           ),
         ),
       ),

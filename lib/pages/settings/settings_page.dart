@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
-import '../../services/app_settings.dart';
+import '../../services/settings_service.dart';
 
 class SettingsPage extends StatefulWidget {
   static const double _dividerHeight = 50;
@@ -16,7 +16,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
 
-  String _brightnessMode = AppSettings.getBrightnessMode();
+  String _brightnessMode = SettingsService.getBrightnessMode();
 
   Color? _textColor;
   Color? _dropdownColor;
@@ -24,35 +24,33 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     if (_brightnessMode != 'system') {
-      _textColor = _brightnessMode == 'dark' ? AppColors.white : AppColors.black;
-      _dropdownColor = _brightnessMode == 'dark' ? AppColors.black : AppColors.white;
+      _textColor = _brightnessMode == 'dark' ? kWhiteColor : kBlackColor;
+      _dropdownColor = _brightnessMode == 'dark' ? kBlackColor : kLightGreyColor;
     } else {
       _textColor = MediaQuery.of(context).platformBrightness
-          == Brightness.dark ? AppColors.white : AppColors.black;
+          == Brightness.dark ? kWhiteColor : kBlackColor;
       _dropdownColor = MediaQuery.of(context).platformBrightness
-          == Brightness.dark ? AppColors.black : AppColors.white;
+          == Brightness.dark ? kBlackColor : kLightGreyColor;
     }
 
 
     return Scaffold(
-      appBar: AppBar(leading: BackButton(onPressed: () => context.pop(),),),
+      appBar: AppBar(
+        leading: BackButton(onPressed: () => context.pop(),),
+        title: const Text('Paramètres de l\'application', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+        centerTitle: true,
+      ),
 
       body: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppDesignSystem.defaultPadding * 1.5,
-          vertical: AppDesignSystem.defaultPadding,
+          horizontal: kDefaultPadding * 1.5,
+          vertical: kDefaultPadding,
         ),
         child: ListView(
           children: [
-            const Text(
-              'Paramètres de l\'application',
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1.2),
-              textAlign: TextAlign.left,
-            ),
-            const SizedBox(height: SettingsPage._dividerHeight),
             const Text('Thème', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppDesignSystem.defaultPadding),
+              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -73,19 +71,19 @@ class _SettingsPageState extends State<SettingsPage> {
                       DropdownMenuItem(value: 'dark',child: Text('Sombre'),),
                     ],
                     onChanged: (value) async {
-                      await AppSettings.setBrightnessMode(context, value as String);
+                      await SettingsService.setBrightnessMode(context, value as String);
 
                       setState(() {
                         _brightnessMode = value;
 
                         if (_brightnessMode != 'system') {
-                          _textColor = _brightnessMode == 'dark' ? AppColors.white : AppColors.black;
-                          _dropdownColor = _brightnessMode == 'dark' ? AppColors.black : AppColors.white;
+                          _textColor = _brightnessMode == 'dark' ? kWhiteColor : kBlackColor;
+                          _dropdownColor = _brightnessMode == 'dark' ? kBlackColor : kWhiteColor;
                         } else {
                           _textColor = MediaQuery.of(context).platformBrightness
-                              == Brightness.dark ? AppColors.white : AppColors.black;
+                              == Brightness.dark ? kWhiteColor : kBlackColor;
                           _dropdownColor = MediaQuery.of(context).platformBrightness
-                              == Brightness.dark ? AppColors.black : AppColors.white;
+                              == Brightness.dark ? kBlackColor : kWhiteColor;
                         }
                       });
                     },
@@ -94,7 +92,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
+              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
               child: SizedBox(height: SettingsPage._dividerHeight, width: double.infinity, child: Divider()),
             ),
             const Text('Notifications', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
@@ -104,7 +102,7 @@ class _SettingsPageState extends State<SettingsPage> {
               textAlign: TextAlign.left,
             ),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
+              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
               child: SizedBox(height: SettingsPage._dividerHeight, width: double.infinity, child: Divider()),
             ),
             const Text('', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),

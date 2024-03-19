@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:be_sacha/widgets/alert_dialogs/alert_warning_delete_account.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -9,8 +8,9 @@ import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
 import '../../models/app_user.dart';
 import '../../services/app_user_service.dart';
-import '../../utilities/toast_util.dart';
+import '../../services/settings_service.dart';
 import '../../utilities/validators.dart';
+import '../../widgets/alert_dialogs/alert_warning_delete_account.dart';
 import '../../widgets/app_elevated_button.dart';
 import '../../widgets/app_text_form_field.dart';
 import '../../widgets/square_icon_button.dart';
@@ -23,8 +23,6 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
-  static const double _dividerHeight = 50;
-
   late Future<AppUser?> _appUser;
 
   final GlobalKey<FormState> _usernameFormKey = GlobalKey<FormState>();
@@ -39,8 +37,11 @@ class _UserPageState extends State<UserPage> {
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmNewPasswordController = TextEditingController();
 
-  Color _usernameButtonBackgroundColor = AppColors.grey;
-  Color _emailButtonBackgroundColor = AppColors.grey;
+  Color _usernameButtonBackgroundColor = kGreyColor;
+  Color _emailButtonBackgroundColor = kGreyColor;
+  Color? _backgroundColor;
+
+  final String _brightnessMode = SettingsService.getBrightnessMode();
 
   void openWarningDeleteAccountAlertDialog(BuildContext context) {
     showDialog(context: context, builder: (context) => const AlertWarningDeleteAccount(),);
@@ -54,8 +55,19 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_brightnessMode != 'system') {
+      _backgroundColor = _brightnessMode == 'dark' ? kBlackColor : kLightGreyColor;
+    } else {
+      _backgroundColor = MediaQuery.of(context).platformBrightness
+          == Brightness.dark ? kBlackColor : kLightGreyColor;
+    }
+
     return Scaffold(
-      appBar: AppBar(leading: BackButton(onPressed: () => context.pop(),),),
+      appBar: AppBar(
+        leading: BackButton(onPressed: () => context.pop(),),
+        title: const Text('Vos informations', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        centerTitle: true,
+      ),
 
       body: FutureBuilder(
         future: _appUser,
@@ -72,31 +84,38 @@ class _UserPageState extends State<UserPage> {
 
           return Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppDesignSystem.defaultPadding * 1.5,
-              vertical: AppDesignSystem.defaultPadding,
+              horizontal: kDefaultPadding * 1.5,
+              vertical: kDefaultPadding,
             ),
             child: ListView(
               children: [
-                const Text(
-                  'Vos informations',
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1.2),
-                ),
                 TextButton(
                   onPressed: () async {
-                    await Clipboard.setData(ClipboardData(text: appUser.username!));
+                    await Clipboard.setData(ClipboardData(text: appUser.username));
                     if (context.mounted) {
-                      ToastUtil.showSuccessToast(context, 'Nom d\'utilisateur copié dans le presse-papier');
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Nom d\'utilisateur copié dans le presse-papier',
+                          textAlign:  TextAlign.center,
+                          style: TextStyle(color: kWhiteColor,),
+                        ),
+                        backgroundColor: kGreenColor,
+                      ));
                     }
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                     alignment: Alignment.centerLeft,
+                    backgroundColor: _backgroundColor,
                   ),
-                  child: Text('Appui pour copier : ${appUser.username!}', style: const TextStyle(fontSize: 16), textAlign: TextAlign.left,),
+                  child: Center(
+                    child: Text('Appuie pour copier : ${appUser.username}',
+                      style: const TextStyle(fontSize: 16), textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
-                const SizedBox(height: _dividerHeight),
+                const SizedBox(height: kDividerHeight),
                 const Padding(
-                  padding: EdgeInsets.only(bottom: AppDesignSystem.defaultPadding * 0.6),
+                  padding: EdgeInsets.only(bottom: kDefaultPadding * 0.6),
                   child: Text('Nom d\'utilisateur', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                 ),
                 Form(
@@ -108,18 +127,18 @@ class _UserPageState extends State<UserPage> {
                       Expanded(
                         child: AppTextFormField(
                           hintText: appUser.displayName,
-                          validator: (value) => Validators.validateDisplayName(value, appUser.displayName),
+                          validator: (value) => validateDisplayName(value, appUser.displayName),
                           controller: _usernameController,
                           onChanged: () {
                             setState(() {
                               _usernameButtonBackgroundColor = _usernameFormKey.currentState!.validate() ?
-                                AppColors.primary : AppColors.grey;
+                                kPrimaryColor : kGreyColor;
                             });
                           },
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 4, left: AppDesignSystem.defaultPadding),
+                        padding: const EdgeInsets.only(top: 4, left: kDefaultPadding),
                         child: SquaredIconButton(
                           backgroundColor: _usernameButtonBackgroundColor,
                           onPressed: () {
@@ -132,10 +151,22 @@ class _UserPageState extends State<UserPage> {
                               });
                               _usernameController.clear();
                               context.pop();
-                              ToastUtil.showSuccessToast(context, 'Votre nom d\'utilisateur a été mis à jour');
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Votre nom d\'utilisateur a été mis à jour',
+                                  textAlign:  TextAlign.center,
+                                  style: TextStyle(color: kWhiteColor,),
+                                ),
+                                backgroundColor: kGreenColor,
+                              ));
                             }).onError((error, stackTrace) {
                               context.pop();
-                              ToastUtil.showErrorToast(context, 'Erreur de connexion');
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Erreur de connexion',
+                                  textAlign:  TextAlign.center,
+                                  style: TextStyle(color: kWhiteColor,),
+                                ),
+                                backgroundColor: kRedColor,
+                              ));
                             });
                           },
                           iconData: Icons.save,
@@ -145,11 +176,11 @@ class _UserPageState extends State<UserPage> {
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
-                  child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
+                  padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+                  child: SizedBox(height: kDividerHeight, width: double.infinity, child: Divider()),
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(bottom: AppDesignSystem.defaultPadding * 0.6),
+                  padding: EdgeInsets.only(bottom: kDefaultPadding * 0.6),
                   child: Text('Adresse email', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                 ),
                 Form(
@@ -161,18 +192,18 @@ class _UserPageState extends State<UserPage> {
                       Expanded(
                         child: AppTextFormField(
                           hintText: appUser.email,
-                          validator: (value) => Validators.validateEmail(value, appUser.email),
+                          validator: (value) => validateEmail(value, appUser.email),
                           controller: _emailController,
                           onChanged: () {
                             setState(() {
                               _emailButtonBackgroundColor = _emailFormKey.currentState!.validate() ?
-                                AppColors.primary : AppColors.grey;
+                                kPrimaryColor : kGreyColor;
                             });
                           },
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 4, left: AppDesignSystem.defaultPadding),
+                        padding: const EdgeInsets.only(top: 4, left: kDefaultPadding),
                         child: SquaredIconButton(
                           backgroundColor: _emailButtonBackgroundColor,
                           onPressed: () {
@@ -185,10 +216,22 @@ class _UserPageState extends State<UserPage> {
                               });
                               _emailController.clear();
                               context.pop();
-                              ToastUtil.showSuccessToast(context, 'Votre adresse email a été mise à jour');
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Votre adresse email a été mise à jour',
+                                  textAlign:  TextAlign.center,
+                                  style: TextStyle(color: kWhiteColor,),
+                                ),
+                                backgroundColor: kRedColor,
+                              ));
                             }).onError((error, stackTrace) {
                               context.pop();
-                              ToastUtil.showErrorToast(context, 'Erreur de connexion');
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Erreur de connexion',
+                                  textAlign:  TextAlign.center,
+                                  style: TextStyle(color: kWhiteColor,),
+                                ),
+                                backgroundColor: kRedColor,
+                              ));
                             });
                           },
                           iconData: Icons.save,
@@ -198,11 +241,11 @@ class _UserPageState extends State<UserPage> {
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
-                  child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
+                  padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+                  child: SizedBox(height: kDividerHeight, width: double.infinity, child: Divider()),
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(bottom: AppDesignSystem.defaultPadding),
+                  padding: EdgeInsets.only(bottom: kDefaultPadding),
                   child: Text('Changer de mot de passe', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                 ),
                 Form(
@@ -211,27 +254,27 @@ class _UserPageState extends State<UserPage> {
                     children: [
                       AppTextFormField(
                         hintText: 'Mot de passe actuel',
-                        validator: (value) => Validators.validatePassword(value),
+                        validator: (value) => validatePassword(value),
                         controller: _currentPasswordController,
                         obscureText: true,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: AppDesignSystem.defaultPadding),
+                        padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
                         child: AppTextFormField(
                           hintText: 'Nouveau mot de passe',
-                          validator: (value) => Validators.validatePassword(value),
+                          validator: (value) => validatePassword(value),
                           controller: _newPasswordController,
                           obscureText: true,
                         ),
                       ),
                       AppTextFormField(
                         hintText: 'Confirmer le nouveau mot de passe',
-                        validator: (value) => Validators.validateConfirmPassword(_newPasswordController.text, value),
+                        validator: (value) => validateConfirmPassword(_newPasswordController.text, value),
                         controller: _confirmNewPasswordController,
                         obscureText: true,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: AppDesignSystem.defaultPadding * 1.5),
+                        padding: const EdgeInsets.only(top: kDefaultPadding * 1.5),
                         child: AppElevatedButton(
                           onPressed: () {
                             if (!_passwordFormKey.currentState!.validate()) return;
@@ -242,23 +285,37 @@ class _UserPageState extends State<UserPage> {
                               _newPasswordController.clear();
                               _confirmNewPasswordController.clear();
                               context.pop();
-                              ToastUtil.showSuccessToast(context, 'Votre mot de passe a été mis à jour');
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Votre mot de passe a été mis à jour',
+                                  textAlign:  TextAlign.center,
+                                  style: TextStyle(color: kWhiteColor,),
+                                ),
+                                backgroundColor: kGreenColor,
+                              ));
                             }).onError((error, stackTrace) {
                               context.pop();
-                              ToastUtil.showErrorToast(context, 'Erreur de connexion');
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Erreur de connexion',
+                                  textAlign:  TextAlign.center,
+                                  style: TextStyle(color: kWhiteColor,),
+                                ),
+                                backgroundColor: kRedColor,
+                              ));
                             });
                           },
                           buttonText: 'Changer de mot de passe',
                           buttonColor: PlatformDispatcher.instance.platformBrightness
-                              == Brightness.dark ? AppColors.black : AppColors.white,
+                              == Brightness.dark ? kBlackColor : kLightGreyColor,
+                          textColor: PlatformDispatcher.instance.platformBrightness
+                              == Brightness.dark ? kWhiteColor : kBlackColor,
                         ),
                       )
                     ],
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
-                  child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
+                  padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+                  child: SizedBox(height: kDividerHeight, width: double.infinity, child: Divider()),
                 ),
                 AppElevatedButton(
                   onPressed: () {
@@ -268,14 +325,20 @@ class _UserPageState extends State<UserPage> {
                       context.go('/authentication');
                     }).onError((error, stackTrace) {
                       context.pop();
-                      ToastUtil.showErrorToast(context, 'Erreur de connexion');
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Erreur de connexion',
+                          textAlign:  TextAlign.center,
+                          style: TextStyle(color: kWhiteColor,),
+                        ),
+                        backgroundColor: kRedColor,
+                      ));
                     });
                   },
                   buttonText: 'Se déconnecter',
                 ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
-                  child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
+                  padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+                  child: SizedBox(height: kDividerHeight, width: double.infinity, child: Divider()),
                 ),
                 AppElevatedButton(
                   onPressed: () => openWarningDeleteAccountAlertDialog(context),

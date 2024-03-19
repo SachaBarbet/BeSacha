@@ -8,9 +8,11 @@ import 'package:go_router/go_router.dart';
 import 'assets/app_colors.dart';
 import 'assets/app_design_system.dart';
 import 'firebase_options.dart';
+import 'models/app_user.dart';
 import 'pages/authentication/authentication_page.dart';
 import 'pages/authentication/login_page.dart';
 import 'pages/authentication/register_page.dart';
+import 'pages/daily_pokemon_page.dart';
 import 'pages/friends/add_friend_page.dart';
 import 'pages/friends/friend_add_list_page.dart';
 import 'pages/friends/friends_page.dart';
@@ -24,21 +26,27 @@ import 'pages/settings/settings_home_page.dart';
 import 'pages/settings/settings_page.dart';
 import 'pages/settings/user_page.dart';
 import 'properties/app_properties.dart';
-import 'services/app_firebase.dart';
-import 'services/app_settings.dart';
-import 'services/local_storage.dart';
+import 'services/app_user_service.dart';
+import 'services/pokemon_service.dart';
+import 'services/settings_service.dart';
+import 'services/shared_preferences_service.dart';
+import 'utilities/app_utils.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await AppFirebase.initFirebaseAuth();
+  await AppUserService.initFirebaseAuth();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  await LocalStorage.init();
+  await SharedPreferencesService.init();
+  await SettingsService.init();
+  await PokemonService.initPokemonDatabase();
   // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-  //   statusBarColor: AppColors.white,
+  //   statusBarColor: kWhiteColor
+  //  ,
   //   statusBarIconBrightness: Brightness.dark,
   //   statusBarBrightness: Brightness.dark,
-  //   systemNavigationBarColor: AppColors.white,
+  //   systemNavigationBarColor: kWhiteColor
+  //  ,
   //   systemNavigationBarIconBrightness: Brightness.dark,
   // ));
   runApp(const BeSacha());
@@ -51,27 +59,62 @@ final GoRouter _router = GoRouter(
       path: '/',
       builder: (context, state) => const LoadingPage(),
       redirect: (_, __) {
-        bool? hadRules = LocalStorage.read('rules');
-        return hadRules!=null && hadRules ? AppFirebase.isUserConnected ? '/home' : '/authentication' : '/rules';
+        bool hadRules = SharedPreferencesService.read('rules');
+        return hadRules ? AppUserService.isUserConnected ? '/home' : '/authentication' : '/rules';
       },
     ),
-    GoRoute(path: '/rules',
-    name:'rules',
-    builder: (context, state) => const GameExplanationPage(),
-    redirect: (_, __) {
-        bool? hadRules = LocalStorage.read('rules');
-        return hadRules!=null && hadRules ? null : AppFirebase.isUserConnected ? '/home' : '/authentication';
-     },
+    GoRoute(
+      path: '/rules',
+      name:'rules',
+      builder: (context, state) => GameExplanationPage(),
     ),
     GoRoute(
       path: '/home',
       name: 'home',
       builder: (context, state) => const HomePage(),
+      redirect: (_, __) async {
+        AppUser? user = await AppUserService.getUser();
+        if (user == null) {
+          return '/authentication';
+        }
+
+        if (user.dailyPokemonDate != getFormattedDate()) {
+          return '/home/daily_pokemon_page';
+        }
+        return null;
+      },
       routes: [
+        GoRoute(
+          path: 'daily_pokemon_page',
+          name: 'daily_pokemon_page',
+          builder: (context, state) => const DailyPokemonScreen(),
+        ),
+        GoRoute(
+          path: 'pokedex',
+          name: 'pokedex',
+          builder: (context, state) => const PokedexPage(),
+        ),
+        GoRoute(
+          path: 'friends',
+          name: 'friends',
+          builder: (context, state) => const FriendsPage(),
+          routes: [
+            GoRoute(
+              path: 'add-friend-list',
+              name: 'add-friend-list',
+              builder: (context, state) => const FriendAddListPage(),
+            ),
+            GoRoute(
+              path: 'add-friend',
+              name: 'add-friend',
+              builder: (context, state) => const AddFriendPage(),
+            ),
+          ],
+        ),
         GoRoute(
           path: 'settings',
           name: 'settings',
-          redirect: (_, __) => AppFirebase.isUserConnected ? null : '/authentication',
+          redirect: (_, __) => AppUserService.isUserConnected ? null : '/authentication',
           builder: (context, state) => const SettingsHomePage(),
           routes: [
             GoRoute(
@@ -93,28 +136,6 @@ final GoRouter _router = GoRouter(
               path: 'confidentiality',
               name: 'confidentiality',
               builder: (context, state) => const ConfidentialityPage(),
-            ),
-          ],
-        ),
-        GoRoute(
-          path: 'pokedex',
-          name: 'pokedex',
-          builder: (context, state) => const PokedexPage(),
-        ),
-        GoRoute(
-          path: 'friends',
-          name: 'friends',
-          builder: (context, state) => const FriendsPage(),
-          routes: [
-            GoRoute(
-              path: 'add-friend-list',
-              name: 'add-friend-list',
-              builder: (context, state) => const FriendAddListPage(),
-            ),
-            GoRoute(
-              path: 'add-friend',
-              name: 'add-friend',
-              builder: (context, state) => const AddFriendPage(),
             ),
           ],
         ),
@@ -157,199 +178,215 @@ class BeSacha extends StatefulWidget {
 }
 
 class _BeSacha extends State<BeSacha> {
-  ThemeMode _themeMode = AppSettings.getBrightnessMode() == 'system' ?
-    ThemeMode.system : AppSettings.getBrightnessMode() == 'light' ? ThemeMode.light : ThemeMode.dark;
+  ThemeMode _themeMode = SettingsService.getBrightnessMode() == 'system' ?
+    ThemeMode.system : SettingsService.getBrightnessMode() == 'light' ? ThemeMode.light : ThemeMode.dark;
 
   void changeTheme() {
     setState(() {
-      _themeMode = AppSettings.getBrightnessMode() == 'system' ?
-        ThemeMode.system : AppSettings.getBrightnessMode() == 'light' ? ThemeMode.light : ThemeMode.dark;
+      _themeMode = SettingsService.getBrightnessMode() == 'system' ?
+        ThemeMode.system : SettingsService.getBrightnessMode() == 'light' ? ThemeMode.light : ThemeMode.dark;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: AppProperties.appName,
+      title: kAppName,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: AppColors.white,
+        scaffoldBackgroundColor: kWhiteColor,
         iconButtonTheme: IconButtonThemeData(
-          style: ButtonStyle(iconColor: MaterialStateColor.resolveWith((states) => AppColors.black)),
+          style: ButtonStyle(iconColor: MaterialStateColor.resolveWith((states) => kBlackColor)),
         ),
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-            borderSide: const BorderSide(color: AppColors.grey, width: 2),
+            borderRadius: BorderRadius.circular(kDefaultBorderRadius),
+            borderSide: const BorderSide(color: kGreyColor, width: 2),
           ),
           focusedBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.black),
-            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+            borderSide: BorderSide(color: kBlackColor),
+            borderRadius: BorderRadius.all(Radius.circular(kDefaultBorderRadius)),
           ),
           enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.black),
-            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+            borderSide: BorderSide(color: kBlackColor),
+            borderRadius: BorderRadius.all(Radius.circular(kDefaultBorderRadius)),
           ),
           errorBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.red),
-            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+            borderSide: BorderSide(color: kRedColor),
+            borderRadius: BorderRadius.all(Radius.circular(kDefaultBorderRadius)),
           ),
           focusedErrorBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.red),
-            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+            borderSide: BorderSide(color: kRedColor),
+            borderRadius: BorderRadius.all(Radius.circular(kDefaultBorderRadius)),
           ),
-          hintStyle: const TextStyle(color: AppColors.grey),
-          labelStyle: const TextStyle(color: AppColors.black),
-          fillColor: AppColors.grey.withOpacity(0.25),
+          hintStyle: const TextStyle(color: kGreyColor),
+          labelStyle: const TextStyle(color: kBlackColor),
+          fillColor: kGreyColor.withOpacity(0.25),
           filled: true,
-          contentPadding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+          contentPadding: const EdgeInsets.all(kDefaultPadding),
         ),
-        dialogBackgroundColor: AppColors.white,
+        dialogBackgroundColor: kWhiteColor,
         dialogTheme: const DialogTheme(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+            borderRadius: BorderRadius.all(Radius.circular(kDefaultBorderRadius)),
           ),
-          backgroundColor: AppColors.white,
-          surfaceTintColor: AppColors.white,
-          elevation: AppDesignSystem.defaultElevation,
+          backgroundColor: kWhiteColor,
+          surfaceTintColor: kWhiteColor,
+          elevation: kDefaultElevation,
           alignment: Alignment.center,
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.white,
-          focusColor: AppColors.grey,
+          backgroundColor: kPrimaryColor,
+          foregroundColor: kWhiteColor,
+          focusColor: kGreyColor,
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
-            backgroundColor: MaterialStateColor.resolveWith((states) => AppColors.white),
-            foregroundColor: MaterialStateColor.resolveWith((states) => AppColors.black),
+            backgroundColor: MaterialStateColor.resolveWith((states) => kWhiteColor),
+            foregroundColor: MaterialStateColor.resolveWith((states) => kBlackColor),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
+              borderRadius: BorderRadius.circular(kDefaultBorderRadius),
             )),
           )
         ),
-        iconTheme: const IconThemeData(color: AppColors.primary, size: 30,),
+        iconTheme: const IconThemeData(color: kPrimaryColor, size: 30,),
         textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: AppColors.black),
-          bodyMedium: TextStyle(color: AppColors.black),
-          bodySmall: TextStyle(color: AppColors.black),
-          labelLarge: TextStyle(color: AppColors.black),
-          labelMedium: TextStyle(color: AppColors.black),
-          labelSmall: TextStyle(color: AppColors.black),
-          displayLarge: TextStyle(color: AppColors.black),
-          displayMedium: TextStyle(color: AppColors.black),
-          displaySmall: TextStyle(color: AppColors.black),
+          bodyLarge: TextStyle(color: kBlackColor),
+          bodyMedium: TextStyle(color: kBlackColor),
+          bodySmall: TextStyle(color: kBlackColor),
+          labelLarge: TextStyle(color: kBlackColor),
+          labelMedium: TextStyle(color: kBlackColor),
+          labelSmall: TextStyle(color: kBlackColor),
+          displayLarge: TextStyle(color: kBlackColor),
+          displayMedium: TextStyle(color: kBlackColor),
+          displaySmall: TextStyle(color: kBlackColor),
         ),
         dropdownMenuTheme: const DropdownMenuThemeData(
-          textStyle: TextStyle(color: AppColors.black),
+          textStyle: TextStyle(color: kBlackColor),
         ),
         appBarTheme: const AppBarTheme(
-          backgroundColor: AppColors.white,
-          foregroundColor: AppColors.black,
-          titleTextStyle: TextStyle(color: AppColors.black),
-          iconTheme: IconThemeData(color: AppColors.black),
-          actionsIconTheme: IconThemeData(color: AppColors.black),
+          backgroundColor: kWhiteColor,
+          foregroundColor: kBlackColor,
+          titleTextStyle: TextStyle(color: kBlackColor),
+          iconTheme: IconThemeData(color: kBlackColor),
+          actionsIconTheme: IconThemeData(color: kBlackColor),
         ),
         textButtonTheme: TextButtonThemeData(
           style: ButtonStyle(
-            foregroundColor: MaterialStateColor.resolveWith((states) => AppColors.black),
+            foregroundColor: MaterialStateColor.resolveWith((states) => kBlackColor),
           ),
         ),
         listTileTheme: const ListTileThemeData(
-          tileColor: AppColors.white,
-          iconColor: AppColors.black,
-          textColor: AppColors.black,
+          tileColor: kWhiteColor,
+          iconColor: kBlackColor,
+          textColor: kBlackColor,
+        ),
+        searchBarTheme: SearchBarThemeData(
+          backgroundColor: MaterialStateColor.resolveWith((states) => kPrimaryColor),
+          textStyle: MaterialStateTextStyle.resolveWith((states) => const TextStyle(color: kWhiteColor)),
+          shadowColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
+          shape: MaterialStateProperty.resolveWith((states) => const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(kDefaultBorderRadius)),
+          )),
         ),
         useMaterial3: true,
       ),
 
       darkTheme: ThemeData(
-        scaffoldBackgroundColor: AppColors.lightBlack,
+        scaffoldBackgroundColor: kLightBlackColor,
         iconButtonTheme: IconButtonThemeData(
-          style: ButtonStyle(iconColor: MaterialStateColor.resolveWith((states) => AppColors.white)),
+          style: ButtonStyle(iconColor: MaterialStateColor.resolveWith((states) => kWhiteColor)),
         ),
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-            borderSide: const BorderSide(color: AppColors.grey, width: 2),
+            borderRadius: BorderRadius.circular(kDefaultBorderRadius),
+            borderSide: const BorderSide(color: kGreyColor, width: 2),
           ),
           focusedBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.white),
-            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+            borderSide: BorderSide(color: kWhiteColor),
+            borderRadius: BorderRadius.all(Radius.circular(kDefaultBorderRadius)),
           ),
           enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.white),
-            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+            borderSide: BorderSide(color: kWhiteColor),
+            borderRadius: BorderRadius.all(Radius.circular(kDefaultBorderRadius)),
           ),
           errorBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.red),
-            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+            borderSide: BorderSide(color: kRedColor),
+            borderRadius: BorderRadius.all(Radius.circular(kDefaultBorderRadius)),
           ),
           focusedErrorBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.red),
-            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+            borderSide: BorderSide(color: kRedColor),
+            borderRadius: BorderRadius.all(Radius.circular(kDefaultBorderRadius)),
           ),
-          hintStyle: const TextStyle(color: AppColors.grey),
-          labelStyle: const TextStyle(color: AppColors.white),
-          fillColor: AppColors.grey.withOpacity(0.25),
+          hintStyle: const TextStyle(color: kGreyColor),
+          labelStyle: const TextStyle(color: kWhiteColor),
+          fillColor: kGreyColor.withOpacity(0.25),
           filled: true,
-          contentPadding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+          contentPadding: const EdgeInsets.all(kDefaultPadding),
         ),
-        dialogBackgroundColor: AppColors.lightBlack,
+        dialogBackgroundColor: kLightBlackColor,
         dialogTheme: const DialogTheme(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+            borderRadius: BorderRadius.all(Radius.circular(kDefaultBorderRadius)),
           ),
-          backgroundColor: AppColors.black,
-          surfaceTintColor: AppColors.black,
-          elevation: AppDesignSystem.defaultElevation,
+          backgroundColor: kBlackColor,
+          surfaceTintColor: kBlackColor,
+          elevation: kDefaultElevation,
           alignment: Alignment.center,
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.white,
-          focusColor: AppColors.grey,
+          backgroundColor: kPrimaryColor,
+          foregroundColor: kWhiteColor,
+          focusColor: kGreyColor,
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
-            backgroundColor: MaterialStateColor.resolveWith((states) => AppColors.black),
-            foregroundColor: MaterialStateColor.resolveWith((states) => AppColors.white),
+            backgroundColor: MaterialStateColor.resolveWith((states) => kBlackColor),
+            foregroundColor: MaterialStateColor.resolveWith((states) => kWhiteColor),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
+              borderRadius: BorderRadius.circular(kDefaultBorderRadius),
             )),
           )
         ),
-        iconTheme: const IconThemeData(color: AppColors.primary, size: 30,),
+        iconTheme: const IconThemeData(color: kPrimaryColor, size: 30,),
         textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: AppColors.white),
-          bodyMedium: TextStyle(color: AppColors.white),
-          bodySmall: TextStyle(color: AppColors.white),
-          labelLarge: TextStyle(color: AppColors.white),
-          labelMedium: TextStyle(color: AppColors.white),
-          labelSmall: TextStyle(color: AppColors.white),
-          displayLarge: TextStyle(color: AppColors.white),
-          displayMedium: TextStyle(color: AppColors.white),
-          displaySmall: TextStyle(color: AppColors.white),
+          bodyLarge: TextStyle(color: kWhiteColor),
+          bodyMedium: TextStyle(color: kWhiteColor),
+          bodySmall: TextStyle(color: kWhiteColor),
+          labelLarge: TextStyle(color: kWhiteColor),
+          labelMedium: TextStyle(color: kWhiteColor),
+          labelSmall: TextStyle(color: kWhiteColor),
+          displayLarge: TextStyle(color: kWhiteColor),
+          displayMedium: TextStyle(color: kWhiteColor),
+          displaySmall: TextStyle(color: kWhiteColor),
         ),
         dropdownMenuTheme: const DropdownMenuThemeData(
-          textStyle: TextStyle(color: AppColors.white),
+          textStyle: TextStyle(color: kWhiteColor),
         ),
         appBarTheme: const AppBarTheme(
-          backgroundColor: AppColors.lightBlack,
-          foregroundColor: AppColors.white,
-          titleTextStyle: TextStyle(color: AppColors.white),
-          iconTheme: IconThemeData(color: AppColors.white),
-          actionsIconTheme: IconThemeData(color: AppColors.white),
+          backgroundColor: kLightBlackColor,
+          foregroundColor: kWhiteColor,
+          titleTextStyle: TextStyle(color: kWhiteColor),
+          iconTheme: IconThemeData(color: kWhiteColor),
+          actionsIconTheme: IconThemeData(color: kWhiteColor),
         ),
         textButtonTheme: TextButtonThemeData(
           style: ButtonStyle(
-            foregroundColor: MaterialStateColor.resolveWith((states) => AppColors.white),
+            foregroundColor: MaterialStateColor.resolveWith((states) => kWhiteColor),
           ),
         ),
         listTileTheme: const ListTileThemeData(
-          tileColor: AppColors.lightBlack,
-          iconColor: AppColors.white,
-          textColor: AppColors.white,
+          tileColor: kLightBlackColor,
+          iconColor: kWhiteColor,
+          textColor: kWhiteColor,
+        ),
+        searchBarTheme: SearchBarThemeData(
+          backgroundColor: MaterialStateColor.resolveWith((states) => kPrimaryColor),
+          textStyle: MaterialStateTextStyle.resolveWith((states) => const TextStyle(color: kWhiteColor)),
+          shadowColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
+          shape: MaterialStateProperty.resolveWith((states) => const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(kDefaultBorderRadius)),
+          )),
         ),
         useMaterial3: true,
       ),

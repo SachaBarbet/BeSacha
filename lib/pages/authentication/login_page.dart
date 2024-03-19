@@ -1,10 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
-import '../../services/app_firebase.dart';
 import '../../services/app_user_service.dart';
-import '../../utilities/toast_util.dart';
 import '../../utilities/validators.dart';
 import '../../widgets/app_elevated_button.dart';
 import '../../widgets/app_text_form_field.dart';
@@ -36,46 +36,46 @@ class LoginPage extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(
               bottom: _appBarHeight,
-              top: AppDesignSystem.defaultPadding,
-              left: AppDesignSystem.defaultPadding,
-              right: AppDesignSystem.defaultPadding,
+              top: kDefaultPadding,
+              left: kDefaultPadding,
+              right: kDefaultPadding,
             ),
             child: ListView(
               shrinkWrap: true,
-              padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+              padding: const EdgeInsets.all(kDefaultPadding),
               children: [
                 const Padding(
-                  padding: EdgeInsets.symmetric(vertical: AppDesignSystem.defaultPadding),
+                  padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
                   child: Text('Connexion', style: TextStyle(fontSize: 24), textAlign: TextAlign.center),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: AppDesignSystem.defaultPadding),
+                  padding: const EdgeInsets.only(top: kDefaultPadding),
                   child: Form(
                     key: _loginFormKey,
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding),
+                          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
                           child: AppTextFormField(
                             controller: _emailController,
                             hintText: 'Email',
                             keyboardType: TextInputType.emailAddress,
                             obscureText: false,
-                            validator: (value) => Validators.validateEmail(value),
+                            validator: (value) => validateEmail(value),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+                          padding: const EdgeInsets.all(kDefaultPadding),
                           child: AppTextFormField(
                             controller: _passwordController,
                             hintText: 'Mot de passe',
                             keyboardType: TextInputType.visiblePassword,
                             obscureText: true,
-                            validator: (value) => Validators.validatePassword(value),
+                            validator: (value) => validatePassword(value),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(AppDesignSystem.defaultPadding,),
+                          padding: const EdgeInsets.all(kDefaultPadding,),
                           child: AppElevatedButton(
                             onPressed: () {
                               if (!_loginFormKey.currentState!.validate()) return;
@@ -85,17 +85,30 @@ class LoginPage extends StatelessWidget {
                                 if (value != null) {
                                   _emailController.clear();
                                   _passwordController.clear();
-                                  AppFirebase.updateUserConnected().then((value) {
+                                  AppUserService.updateUserConnected().then((value) {
                                     context.pop();
                                     context.go('/home');
                                   });
                                 } else {
                                   context.pop();
-                                  ToastUtil.showErrorToast(context, 'Email ou mot de passe incorrect');
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                    content: Text('Email ou mot de passe incorrect',
+                                      textAlign:  TextAlign.center,
+                                      style: TextStyle(color: kWhiteColor,),
+                                    ),
+                                    backgroundColor: kRedColor,
+                                  ));
                                 }
                               }).onError((error, stackTrace) {
                                 context.pop();
-                                ToastUtil.showErrorToast(context, 'Erreur de connexion');
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                  content: Text('Erreur de connexion',
+                                    textAlign:  TextAlign.center,
+                                    style: TextStyle(color: kWhiteColor,),
+                                  ),
+                                  backgroundColor: kRedColor,
+                                ));
+                                if (kDebugMode) print(error);
                               });
                             },
                             buttonText: 'Se connecter',

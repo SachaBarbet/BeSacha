@@ -14,33 +14,37 @@ class AuthenticationPage extends StatelessWidget {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        backgroundColor: AppColors.primary,
+        backgroundColor: kPrimaryColor,
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+            padding: const EdgeInsets.all(kDefaultPadding),
             child: ListView(
               shrinkWrap: true,
-              padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+              padding: const EdgeInsets.all(kDefaultPadding),
               children: [
                 Image.asset(
-                  AppImages.appIconNoBackground,
+                  kAppIconNoBackground,
                   height: 192,
                 ),
                 const Padding(
                   padding: EdgeInsets.only(
-                    bottom: AppDesignSystem.defaultPadding * 7,
-                    top: AppDesignSystem.defaultPadding,
+                    bottom: kDefaultPadding * 7,
+                    top: kDefaultPadding,
                   ),
-                  child: Text('Bienvenue sur BeSacha !', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.white), textAlign: TextAlign.center),
+                  child: Text(
+                      'Bienvenue sur BeSacha !',
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: kWhiteColor),
+                      textAlign: TextAlign.center
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: AppDesignSystem.defaultPadding,
-                    vertical: AppDesignSystem.defaultPadding * 0.5,
+                    horizontal: kDefaultPadding,
+                    vertical: kDefaultPadding * 0.5,
                   ),
                   child: AppElevatedButton(
-                    buttonColor: AppColors.black,
-                    textColor: AppColors.white,
+                    buttonColor: kBlackColor,
+                    textColor: kWhiteColor,
                     onPressed: () {
                       context.pushNamed('login');
                     },
@@ -48,10 +52,10 @@ class AuthenticationPage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+                  padding: const EdgeInsets.all(kDefaultPadding),
                   child: AppElevatedButton(
-                    buttonColor: AppColors.white,
-                    textColor: AppColors.black,
+                    buttonColor: kWhiteColor,
+                    textColor: kBlackColor,
                     onPressed: () {
                       context.pushNamed('register');
                     },
