@@ -23,7 +23,7 @@ class AuthenticationPage extends StatelessWidget {
               padding: const EdgeInsets.all(kDefaultPadding),
               children: [
                 Image.asset(
-                  AppImages.appIconNoBackground,
+                  kAppIconNoBackground,
                   height: 192,
                 ),
                 const Padding(
