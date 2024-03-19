@@ -77,10 +77,9 @@ class FriendsService {
     if (appUser.friends.contains(friend.uid)) return;
 
     appUser.friends.add(friend.uid);
-
     friend.friends.add(appUser.uid);
 
-    cancelAskFriend(appUser);
+    cancelAskFriend(friend);
 
     await AppUserService.updateUser(appUser);
     await AppUserService.updateUser(friend);

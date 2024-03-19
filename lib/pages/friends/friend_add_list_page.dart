@@ -89,7 +89,7 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
                     itemBuilder: (context, index) {
                       AppUser friend = friends[index];
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
+                        padding: const EdgeInsets.only(bottom: kDefaultPadding),
                         child: ListTile(
                           title: Text(friend.displayName),
                           subtitle: Text(friend.username),

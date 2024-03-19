@@ -119,8 +119,10 @@ class _FriendsPageState extends State<FriendsPage> {
       ),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.pushNamed('add-friend');
+        onPressed: () async {
+          await context.pushNamed('add-friend');
+          if (!context.mounted) return;
+
           setState(() {
             _friends = FriendsService.getFriends();
           });

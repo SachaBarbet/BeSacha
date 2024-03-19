@@ -90,6 +90,9 @@ class _AddFriendPageState extends State<AddFriendPage> {
                     title: Text(friend.displayName),
                     subtitle: Text(friend.username),
                     trailing: ElevatedButton(
+                      style: const ButtonStyle(
+                        padding: MaterialStatePropertyAll(EdgeInsets.zero),
+                      ),
                       onPressed: () {
                         FriendsService.askFriend(friend);
                         setState(() {
