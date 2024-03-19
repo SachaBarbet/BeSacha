@@ -71,34 +71,37 @@ class _FriendsPageState extends State<FriendsPage> {
               return ListView(
                 children: [
                   for (AppUser? friend in friends)
-                    ListTile(
-                      tileColor: kLightPrimaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(kDefaultPadding),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: kDefaultPadding),
+                      child: ListTile(
+                        tileColor: kLightPrimaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(kDefaultPadding),
+                        ),
+                        leading: IconButton(
+                          icon: const Icon(Icons.close, color: kWhiteColor),
+                          onPressed: () async {
+                            await FriendsService.removeFriend(friend!);
+                            setState(() {
+                              _friends = FriendsService.getFriends();
+                            });
+                          },
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.compare_arrows, color: Colors.white),
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text('Fonctionnalité à venir',
+                                textAlign:  TextAlign.center,
+                                style: TextStyle(color: kWhiteColor,),
+                              ),
+                              backgroundColor: kRedColor,
+                            ));
+                          },
+                        ),
+                        title: Text(friend!.displayName),
+                        subtitle: Text(friend.username),
                       ),
-                      leading: IconButton(
-                        icon: const Icon(Icons.close, color: kWhiteColor),
-                        onPressed: () async {
-                          await FriendsService.removeFriend(friend!);
-                          setState(() {
-                            _friends = FriendsService.getFriends();
-                          });
-                        },
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.compare_arrows, color: Colors.white),
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text('Fonctionnalité à venir',
-                              textAlign:  TextAlign.center,
-                              style: TextStyle(color: kWhiteColor,),
-                            ),
-                            backgroundColor: kRedColor,
-                          ));
-                        },
-                      ),
-                      title: Text(friend!.displayName),
-                      subtitle: Text(friend.username),
                     ),
                 ],
               );

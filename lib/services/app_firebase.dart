@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/app_user.dart';
 import '../models/ask_friend.dart';
-import '../models/pokemon.dart';
 import 'app_user_service.dart';
 
 class AppFirebase {

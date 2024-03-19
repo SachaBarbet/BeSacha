@@ -86,7 +86,7 @@ class _PokedexPageState extends State<PokedexPage> {
 
               return Padding(
                 padding: const EdgeInsets.only(right: kDefaultPadding * 1.25),
-                child: Text('${appUser.pokemons!.length} / 1025'),
+                child: Text('${appUser.pokemons.length} / 1025'),
               );
             }
           ),
@@ -126,7 +126,7 @@ class _PokedexPageState extends State<PokedexPage> {
               );
             }
 
-            List<int> unlockedPokemonIds = appUser.pokemons.keys.toList();
+            List<int> unlockedPokemonIds = appUser.pokemons.keys.map((e) => int.parse(e)).toList();
 
             _pagingController.addPageRequestListener((pageKey) {
               _fetchPage(pageKey, unlockedPokemonIds);

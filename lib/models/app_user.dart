@@ -7,14 +7,15 @@ class AppUser {
   late String displayName;
   late String dailyPokemonDate;
   late int dailyPokemonId;
-  late Map<int, String> pokemons;
-  late List<String> friends;
+  late Map<String, dynamic> pokemons;
+  late List<dynamic> friends;
 
   AppUser({
     required this.uid,
     required this.email,
     required this.username,
     required this.displayName,
+    required this.dailyPokemonId,
     required this.dailyPokemonDate,
     required this.pokemons,
     required this.friends,
@@ -32,7 +33,8 @@ class AppUser {
       displayName: data?['display_name'],
       friends: data?['friends'],
       pokemons: data?['pokemons'],
-      dailyPokemonDate: data?['dailyPokemonDate'],
+      dailyPokemonDate: data?['daily_pokemon_date'],
+      dailyPokemonId: data?['daily_pokemon_id'],
     );
   }
 
@@ -44,6 +46,7 @@ class AppUser {
       'friends': friends,
       'daily_pokemon_date': dailyPokemonDate,
       'pokemons': pokemons,
+      'daily_pokemon_id': dailyPokemonId,
     };
   }
 }

@@ -12,8 +12,8 @@ class FriendsService {
     AppUser? appUser = await AppUserService.getUser();
     if (appUser == null) return [];
 
-    List<String>? friendsIds = appUser.friends;
-    if (friendsIds == null || friendsIds.isEmpty) return [];
+    List<dynamic> friendsIds = appUser.friends;
+    if (friendsIds.isEmpty) return [];
 
     List<AppUser>? friends = [];
     for (String friendId in friendsIds) {
@@ -74,13 +74,11 @@ class FriendsService {
     if (appUser == null) return;
     if (appUser.uid == friend.uid) return; // Ne pas ajouter soi-même
 
-    appUser.friends ??= [];
-    if (appUser.friends!.contains(friend.uid)) return;
+    if (appUser.friends.contains(friend.uid)) return;
 
-    appUser.friends!.add(friend.uid);
+    appUser.friends.add(friend.uid);
 
-    friend.friends ??= [];
-    friend.friends!.add(appUser.uid);
+    friend.friends.add(appUser.uid);
 
     cancelAskFriend(appUser);
 
@@ -93,13 +91,13 @@ class FriendsService {
     if (appUser == null) return;
     if (appUser.uid == friend.uid) return; // Ne pas supprimer soi-même
 
-    if (appUser.friends == null || !appUser.friends!.contains(friend.uid)) return;
+    if (!appUser.friends.contains(friend.uid)) return;
 
-    appUser.friends!.remove(friend.uid);
+    appUser.friends.remove(friend.uid);
     await AppUserService.updateUser(appUser);
 
-    if (friend.friends == null || !friend.friends!.contains(appUser.uid)) return;
-    friend.friends!.remove(appUser.uid);
+    if (!friend.friends.contains(appUser.uid)) return;
+    friend.friends.remove(appUser.uid);
     await AppUserService.updateUser(friend);
   }
 

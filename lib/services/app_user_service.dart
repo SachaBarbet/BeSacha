@@ -24,8 +24,10 @@ class AppUserService {
       AppUser? appUserUsername;
       do {
         username = '$displayName#${getRandomString(4)}'.toLowerCase();
-        appUserUsername = await AppFirebase.userCollectionRef.where('username', isEqualTo: username).get()
-            .then((value) => value.docs[0].data());
+        QuerySnapshot<AppUser> appUserUsernameList = await AppFirebase.userCollectionRef
+            .where('username', isEqualTo: username).get();
+        appUserUsername = appUserUsernameList.docs.isNotEmpty ? appUserUsernameList.docs.first.data() : null;
+
       } while (appUserUsername != null);
 
       AppUser appUser = AppUser(
@@ -36,6 +38,7 @@ class AppUserService {
         dailyPokemonDate: getFormattedDate(DateTime.now().add(const Duration(days: -1))),
         pokemons: {},
         friends: [],
+        dailyPokemonId: 0,
       );
 
       await user.updateDisplayName(displayName);

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../assets/app_colors.dart';
+import '../assets/app_design_system.dart';
 import '../models/pokemon.dart';
-import '../services/pokeapi_service.dart';
-import '../widgets/redirect_button.dart';
+import '../services/pokemon_service.dart';
+import '../widgets/app_elevated_button.dart';
 
 class DailyPokemonScreen extends StatefulWidget {
   const DailyPokemonScreen({super.key});
@@ -23,69 +25,78 @@ class _DailyPokemonScreenState extends State<DailyPokemonScreen> {
 
   void _fetchRandomPokemon() {
     setState(() {
-      _pokemonDetailsFuture = PokeApiService.getDailyPokemon();
+      _pokemonDetailsFuture = PokemonService.getDailyPokemon();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kPrimaryColor,
       appBar: AppBar(
         title: const Text('Pokémon du jour',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         leading: Container(),
+        backgroundColor: kPrimaryColor,
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            FutureBuilder(
-              future: _pokemonDetailsFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  final pokemonData = snapshot.data;
-                  if (pokemonData == null) {
-                    return const Text('Aucun Pokémon trouvé');
-                  }
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5, vertical: kDefaultPadding,),
+        child: FutureBuilder(
+          future: _pokemonDetailsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
 
-                  return Column(
-                    children: [
+            final Pokemon? pokemonData = snapshot.data;
+            if (pokemonData == null) {
+              return const Center(
+                  child: Text('Aucun Pokémon trouvé, vous avez peut être déjà récupéré votre Pokemon aujourd\'hui',
+                    textAlign: TextAlign.center,),
+              );
+            }
 
-                      Image.network(pokemonData.defaultSprite),
-                      Text(
-                        'Pokémon du jour: ${pokemonData.name}',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text('Type: ${pokemonData.type}'),
-                    ],
-                  );
-                }
-              },
-            ),
-            const SizedBox(height: 16),
-            RedirectButton(
-              redirectName: 'pokedex',
-              buttonText: 'Voir mon pokedex',
-              onPressed: () {
-                context.pop();
-              },
-            ),
-          ],
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.network(pokemonData.defaultSprite),
+                Text(
+                  'Pokémon du jour: ${pokemonData.name}',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text('Type: ${pokemonData.type}'),
+                const SizedBox(height: 16),
+                AppElevatedButton(
+                  buttonColor: kWhiteColor,
+                  textColor: kBlackColor,
+                  buttonText: 'Voir mon pokedex',
+                  onPressed: () {
+                    context.pop();
+                    context.pushNamed('pokedex');
+                  },
+                ),
+                const SizedBox(height: 16),
+                AppElevatedButton(
+                  buttonColor: kWhiteColor,
+                  textColor: kBlackColor,
+                  onPressed: () {
+                    context.pop();
+                  },
+                  buttonText: 'Continuer',
+                )
+              ],
+            );
+          },
         ),
       ),
     );
   }
 }
-
-

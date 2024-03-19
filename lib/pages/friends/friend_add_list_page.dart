@@ -29,6 +29,9 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.pop(),),
+        title: Text(_currentIndex == 0 ? 'Demandes reçues' : 'Demandes envoyées',
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
       ),
 
       body: Padding(
@@ -38,13 +41,6 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
         ),
         child: ListView(
           children: [
-            Text(_currentIndex == 0 ? 'Demandes reçues' : 'Demandes envoyées',
-              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1.2),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
-              child: SizedBox(height: kDividerHeight, width: double.infinity, child: Divider()),
-            ),
             FutureBuilder(
               future: _askFriends,
               builder: (context, snapshot) {
@@ -56,9 +52,12 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
 
                 if (snapshot.hasError) {
                   return const Center(
-                    child: Text(
-                      'Une erreur est survenue lors du chargement des demandes',
-                      style: TextStyle(color: kRedColor),
+                    child: Padding(
+                      padding: EdgeInsets.only(top: kDefaultPadding * 2),
+                      child: Text(
+                        'Une erreur est survenue lors du chargement des demandes',
+                        style: TextStyle(color: kRedColor),
+                      ),
                     ),
                   );
                 }
@@ -89,41 +88,44 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
                     itemCount: friends.length,
                     itemBuilder: (context, index) {
                       AppUser friend = friends[index];
-                      return ListTile(
-                        title: Text(friend.displayName),
-                        subtitle: Text(friend.username),
-                        leading: IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: () {
-                            FriendsService.cancelAskFriend(friend);
-                            setState(() {
-                              friends.removeAt(index);
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              content: Text('Demande refusée',
-                                textAlign:  TextAlign.center,
-                                style: TextStyle(color: kWhiteColor,),
-                              ),
-                              backgroundColor: kBlackColor,
-                            ));
-                          },
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
+                        child: ListTile(
+                          title: Text(friend.displayName),
+                          subtitle: Text(friend.username),
+                          leading: IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () {
+                              FriendsService.cancelAskFriend(friend);
+                              setState(() {
+                                friends.removeAt(index);
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Demande refusée',
+                                  textAlign:  TextAlign.center,
+                                  style: TextStyle(color: kWhiteColor,),
+                                ),
+                                backgroundColor: kBlackColor,
+                              ));
+                            },
+                          ),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.check),
+                            onPressed: () {
+                              FriendsService.acceptAskFriend(friend);
+                              setState(() {
+                                friends.removeAt(index);
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Demande acceptée',
+                                  textAlign:  TextAlign.center,
+                                  style: TextStyle(color: kWhiteColor,),
+                                ),
+                                backgroundColor: kBlackColor,
+                              ));
+                            },
+                          )
                         ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.check),
-                          onPressed: () {
-                            FriendsService.acceptAskFriend(friend);
-                            setState(() {
-                              friends.removeAt(index);
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              content: Text('Demande acceptée',
-                                textAlign:  TextAlign.center,
-                                style: TextStyle(color: kWhiteColor,),
-                              ),
-                              backgroundColor: kBlackColor,
-                            ));
-                          },
-                        )
                       );
                     },
                   );
@@ -133,24 +135,27 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
                     itemCount: friends.length,
                     itemBuilder: (context, index) {
                       AppUser friend = friends[index];
-                      return ListTile(
-                        title: Text(friend.displayName),
-                        subtitle: Text(friend.username),
-                        trailing: ElevatedButton(
-                          onPressed: () {
-                            FriendsService.cancelAskFriend(friend);
-                            setState(() {
-                              friends.removeAt(index);
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              content: Text('Demande d\'ami retirée',
-                                textAlign:  TextAlign.center,
-                                style: TextStyle(color: kWhiteColor,),
-                              ),
-                              backgroundColor: kBlackColor,
-                            ));
-                          },
-                          child: const Text('Annuler'),
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
+                        child: ListTile(
+                          title: Text(friend.displayName),
+                          subtitle: Text(friend.username),
+                          trailing: ElevatedButton(
+                            onPressed: () {
+                              FriendsService.cancelAskFriend(friend);
+                              setState(() {
+                                friends.removeAt(index);
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Demande d\'ami retirée',
+                                  textAlign:  TextAlign.center,
+                                  style: TextStyle(color: kWhiteColor,),
+                                ),
+                                backgroundColor: kBlackColor,
+                              ));
+                            },
+                            child: const Text('Annuler'),
+                          ),
                         ),
                       );
                     },
@@ -162,8 +167,8 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
         )
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: kLightPrimaryColor,
-        selectedItemColor: kBlackColor,
+        backgroundColor: kPrimaryColor,
+        selectedItemColor: Colors.black,
         unselectedItemColor: kWhiteColor,
         currentIndex: _currentIndex,
         items: const [
