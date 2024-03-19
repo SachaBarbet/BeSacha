@@ -66,7 +66,7 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/rules',
       name:'rules',
-      builder: (context, state) => const GameExplanationPage(),
+      builder: (context, state) => GameExplanationPage(),
     ),
     GoRoute(
       path: '/home',
@@ -84,7 +84,8 @@ final GoRouter _router = GoRouter(
         return null;
       },
       routes: [
-        GoRoute(path: 'daily_pokemon_page',
+        GoRoute(
+          path: 'daily_pokemon_page',
           name: 'daily_pokemon_page',
           builder: (context, state) => const DailyPokemonScreen(),
         ),

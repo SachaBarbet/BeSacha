@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -16,9 +15,6 @@ import 'shared_preferences_service.dart';
 class PokemonService {
   static final Reference _storageRefPokemonDatabase = FirebaseStorage.instance
       .ref('pokemon_databases/pokemon_database.db');
-
-  static const String baseUrl = 'https://pokeapi.co/api/v2';
-
 
   static Future<void> initPokemonDatabase() async {
 
@@ -76,13 +72,11 @@ class PokemonService {
     return pokemons.map((pokemon) => Pokemon.fromDatabase(pokemon)).toList();
   }
 
-  static Future<Pokemon> fetchPokemonApi(int id) async {
-    final response = await http.get(Uri.parse('$baseUrl/pokemon/$id'));
-    if (response.statusCode == 200) {
-      return Pokemon.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to load Pokemon');
-    }
+  static Future<Pokemon> fetchPokemon(int id) async {
+    Database database = await openDatabase(join(await getDatabasesPath(), 'pokemon_database.db'));
+    List<Map<String, dynamic>> pokemons = await database.query('pokemon', where: 'id = ?', whereArgs: [id]);
+    await database.close();
+    return Pokemon.fromDatabase(pokemons.first);
   }
 
   static int getRandomPokemonId() {
@@ -96,7 +90,7 @@ class PokemonService {
     if (appUser!.dailyPokemonDate == formattedDate) return null;
 
     int randomId = getRandomPokemonId();
-    Pokemon pokemon = await fetchPokemonApi(randomId);
+    Pokemon pokemon = await fetchPokemon(randomId);
 
     appUser.dailyPokemonDate = formattedDate;
     appUser.dailyPokemonId = randomId;

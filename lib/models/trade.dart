@@ -4,11 +4,13 @@ class Trade {
   late String id;
   late List<dynamic> betweenUsers;
   late String lastTradeDate;
+  late String lastRequester;
 
   Trade({
     this.id = '',
     required this.betweenUsers,
     required this.lastTradeDate,
+    this.lastRequester = '',
   });
 
   factory Trade.fromFirestore(
@@ -20,6 +22,7 @@ class Trade {
       id: snapshot.id,
       betweenUsers: data?['between_users'],
       lastTradeDate: data?['last_trade_date'],
+      lastRequester: data?['last_requester'],
     );
   }
 
@@ -27,6 +30,7 @@ class Trade {
     return {
       'between_users': betweenUsers,
       'last_trade_date': lastTradeDate,
+      'last_requester': lastRequester,
     };
   }
 }

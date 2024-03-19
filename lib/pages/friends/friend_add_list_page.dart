@@ -5,6 +5,7 @@ import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
 import '../../models/app_user.dart';
 import '../../services/friends_service.dart';
+import '../../services/settings_service.dart';
 
 class FriendAddListPage extends StatefulWidget {
 
@@ -18,6 +19,11 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
   late Future<List<AppUser>> _askFriends;
   int _currentIndex = 0;
 
+  final String _brightnessMode = SettingsService.getBrightnessMode();
+
+  Color? _textColor;
+  Color? _backgroundColor;
+
   @override
   void initState() {
     _askFriends = FriendsService.getAskFromFriends();
@@ -26,12 +32,22 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_brightnessMode != 'system') {
+      _textColor = _brightnessMode == 'dark' ? kWhiteColor : kBlackColor;
+      _backgroundColor = _brightnessMode == 'dark' ? kBlackColor : kLightGreyColor;
+    } else {
+      _textColor = MediaQuery.of(context).platformBrightness
+          == Brightness.dark ? kWhiteColor : kBlackColor;
+      _backgroundColor = MediaQuery.of(context).platformBrightness
+          == Brightness.dark ? kBlackColor : kLightGreyColor;
+    }
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.pop(),),
         title: Text(_currentIndex == 0 ? 'Demandes reçues' : 'Demandes envoyées',
           style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
       ),
 
       body: Padding(
@@ -91,6 +107,10 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: kDefaultPadding),
                         child: ListTile(
+                          tileColor: _backgroundColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(kDefaultPadding),
+                          ),
                           title: Text(friend.displayName),
                           subtitle: Text(friend.username),
                           leading: IconButton(
@@ -138,6 +158,10 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
                         child: ListTile(
+                          tileColor: _backgroundColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(kDefaultPadding),
+                          ),
                           title: Text(friend.displayName),
                           subtitle: Text(friend.username),
                           trailing: ElevatedButton(
@@ -167,9 +191,9 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
         )
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: kPrimaryColor,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: kWhiteColor,
+        backgroundColor: _backgroundColor,
+        selectedItemColor: kPrimaryColor,
+        unselectedItemColor: _textColor,
         currentIndex: _currentIndex,
         items: const [
           BottomNavigationBarItem(

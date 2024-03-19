@@ -77,15 +77,15 @@ class _DailyPokemonScreenState extends State<DailyPokemonScreen> {
                 AppElevatedButton(
                   buttonColor: kWhiteColor,
                   textColor: kBlackColor,
-                  buttonText: 'Voir mon pokedex',
+                  buttonText: 'Voir mon Pokedex',
                   onPressed: () {
                     context.pushReplacementNamed('pokedex');
                   },
                 ),
                 const SizedBox(height: 16),
                 AppElevatedButton(
-                  buttonColor: kWhiteColor,
-                  textColor: kBlackColor,
+                  buttonColor: kBlackColor,
+                  textColor: kWhiteColor,
                   onPressed: () {
                     context.pop();
                   },

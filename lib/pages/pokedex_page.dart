@@ -133,7 +133,7 @@ class _PokedexPageState extends State<PokedexPage> {
             });
 
             return Column(
-              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 SearchBar(
                   controller: _searchController,

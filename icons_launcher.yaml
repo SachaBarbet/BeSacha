@@ -1,5 +1,0 @@
-icons_launcher:
-  image_path: "assets/images/besacha_icon.png"
-  platforms:
-    android:
-      enable: true

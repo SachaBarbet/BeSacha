@@ -31,6 +31,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
       appBar: AppBar(
         leading: Container(),
         leadingWidth: 0,
+        centerTitle: true,
         title: SearchBar(
           controller: _searchController,
           hintText: 'Rechercher un ami',

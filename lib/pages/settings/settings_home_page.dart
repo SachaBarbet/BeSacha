@@ -34,6 +34,11 @@ class SettingsHomePage extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
               child: SizedBox(height: kDividerHeight, width: double.infinity, child: Divider()),
             ),
+            RedirectButton(redirectName: 'rules', buttonText: 'Règles du jeu',),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+              child: SizedBox(height: kDividerHeight, width: double.infinity, child: Divider()),
+            ),
             Padding(
               padding: EdgeInsets.only(bottom: kDefaultPadding * 0.6),
               child: RedirectButton(redirectName: 'cgu', buttonText: 'Conditions générales d\'utilisation',),

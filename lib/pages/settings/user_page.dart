@@ -305,7 +305,9 @@ class _UserPageState extends State<UserPage> {
                           },
                           buttonText: 'Changer de mot de passe',
                           buttonColor: PlatformDispatcher.instance.platformBrightness
-                              == Brightness.dark ? kBlackColor : kWhiteColor,
+                              == Brightness.dark ? kBlackColor : kLightGreyColor,
+                          textColor: PlatformDispatcher.instance.platformBrightness
+                              == Brightness.dark ? kWhiteColor : kBlackColor,
                         ),
                       )
                     ],

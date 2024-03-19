@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AppUser {
   final String uid;
   late String email;
-  late String username;
+  final String username;
   late String displayName;
   late String dailyPokemonDate;
   late int dailyPokemonId;
