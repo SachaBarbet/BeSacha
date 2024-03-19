@@ -19,6 +19,8 @@ class CGUPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.pop(),),
+        title: const Text('CGU', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        centerTitle: true,
       ),
 
       body: Padding(
@@ -28,7 +30,6 @@ class CGUPage extends StatelessWidget {
         ),
         child: ListView(
           children: const [
-            Text('Conditions générales d\'utilisation', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),),
             Text('Dernière mise à jour: 13/03/2024', style: TextStyle(fontSize: 16, color: AppColors.grey),),
             Text('Attention, les conditions d\'utilisation ici présente ne sont pas définitives et ne sont pas à '
                 'prendre en comtpe comme telles. Elles sont là à titre d\'exemple.'

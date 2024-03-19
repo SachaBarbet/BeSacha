@@ -1,4 +1,3 @@
-import 'package:be_sacha/utilities/toast_util.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -6,6 +5,7 @@ import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
 import '../../models/app_user.dart';
 import '../../services/friends_service.dart';
+import '../../utilities/toast_util.dart';
 
 class AddFriendPage extends StatefulWidget {
 
@@ -16,7 +16,7 @@ class AddFriendPage extends StatefulWidget {
 }
 
 class _AddFriendPageState extends State<AddFriendPage> {
-  late Future<List<AppUser?>> _friendsToAdd;
+  late Future<List<AppUser>> _friendsToAdd;
 
   final TextEditingController _searchController = TextEditingController();
 
@@ -34,12 +34,6 @@ class _AddFriendPageState extends State<AddFriendPage> {
         leadingWidth: 0,
         title: SearchBar(
           controller: _searchController,
-          backgroundColor: MaterialStateColor.resolveWith((states) => AppColors.primary),
-          textStyle: MaterialStateTextStyle.resolveWith((states) => const TextStyle(color: AppColors.white)),
-          shadowColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
-          shape: MaterialStateProperty.resolveWith((states) => const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
-          )),
           hintText: 'Rechercher un ami',
           leading: BackButton(
             color: AppColors.white,
@@ -77,7 +71,6 @@ class _AddFriendPageState extends State<AddFriendPage> {
             }
 
             if (snapshot.hasError) {
-              print(snapshot.error);
               return const Center(
                 child: Text(
                   'Une erreur est survenue, Veuillez réessayer plus tard.',
@@ -87,19 +80,19 @@ class _AddFriendPageState extends State<AddFriendPage> {
               );
             }
 
-            List<AppUser?> friends = snapshot.data as List<AppUser?>;
+            List<AppUser> friends = snapshot.data as List<AppUser>;
 
             if (friends.isNotEmpty) {
               return ListView.builder(
                 itemCount: friends.length,
                 itemBuilder: (context, index) {
-                  AppUser? friend = friends[index];
+                  AppUser friend = friends[index];
                   return ListTile(
-                    title: Text(friend?.displayName ?? ''),
-                    subtitle: Text(friend?.username ?? ''),
+                    title: Text(friend.displayName),
+                    subtitle: Text(friend.username),
                     trailing: ElevatedButton(
                       onPressed: () {
-                        FriendsService.askFriend(friend!);
+                        FriendsService.askFriend(friend);
                         setState(() {
                           friends.removeAt(index);
                         });

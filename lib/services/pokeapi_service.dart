@@ -1,14 +1,13 @@
-import 'package:be_sacha/models/pokemon.dart';
-import 'package:be_sacha/services/app_user_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:http/http.dart' as http;
-import '../models/app_user.dart';
 import 'dart:convert';
 import 'dart:math';
 
-import 'app_firebase.dart';
+import 'package:http/http.dart' as http;
 
-class PokeApi {
+import '../models/app_user.dart';
+import '../models/pokemon.dart';
+import 'app_user_service.dart';
+
+class PokeApiService {
   static const String baseUrl = 'https://pokeapi.co/api/v2';
 
   static Future<Pokemon> fetchPokemonApi(int id) async {
@@ -27,7 +26,9 @@ class PokeApi {
 
   static Future<Pokemon?> getDailyPokemon() async {
     AppUser? appUser = await AppUserService.getUser();
-    if (appUser!.dailyPokemonDate.day >= DateTime.now().day) return null;
+    if (appUser!.dailyPokemonDate.day >= DateTime
+        .now()
+        .day) return null;
 
     int randomId = getRandomPokemonId();
     Pokemon pokemon = await fetchPokemonApi(randomId);

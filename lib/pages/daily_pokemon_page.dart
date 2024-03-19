@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../models/pokemon.dart';
-import '../services/pokeapi.dart';
+import '../services/pokeapi_service.dart';
 import '../widgets/redirect_button.dart';
 
 class DailyPokemonScreen extends StatefulWidget {
@@ -23,7 +23,7 @@ class _DailyPokemonScreenState extends State<DailyPokemonScreen> {
 
   void _fetchRandomPokemon() {
     setState(() {
-      _pokemonDetailsFuture = PokeApi.getDailyPokemon();
+      _pokemonDetailsFuture = PokeApiService.getDailyPokemon();
     });
   }
 
@@ -59,7 +59,7 @@ class _DailyPokemonScreenState extends State<DailyPokemonScreen> {
                   return Column(
                     children: [
 
-                      Image.network(pokemonData.imageUrl),
+                      Image.network(pokemonData.defaultSprite),
                       Text(
                         'Pokémon du jour: ${pokemonData.name}',
                         style: const TextStyle(

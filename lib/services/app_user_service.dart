@@ -27,6 +27,8 @@ class AppUserService {
         displayName: displayName,
         username: username,
         dailyPokemonDate: DateTime.now().add(const Duration(days: -1)),
+        pokemons: [],
+        friends: [],
       );
       await user.updateDisplayName(displayName); // Need firebase app check
       await AppFirebase.userCollectionRef.doc(user.uid).set(appUser);
@@ -75,12 +77,11 @@ class AppUserService {
     uid ??= FirebaseAuth.instance.currentUser!.uid;
     return await AppFirebase.userCollectionRef.doc(uid).get().then((value) {
       AppUser? appUser = value.data();
-      if (appUser != null) appUser.uid = value.id;
       return appUser;
     });
   }
 
-  static Future<List<AppUser?>> getUsersByUsername(String username) async {
+  static Future<List<AppUser>> getUsersByUsername(String username) async {
     List<String> usernameSplit = username.split('#');
     if (usernameSplit.length != 2) return [];
     String displayName = usernameSplit[0];
@@ -91,7 +92,6 @@ class AppUserService {
         .where('username', isEqualTo: username).get();
     return snapshot.docs.map((e) {
       AppUser appUser = e.data();
-      appUser.uid = e.id;
       return appUser;
     }).toList();
   }
@@ -105,7 +105,7 @@ class AppUserService {
 
   static Future<void> updateEmail(String email) async {
     email = email.toLowerCase().trim();
-    await FirebaseAuth.instance.currentUser!.updateEmail(email);
+    await FirebaseAuth.instance.currentUser!.updateEmail(email); // TODO : Check if email is already used, verify email
     await AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid)
         .update({'email': email});
   }

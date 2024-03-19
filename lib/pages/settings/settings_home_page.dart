@@ -13,17 +13,20 @@ class SettingsHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(leading: BackButton(onPressed: () => context.pop(),),),
+      appBar: AppBar(
+        leading: BackButton(onPressed: () => context.pop(),),
+        title: const Text('Vos paramètres', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        centerTitle: true,
+      ),
 
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
+      body: const Padding(
+        padding: EdgeInsets.symmetric(
           horizontal: AppDesignSystem.defaultPadding * 1.5,
           vertical: AppDesignSystem.defaultPadding,
         ),
-        child: ListView(
-          children: const [
-            Text('Vos paramètres', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1.2),),
-            SizedBox(height: _dividerHeight * 3),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
             Padding(
               padding: EdgeInsets.only(bottom: AppDesignSystem.defaultPadding * 0.6),
               child: RedirectButton(redirectName: 'user', buttonText: 'Vos informations',),

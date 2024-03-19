@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppUser {
-  late String? uid;
+  final String uid;
   late String email;
   late String username;
   late String displayName;
@@ -10,13 +10,13 @@ class AppUser {
   late List<String>? friends;
 
   AppUser({
-    this.uid,
+    required this.uid,
     required this.email,
     required this.username,
     required this.displayName,
     required this.dailyPokemonDate,
-    this.pokemons,
-    this.friends,
+    required this.pokemons,
+    required this.friends,
   });
 
   factory AppUser.fromFirestore(
@@ -34,12 +34,13 @@ class AppUser {
       }
     }
     return AppUser(
+      uid: snapshot.id,
       email: data?['email'],
       username: data?['username'],
       displayName: data?['display_name'],
       friends: List<String>.from(data?['friends'] ?? []),
-      dailyPokemonDate: dailyDate ?? DateTime.now().add(const Duration(days: -1)),
       pokemons: List<int>.from(data?['pokemons'] ?? []),
+      dailyPokemonDate: dailyDate ?? DateTime.now().add(const Duration(days: -1)),
     );
   }
 
@@ -48,7 +49,7 @@ class AppUser {
       'email': email,
       'username': username,
       'display_name': displayName,
-      'friends': friends ?? [],
+      'friends': friends,
       'daily_pokemon_date': dailyPokemonDate.millisecondsSinceEpoch,
       'pokemons': pokemons,
     };

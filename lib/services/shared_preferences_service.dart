@@ -1,14 +1,13 @@
-import 'package:be_sacha/services/app_settings.dart';
+import 'package:be_sacha/services/settings_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LocalStorage {
+class SharedPreferencesService {
 
   static late final SharedPreferences sharedPreferences;
 
   // Initialize the shared preferences and app settings
   static Future<void> init() async {
     sharedPreferences = await SharedPreferences.getInstance();
-    await AppSettings.init();
   }
 
   static Future<void> write(String key, dynamic value) async {

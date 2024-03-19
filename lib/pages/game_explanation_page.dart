@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../assets/app_design_system.dart';
-import '../services/local_storage.dart';
+import '../services/shared_preferences_service.dart';
 import '../widgets/redirect_button.dart';
 
 class GameExplanationPage extends StatelessWidget {
@@ -42,7 +42,7 @@ class GameExplanationPage extends StatelessWidget {
             const SizedBox(height: 20),
             RedirectButton(redirectName: 'authentication', buttonText: 'Je comprends les règle de jeu',
                 onPressed: (){
-              LocalStorage.write('rules', true);
+              SharedPreferencesService.write('rules', true);
             }),
           ],
         ),

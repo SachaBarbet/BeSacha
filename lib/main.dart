@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:be_sacha/models/app_user.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'assets/app_colors.dart';
 import 'assets/app_design_system.dart';
 import 'firebase_options.dart';
+import 'models/app_user.dart';
 import 'pages/authentication/authentication_page.dart';
 import 'pages/authentication/login_page.dart';
 import 'pages/authentication/register_page.dart';
@@ -27,16 +27,19 @@ import 'pages/settings/settings_page.dart';
 import 'pages/settings/user_page.dart';
 import 'properties/app_properties.dart';
 import 'services/app_firebase.dart';
-import 'services/app_settings.dart';
 import 'services/app_user_service.dart';
-import 'services/local_storage.dart';
+import 'services/pokemon_service.dart';
+import 'services/settings_service.dart';
+import 'services/shared_preferences_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await AppFirebase.initFirebaseAuth();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  await LocalStorage.init();
+  await SharedPreferencesService.init();
+  await SettingsService.init();
+  await PokemonService.initPokemonDatabase();
   // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
   //   statusBarColor: AppColors.white,
   //   statusBarIconBrightness: Brightness.dark,
@@ -54,16 +57,16 @@ final GoRouter _router = GoRouter(
       path: '/',
       builder: (context, state) => const LoadingPage(),
       redirect: (_, __) {
-        bool? hadRules = LocalStorage.read('rules');
-        return hadRules!=null && hadRules ? AppFirebase.isUserConnected ? '/home' : '/authentication' : '/rules';
+        bool? hadRules = SharedPreferencesService.read('rules');
+        return hadRules != null && hadRules ? AppFirebase.isUserConnected ? '/home' : '/authentication' : '/rules';
       },
     ),
     GoRoute(path: '/rules',
     name:'rules',
     builder: (context, state) => const GameExplanationPage(),
     redirect: (_, __) {
-        bool? hadRules = LocalStorage.read('rules');
-        return hadRules!=null && hadRules ? null : AppFirebase.isUserConnected ? '/home' : '/authentication';
+        bool? hadRules = SharedPreferencesService.read('rules');
+        return hadRules != null && hadRules ? null : AppFirebase.isUserConnected ? '/home' : '/authentication';
      },
     ),
     GoRoute(
@@ -75,8 +78,6 @@ final GoRouter _router = GoRouter(
         if (user == null) {
           return '/authentication';
         }
-
-        print('redirect');
 
         if (DateTime.now().isAfter(user.dailyPokemonDate.add(const Duration(days: 1)))) {
           print('redirect to daily_pokemon_page');
@@ -178,13 +179,13 @@ class BeSacha extends StatefulWidget {
 }
 
 class _BeSacha extends State<BeSacha> {
-  ThemeMode _themeMode = AppSettings.getBrightnessMode() == 'system' ?
-    ThemeMode.system : AppSettings.getBrightnessMode() == 'light' ? ThemeMode.light : ThemeMode.dark;
+  ThemeMode _themeMode = SettingsService.getBrightnessMode() == 'system' ?
+    ThemeMode.system : SettingsService.getBrightnessMode() == 'light' ? ThemeMode.light : ThemeMode.dark;
 
   void changeTheme() {
     setState(() {
-      _themeMode = AppSettings.getBrightnessMode() == 'system' ?
-        ThemeMode.system : AppSettings.getBrightnessMode() == 'light' ? ThemeMode.light : ThemeMode.dark;
+      _themeMode = SettingsService.getBrightnessMode() == 'system' ?
+        ThemeMode.system : SettingsService.getBrightnessMode() == 'light' ? ThemeMode.light : ThemeMode.dark;
     });
   }
 
@@ -281,6 +282,14 @@ class _BeSacha extends State<BeSacha> {
           iconColor: AppColors.black,
           textColor: AppColors.black,
         ),
+        searchBarTheme: SearchBarThemeData(
+          backgroundColor: MaterialStateColor.resolveWith((states) => AppColors.primary),
+          textStyle: MaterialStateTextStyle.resolveWith((states) => const TextStyle(color: AppColors.white)),
+          shadowColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
+          shape: MaterialStateProperty.resolveWith((states) => const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+          )),
+        ),
         useMaterial3: true,
       ),
 
@@ -371,6 +380,14 @@ class _BeSacha extends State<BeSacha> {
           tileColor: AppColors.lightBlack,
           iconColor: AppColors.white,
           textColor: AppColors.white,
+        ),
+        searchBarTheme: SearchBarThemeData(
+          backgroundColor: MaterialStateColor.resolveWith((states) => AppColors.primary),
+          textStyle: MaterialStateTextStyle.resolveWith((states) => const TextStyle(color: AppColors.white)),
+          shadowColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
+          shape: MaterialStateProperty.resolveWith((states) => const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(AppDesignSystem.defaultBorderRadius)),
+          )),
         ),
         useMaterial3: true,
       ),

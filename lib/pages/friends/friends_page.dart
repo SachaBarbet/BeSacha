@@ -16,7 +16,6 @@ class FriendsPage extends StatefulWidget {
 }
 
 class _FriendsPageState extends State<FriendsPage> {
-  static const double _dividerHeight = 50;
   late Future<List<AppUser?>> _friends;
 
   @override
@@ -30,6 +29,7 @@ class _FriendsPageState extends State<FriendsPage> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.pop(),),
+        title: const Text('Vos amis', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: AppDesignSystem.defaultPadding),
@@ -71,8 +71,6 @@ class _FriendsPageState extends State<FriendsPage> {
             if (friends.isNotEmpty) {
               return ListView(
                 children: [
-                  const Text('Vos amis', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1.2),),
-                  const SizedBox(height: _dividerHeight),
                   for (AppUser? friend in friends)
                     ListTile(
                       tileColor: AppColors.lightPrimary,
@@ -80,7 +78,7 @@ class _FriendsPageState extends State<FriendsPage> {
                         borderRadius: BorderRadius.circular(AppDesignSystem.defaultPadding),
                       ),
                       leading: IconButton(
-                        icon: const Icon(Icons.close, color: Colors.black),
+                        icon: const Icon(Icons.close, color: AppColors.white),
                         onPressed: () async {
                           await FriendsService.removeFriend(friend!);
                           setState(() {
@@ -94,29 +92,18 @@ class _FriendsPageState extends State<FriendsPage> {
                           ToastUtil.showInfoToast(context, 'Fonctionnalité à venir');
                         },
                       ),
-                      title: Text(friend!.displayName!),
-                      subtitle: Text(friend.username!),
+                      title: Text(friend!.displayName),
+                      subtitle: Text(friend.username),
                     ),
                 ],
               );
             } else {
-              return ListView(
-                children: const [
-                  Text('Vos amis', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1.2),),
-                  SizedBox(height: 50),
-                  Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Vous n\'avez pas encore d\'amis.\nAjoutez-en pour commencer à échanger des Pokemons !',
-                        style: TextStyle(fontSize: 20,),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ],
+              return const Center(
+                child: Text(
+                  'Vous n\'avez pas encore d\'amis :(\nAppuyiez sur "+" pour en ajouter et commencer à échanger des Pokemons !',
+                  style: TextStyle(fontSize: 20,),
+                  textAlign: TextAlign.center,
+                ),
               );
             }
           }
