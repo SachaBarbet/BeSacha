@@ -12,4 +12,4 @@ const Color kLightGreyColor = Color(0xFFDDDEE3);
 const Color kWhiteColor = Color(0xFFEDF2F4);
 
 const Color kRedColor = Color(0xFFC71E1E);
-const Color kGreenColor = Color(0xFF10A217);
+const Color kGreenColor = Color(0xFF0C8312);

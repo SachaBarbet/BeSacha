@@ -27,11 +27,7 @@ class AppUser {
     DateTime? dailyDate;
     if (data != null) {
       int? dailyDateInt = data['daily_pokemon_date'];
-      if (dailyDateInt != null) {
-        print('first log : $dailyDateInt');
-        dailyDate = DateTime.fromMillisecondsSinceEpoch(dailyDateInt);
-        print(dailyDate);
-      }
+      if (dailyDateInt != null) dailyDate = DateTime.fromMillisecondsSinceEpoch(dailyDateInt);
     }
     return AppUser(
       uid: snapshot.id,

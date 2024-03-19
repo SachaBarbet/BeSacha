@@ -5,7 +5,6 @@ import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
 import '../../models/app_user.dart';
 import '../../services/friends_service.dart';
-import '../../utilities/toast_util.dart';
 
 class AddFriendPage extends StatefulWidget {
 
@@ -96,7 +95,13 @@ class _AddFriendPageState extends State<AddFriendPage> {
                         setState(() {
                           friends.removeAt(index);
                         });
-                        showSuccessToast(context, 'Demande envoyée');
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Demande envoyée',
+                            textAlign:  TextAlign.center,
+                            style: TextStyle(color: kWhiteColor,),
+                          ),
+                          backgroundColor: kGreenColor,
+                        ));
                       },
                       child: const Text('Ajouter'),
                     ),

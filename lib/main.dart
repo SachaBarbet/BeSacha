@@ -193,7 +193,7 @@ class _BeSacha extends State<BeSacha> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: AppProperties.appName,
+      title: kAppName,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: kWhiteColor,

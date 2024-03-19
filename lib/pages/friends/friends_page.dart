@@ -5,7 +5,6 @@ import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
 import '../../models/app_user.dart';
 import '../../services/friends_service.dart';
-import '../../utilities/toast_util.dart';
 
 class FriendsPage extends StatefulWidget {
 
@@ -89,7 +88,13 @@ class _FriendsPageState extends State<FriendsPage> {
                       trailing: IconButton(
                         icon: const Icon(Icons.compare_arrows, color: Colors.white),
                         onPressed: () {
-                          showInfoToast(context, 'Fonctionnalité à venir');
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text('Fonctionnalité à venir',
+                              textAlign:  TextAlign.center,
+                              style: TextStyle(color: kWhiteColor,),
+                            ),
+                            backgroundColor: kRedColor,
+                          ));
                         },
                       ),
                       title: Text(friend!.displayName),

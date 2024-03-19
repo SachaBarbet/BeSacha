@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
 import '../../services/app_firebase.dart';
 import '../../services/app_user_service.dart';
-import '../../utilities/toast_util.dart';
 import '../../utilities/validators.dart';
 import '../../widgets/app_elevated_button.dart';
 import '../../widgets/app_text_form_field.dart';
@@ -92,11 +92,23 @@ class LoginPage extends StatelessWidget {
                                   });
                                 } else {
                                   context.pop();
-                                  showErrorToast(context, 'Email ou mot de passe incorrect');
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                    content: Text('Email ou mot de passe incorrect',
+                                      textAlign:  TextAlign.center,
+                                      style: TextStyle(color: kWhiteColor,),
+                                    ),
+                                    backgroundColor: kRedColor,
+                                  ));
                                 }
                               }).onError((error, stackTrace) {
                                 context.pop();
-                                showErrorToast(context, 'Erreur de connexion');
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                  content: Text('Erreur de connexion',
+                                    textAlign:  TextAlign.center,
+                                    style: TextStyle(color: kWhiteColor,),
+                                  ),
+                                  backgroundColor: kRedColor,
+                                ));
                                 if (kDebugMode) print(error);
                               });
                             },

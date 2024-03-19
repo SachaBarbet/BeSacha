@@ -5,7 +5,6 @@ import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
 import '../../models/app_user.dart';
 import '../../services/friends_service.dart';
-import '../../utilities/toast_util.dart';
 
 class FriendAddListPage extends StatefulWidget {
 
@@ -100,7 +99,13 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
                             setState(() {
                               friends.removeAt(index);
                             });
-                            showSuccessToast(context, 'Demande refusée');
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text('Demande refusée',
+                                textAlign:  TextAlign.center,
+                                style: TextStyle(color: kWhiteColor,),
+                              ),
+                              backgroundColor: kBlackColor,
+                            ));
                           },
                         ),
                         trailing: IconButton(
@@ -110,7 +115,13 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
                             setState(() {
                               friends.removeAt(index);
                             });
-                            showSuccessToast(context, 'Demande acceptée');
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text('Demande acceptée',
+                                textAlign:  TextAlign.center,
+                                style: TextStyle(color: kWhiteColor,),
+                              ),
+                              backgroundColor: kBlackColor,
+                            ));
                           },
                         )
                       );
@@ -131,7 +142,13 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
                             setState(() {
                               friends.removeAt(index);
                             });
-                            showInfoToast(context, 'Demande annulée');
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text('Demande d\'ami retirée',
+                                textAlign:  TextAlign.center,
+                                style: TextStyle(color: kWhiteColor,),
+                              ),
+                              backgroundColor: kBlackColor,
+                            ));
                           },
                           child: const Text('Annuler'),
                         ),

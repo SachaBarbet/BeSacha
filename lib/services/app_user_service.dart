@@ -10,17 +10,24 @@ import 'app_firebase.dart';
 class AppUserService {
 
   /// Register a new user with email and password in Firebase Authentication and Firestore
-  static Future<AppUser?> register(String email, String password, [String? displayName, String? username]) async {
+  static Future<AppUser?> register(String email, String password, [String? displayName]) async {
     email = email.toLowerCase().trim();
     displayName = displayName?.trim();
-    username = username?.trim();
 
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       User user = userCredential.user!;
       displayName ??= 'user_${getRandomString(4)}';
-      username ??= '$displayName#${getRandomString(4)}'.toLowerCase();
+
+      String? username;
+      AppUser? appUserUsername;
+      do {
+        username = '$displayName#${getRandomString(4)}'.toLowerCase();
+        appUserUsername = await AppFirebase.userCollectionRef.where('username', isEqualTo: username).get()
+            .then((value) => value.docs[0].data());
+      } while (appUserUsername != null);
+
       AppUser appUser = AppUser(
         uid: user.uid,
         email: email,
@@ -30,7 +37,8 @@ class AppUserService {
         pokemons: [],
         friends: [],
       );
-      await user.updateDisplayName(displayName); // Need firebase app check
+
+      await user.updateDisplayName(displayName);
       await AppFirebase.userCollectionRef.doc(user.uid).set(appUser);
       return appUser;
     } on FirebaseAuthException {
@@ -56,9 +64,13 @@ class AppUserService {
 
 
   static Future<void> deleteCurrentUser() async {
-    await FirebaseAuth.instance.currentUser!.delete();
+    String uuid = FirebaseAuth.instance.currentUser!.uid;
+    await AppFirebase.askFriendCollectionRef
+        .where(Filter.or(Filter('from_user', isEqualTo: uuid), Filter('to_user', isEqualTo: uuid)))
+        .get().then((value) => value.docs.map((element) async => await element.reference.delete()));
+
     await AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid).delete();
-    // TODO: Delete all user's data (friends, pokemon, etc.)
+    await FirebaseAuth.instance.currentUser!.delete();
   }
 
   static Future<bool> checkIfUserConnected() async {

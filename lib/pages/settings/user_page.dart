@@ -8,7 +8,7 @@ import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
 import '../../models/app_user.dart';
 import '../../services/app_user_service.dart';
-import '../../utilities/toast_util.dart';
+import '../../services/settings_service.dart';
 import '../../utilities/validators.dart';
 import '../../widgets/alert_dialogs/alert_warning_delete_account.dart';
 import '../../widgets/app_elevated_button.dart';
@@ -39,6 +39,9 @@ class _UserPageState extends State<UserPage> {
 
   Color _usernameButtonBackgroundColor = kGreyColor;
   Color _emailButtonBackgroundColor = kGreyColor;
+  Color? _backgroundColor;
+
+  final String _brightnessMode = SettingsService.getBrightnessMode();
 
   void openWarningDeleteAccountAlertDialog(BuildContext context) {
     showDialog(context: context, builder: (context) => const AlertWarningDeleteAccount(),);
@@ -52,6 +55,13 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_brightnessMode != 'system') {
+      _backgroundColor = _brightnessMode == 'dark' ? kBlackColor : kLightGreyColor;
+    } else {
+      _backgroundColor = MediaQuery.of(context).platformBrightness
+          == Brightness.dark ? kBlackColor : kLightGreyColor;
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.pop(),),
@@ -83,14 +93,25 @@ class _UserPageState extends State<UserPage> {
                   onPressed: () async {
                     await Clipboard.setData(ClipboardData(text: appUser.username));
                     if (context.mounted) {
-                      showSuccessToast(context, 'Nom d\'utilisateur copié dans le presse-papier');
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Nom d\'utilisateur copié dans le presse-papier',
+                          textAlign:  TextAlign.center,
+                          style: TextStyle(color: kWhiteColor,),
+                        ),
+                        backgroundColor: kGreenColor,
+                      ));
                     }
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                     alignment: Alignment.centerLeft,
+                    backgroundColor: _backgroundColor,
                   ),
-                  child: Text('Appuie pour copier : ${appUser.username}', style: const TextStyle(fontSize: 16), textAlign: TextAlign.left,),
+                  child: Center(
+                    child: Text('Appuie pour copier : ${appUser.username}',
+                      style: const TextStyle(fontSize: 16), textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: kDividerHeight),
                 const Padding(
@@ -130,10 +151,22 @@ class _UserPageState extends State<UserPage> {
                               });
                               _usernameController.clear();
                               context.pop();
-                              showSuccessToast(context, 'Votre nom d\'utilisateur a été mis à jour');
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Votre nom d\'utilisateur a été mis à jour',
+                                  textAlign:  TextAlign.center,
+                                  style: TextStyle(color: kWhiteColor,),
+                                ),
+                                backgroundColor: kGreenColor,
+                              ));
                             }).onError((error, stackTrace) {
                               context.pop();
-                              showErrorToast(context, 'Erreur de connexion');
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Erreur de connexion',
+                                  textAlign:  TextAlign.center,
+                                  style: TextStyle(color: kWhiteColor,),
+                                ),
+                                backgroundColor: kRedColor,
+                              ));
                             });
                           },
                           iconData: Icons.save,
@@ -183,10 +216,22 @@ class _UserPageState extends State<UserPage> {
                               });
                               _emailController.clear();
                               context.pop();
-                              showSuccessToast(context, 'Votre adresse email a été mise à jour');
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Votre adresse email a été mise à jour',
+                                  textAlign:  TextAlign.center,
+                                  style: TextStyle(color: kWhiteColor,),
+                                ),
+                                backgroundColor: kRedColor,
+                              ));
                             }).onError((error, stackTrace) {
                               context.pop();
-                              showErrorToast(context, 'Erreur de connexion');
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Erreur de connexion',
+                                  textAlign:  TextAlign.center,
+                                  style: TextStyle(color: kWhiteColor,),
+                                ),
+                                backgroundColor: kRedColor,
+                              ));
                             });
                           },
                           iconData: Icons.save,
@@ -240,10 +285,22 @@ class _UserPageState extends State<UserPage> {
                               _newPasswordController.clear();
                               _confirmNewPasswordController.clear();
                               context.pop();
-                              showSuccessToast(context, 'Votre mot de passe a été mis à jour');
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Votre mot de passe a été mis à jour',
+                                  textAlign:  TextAlign.center,
+                                  style: TextStyle(color: kWhiteColor,),
+                                ),
+                                backgroundColor: kGreenColor,
+                              ));
                             }).onError((error, stackTrace) {
                               context.pop();
-                              showErrorToast(context, 'Erreur de connexion');
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Erreur de connexion',
+                                  textAlign:  TextAlign.center,
+                                  style: TextStyle(color: kWhiteColor,),
+                                ),
+                                backgroundColor: kRedColor,
+                              ));
                             });
                           },
                           buttonText: 'Changer de mot de passe',
@@ -266,7 +323,13 @@ class _UserPageState extends State<UserPage> {
                       context.go('/authentication');
                     }).onError((error, stackTrace) {
                       context.pop();
-                      showErrorToast(context, 'Erreur de connexion');
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Erreur de connexion',
+                          textAlign:  TextAlign.center,
+                          style: TextStyle(color: kWhiteColor,),
+                        ),
+                        backgroundColor: kRedColor,
+                      ));
                     });
                   },
                   buttonText: 'Se déconnecter',
