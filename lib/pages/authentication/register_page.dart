@@ -73,7 +73,7 @@ class RegisterPage extends StatelessWidget {
                             hintText: 'Nom d\'utilisateur',
                             keyboardType: TextInputType.name,
                             obscureText: false,
-                            validator: (value) => Validators.validateDisplayName(value),
+                            validator: (value) => validateDisplayName(value),
                           ),
                         ),
                         Padding(
@@ -83,7 +83,7 @@ class RegisterPage extends StatelessWidget {
                             hintText: 'Email',
                             keyboardType: TextInputType.emailAddress,
                             obscureText: false,
-                            validator: (value) => Validators.validateEmail(value),
+                            validator: (value) => validateEmail(value),
                           ),
                         ),
                         Padding(
@@ -93,7 +93,7 @@ class RegisterPage extends StatelessWidget {
                             hintText: 'Mot de passe',
                             keyboardType: TextInputType.visiblePassword,
                             obscureText: true,
-                            validator: (value) => Validators.validatePassword(value),
+                            validator: (value) => validatePassword(value),
                           ),
                         ),
                         Padding(
@@ -107,7 +107,7 @@ class RegisterPage extends StatelessWidget {
                             hintText: 'Confirmez votre mot de passe',
                             keyboardType: TextInputType.visiblePassword,
                             obscureText: true,
-                            validator: (value) => Validators.validateConfirmPassword(_passwordController.text, value),
+                            validator: (value) => validateConfirmPassword(_passwordController.text, value),
                           ),
                         ),
                         Padding(
@@ -123,16 +123,16 @@ class RegisterPage extends StatelessWidget {
                                     _emailController.clear();
                                     _passwordController.clear();
                                     _confirmPasswordController.clear();
-                                    ToastUtil.showSuccessToast(context, 'Compte créé avec succès!');
+                                    showSuccessToast(context, 'Compte créé avec succès!');
                                     context.pop();
                                     context.goNamed('authentication');
                                   } else {
                                     context.pop();
-                                    ToastUtil.showErrorToast(context, 'Erreur lors de la création du compte');
+                                    showErrorToast(context, 'Erreur lors de la création du compte');
                                   }
                                 }).onError((error, stackTrace) {
                                   context.pop();
-                                  ToastUtil.showErrorToast(context, 'Erreur de connexion');
+                                  showErrorToast(context, 'Erreur de connexion');
                                 });
                               }
                             },

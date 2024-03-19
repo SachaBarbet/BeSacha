@@ -83,7 +83,7 @@ class _UserPageState extends State<UserPage> {
                   onPressed: () async {
                     await Clipboard.setData(ClipboardData(text: appUser.username));
                     if (context.mounted) {
-                      ToastUtil.showSuccessToast(context, 'Nom d\'utilisateur copié dans le presse-papier');
+                      showSuccessToast(context, 'Nom d\'utilisateur copié dans le presse-papier');
                     }
                   },
                   style: TextButton.styleFrom(
@@ -106,7 +106,7 @@ class _UserPageState extends State<UserPage> {
                       Expanded(
                         child: AppTextFormField(
                           hintText: appUser.displayName,
-                          validator: (value) => Validators.validateDisplayName(value, appUser.displayName),
+                          validator: (value) => validateDisplayName(value, appUser.displayName),
                           controller: _usernameController,
                           onChanged: () {
                             setState(() {
@@ -130,10 +130,10 @@ class _UserPageState extends State<UserPage> {
                               });
                               _usernameController.clear();
                               context.pop();
-                              ToastUtil.showSuccessToast(context, 'Votre nom d\'utilisateur a été mis à jour');
+                              showSuccessToast(context, 'Votre nom d\'utilisateur a été mis à jour');
                             }).onError((error, stackTrace) {
                               context.pop();
-                              ToastUtil.showErrorToast(context, 'Erreur de connexion');
+                              showErrorToast(context, 'Erreur de connexion');
                             });
                           },
                           iconData: Icons.save,
@@ -159,7 +159,7 @@ class _UserPageState extends State<UserPage> {
                       Expanded(
                         child: AppTextFormField(
                           hintText: appUser.email,
-                          validator: (value) => Validators.validateEmail(value, appUser.email),
+                          validator: (value) => validateEmail(value, appUser.email),
                           controller: _emailController,
                           onChanged: () {
                             setState(() {
@@ -183,10 +183,10 @@ class _UserPageState extends State<UserPage> {
                               });
                               _emailController.clear();
                               context.pop();
-                              ToastUtil.showSuccessToast(context, 'Votre adresse email a été mise à jour');
+                              showSuccessToast(context, 'Votre adresse email a été mise à jour');
                             }).onError((error, stackTrace) {
                               context.pop();
-                              ToastUtil.showErrorToast(context, 'Erreur de connexion');
+                              showErrorToast(context, 'Erreur de connexion');
                             });
                           },
                           iconData: Icons.save,
@@ -209,7 +209,7 @@ class _UserPageState extends State<UserPage> {
                     children: [
                       AppTextFormField(
                         hintText: 'Mot de passe actuel',
-                        validator: (value) => Validators.validatePassword(value),
+                        validator: (value) => validatePassword(value),
                         controller: _currentPasswordController,
                         obscureText: true,
                       ),
@@ -217,14 +217,14 @@ class _UserPageState extends State<UserPage> {
                         padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
                         child: AppTextFormField(
                           hintText: 'Nouveau mot de passe',
-                          validator: (value) => Validators.validatePassword(value),
+                          validator: (value) => validatePassword(value),
                           controller: _newPasswordController,
                           obscureText: true,
                         ),
                       ),
                       AppTextFormField(
                         hintText: 'Confirmer le nouveau mot de passe',
-                        validator: (value) => Validators.validateConfirmPassword(_newPasswordController.text, value),
+                        validator: (value) => validateConfirmPassword(_newPasswordController.text, value),
                         controller: _confirmNewPasswordController,
                         obscureText: true,
                       ),
@@ -240,10 +240,10 @@ class _UserPageState extends State<UserPage> {
                               _newPasswordController.clear();
                               _confirmNewPasswordController.clear();
                               context.pop();
-                              ToastUtil.showSuccessToast(context, 'Votre mot de passe a été mis à jour');
+                              showSuccessToast(context, 'Votre mot de passe a été mis à jour');
                             }).onError((error, stackTrace) {
                               context.pop();
-                              ToastUtil.showErrorToast(context, 'Erreur de connexion');
+                              showErrorToast(context, 'Erreur de connexion');
                             });
                           },
                           buttonText: 'Changer de mot de passe',
@@ -266,7 +266,7 @@ class _UserPageState extends State<UserPage> {
                       context.go('/authentication');
                     }).onError((error, stackTrace) {
                       context.pop();
-                      ToastUtil.showErrorToast(context, 'Erreur de connexion');
+                      showErrorToast(context, 'Erreur de connexion');
                     });
                   },
                   buttonText: 'Se déconnecter',

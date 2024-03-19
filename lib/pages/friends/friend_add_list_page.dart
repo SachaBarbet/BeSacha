@@ -100,7 +100,7 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
                             setState(() {
                               friends.removeAt(index);
                             });
-                            ToastUtil.showSuccessToast(context, 'Demande refusée');
+                            showSuccessToast(context, 'Demande refusée');
                           },
                         ),
                         trailing: IconButton(
@@ -110,7 +110,7 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
                             setState(() {
                               friends.removeAt(index);
                             });
-                            ToastUtil.showSuccessToast(context, 'Demande acceptée');
+                            showSuccessToast(context, 'Demande acceptée');
                           },
                         )
                       );
@@ -131,7 +131,7 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
                             setState(() {
                               friends.removeAt(index);
                             });
-                            ToastUtil.showInfoToast(context, 'Demande annulée');
+                            showInfoToast(context, 'Demande annulée');
                           },
                           child: const Text('Annuler'),
                         ),

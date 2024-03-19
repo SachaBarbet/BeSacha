@@ -89,7 +89,7 @@ class _FriendsPageState extends State<FriendsPage> {
                       trailing: IconButton(
                         icon: const Icon(Icons.compare_arrows, color: Colors.white),
                         onPressed: () {
-                          ToastUtil.showInfoToast(context, 'Fonctionnalité à venir');
+                          showInfoToast(context, 'Fonctionnalité à venir');
                         },
                       ),
                       title: Text(friend!.displayName),

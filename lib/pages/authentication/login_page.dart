@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -61,7 +62,7 @@ class LoginPage extends StatelessWidget {
                             hintText: 'Email',
                             keyboardType: TextInputType.emailAddress,
                             obscureText: false,
-                            validator: (value) => Validators.validateEmail(value),
+                            validator: (value) => validateEmail(value),
                           ),
                         ),
                         Padding(
@@ -71,7 +72,7 @@ class LoginPage extends StatelessWidget {
                             hintText: 'Mot de passe',
                             keyboardType: TextInputType.visiblePassword,
                             obscureText: true,
-                            validator: (value) => Validators.validatePassword(value),
+                            validator: (value) => validatePassword(value),
                           ),
                         ),
                         Padding(
@@ -91,12 +92,12 @@ class LoginPage extends StatelessWidget {
                                   });
                                 } else {
                                   context.pop();
-                                  ToastUtil.showErrorToast(context, 'Email ou mot de passe incorrect');
+                                  showErrorToast(context, 'Email ou mot de passe incorrect');
                                 }
                               }).onError((error, stackTrace) {
                                 context.pop();
-                                ToastUtil.showErrorToast(context, 'Erreur de connexion');
-                                print(error);
+                                showErrorToast(context, 'Erreur de connexion');
+                                if (kDebugMode) print(error);
                               });
                             },
                             buttonText: 'Se connecter',

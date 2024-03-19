@@ -82,15 +82,15 @@ class _AlertWarningDeleteAccount extends State<AlertWarningDeleteAccount> {
                         context.pushNamed('loading');
                         AppUserService.deleteCurrentUser().then((value) {
                           _passwordController.clear();
-                          ToastUtil.showSuccessToast(context, 'Votre compte a bien été supprimé.');
+                          showSuccessToast(context, 'Votre compte a bien été supprimé.');
                           context.pop();
                           context.go('/authentication');
                         }).onError((error, stackTrace) {
                           context.pop();
-                          ToastUtil.showErrorToast(context, 'Erreur de connexion');
+                          showErrorToast(context, 'Erreur de connexion');
                         });
                       } else {
-                        ToastUtil.showShortErrorToast(context, 'Mot de passe invalide');
+                        showShortErrorToast(context, 'Mot de passe invalide');
                       }
                     });
                   },

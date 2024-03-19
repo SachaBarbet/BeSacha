@@ -96,7 +96,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
                         setState(() {
                           friends.removeAt(index);
                         });
-                        ToastUtil.showSuccessToast(context, 'Demande envoyée');
+                        showSuccessToast(context, 'Demande envoyée');
                       },
                       child: const Text('Ajouter'),
                     ),

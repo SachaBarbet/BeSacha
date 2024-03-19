@@ -19,8 +19,8 @@ class AppUserService {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       User user = userCredential.user!;
-      displayName ??= 'user_${AppUtil.getRandomString(4)}';
-      username ??= '$displayName#${AppUtil.getRandomString(4)}'.toLowerCase();
+      displayName ??= 'user_${getRandomString(4)}';
+      username ??= '$displayName#${getRandomString(4)}'.toLowerCase();
       AppUser appUser = AppUser(
         uid: user.uid,
         email: email,
