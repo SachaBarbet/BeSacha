@@ -26,7 +26,10 @@ class TradeService {
     int friendPokemonId = friend!.dailyPokemonId;
 
     connectedUser.dailyPokemonId = friendPokemonId;
+    connectedUser.pokemons[connectedUserPokemonId.toString()] = getFormattedDate();
+
     friend.dailyPokemonId = connectedUserPokemonId;
+    friend.pokemons[friendPokemonId.toString()] = getFormattedDate();
 
     await AppUserService.updateUser(connectedUser);
     await AppUserService.updateUser(friend);
@@ -43,24 +46,21 @@ class TradeService {
   static Future<dynamic> askTrade(AppUser friend) async {
     String connectedUserId = FirebaseAuth.instance.currentUser!.uid;
     QuerySnapshot<Trade> potentialTrades =
-        await tradeCollectionRef.where('between_users', arrayContains: [connectedUserId, friend.uid]).get();
+        await tradeCollectionRef.where('between_users', whereIn: [[connectedUserId, friend.uid], [friend.uid, connectedUserId]]).get();
     Trade? trade;
     if (potentialTrades.docs.isEmpty) {
       trade = Trade(
           betweenUsers: [connectedUserId, friend.uid],
           lastTradeDate: getFormattedDate(),
           lastRequester: connectedUserId);
-      print('empty : create $trade');
 
       trade = await tradeCollectionRef.add(trade).then((value) {
         trade!.id = value.id;
         return trade;
       });
 
-      print('empty : created - 2 $trade');
       return false; // trade created
     } else {
-      print('not empty : update');
       trade = potentialTrades.docs.first.data();
 
       if (trade.lastTradeDate == getFormattedDate() && trade.lastRequester != '') {
@@ -70,6 +70,11 @@ class TradeService {
         } else {
           return await doTrade(trade); // trade accepted
         }
+      } else if (trade.lastTradeDate != getFormattedDate()) {
+        trade.lastTradeDate = getFormattedDate();
+        trade.lastRequester = connectedUserId;
+        await tradeCollectionRef.doc(trade.id).update(trade.toFirestore());
+        return false; // trade created
       }
 
       return true; // trade already done

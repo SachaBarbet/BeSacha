@@ -94,7 +94,7 @@ class PokemonService {
 
     appUser.dailyPokemonDate = formattedDate;
     appUser.dailyPokemonId = randomId;
-    appUser.pokemons['${pokemon.id}'] = formattedDate;
+    appUser.pokemons[pokemon.id.toString()] = formattedDate;
     await AppUserService.updateUser(appUser);
     return pokemon;
   }

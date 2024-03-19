@@ -35,7 +35,7 @@ class _DailyPokemonScreenState extends State<DailyPokemonScreen> {
       backgroundColor: kPrimaryColor,
       appBar: AppBar(
         title: const Text('Pokémon du jour',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: kWhiteColor),
         ),
         centerTitle: true,
         leading: Container(),
@@ -64,16 +64,23 @@ class _DailyPokemonScreenState extends State<DailyPokemonScreen> {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.network(pokemonData.defaultSprite),
+                Padding(
+                  padding: const EdgeInsets.all(kDefaultPadding),
+                  child: Image.network(pokemonData.defaultSprite, width: 200, height: 200, fit: BoxFit.contain,),
+                ),
+                const SizedBox(height: kDefaultPadding * 2),
                 Text(
-                  'Pokémon du jour: ${pokemonData.name}',
+                  'Pokémon obtenu : ${pokemonData.name[0].toUpperCase() + pokemonData.name.substring(1)}',
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    color: kWhiteColor,
                   ),
                 ),
-                Text('Type: ${pokemonData.type}'),
-                const SizedBox(height: 16),
+                Text('Type : ${pokemonData.type[0].toUpperCase() + pokemonData.type.substring(1)}',
+                  style: const TextStyle(color: kWhiteColor),
+                ),
+                const SizedBox(height: kDefaultPadding * 2),
                 AppElevatedButton(
                   buttonColor: kWhiteColor,
                   textColor: kBlackColor,

@@ -1,7 +1,7 @@
-import 'package:be_sacha/services/shared_preferences_service.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import 'shared_preferences_service.dart';
 
 class SettingsService {
 
