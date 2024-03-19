@@ -1,4 +1,3 @@
-import 'package:be_sacha/utilities/toast_util.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -6,6 +5,7 @@ import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
 import '../../models/app_user.dart';
 import '../../services/friends_service.dart';
+import '../../utilities/toast_util.dart';
 
 class FriendAddListPage extends StatefulWidget {
 
@@ -16,7 +16,6 @@ class FriendAddListPage extends StatefulWidget {
 }
 
 class _FriendAddListPageState extends State<FriendAddListPage> {
-  static const double _dividerHeight = 50;
   late Future<List<AppUser>> _askFriends;
   int _currentIndex = 0;
 
@@ -35,8 +34,8 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
 
       body: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppDesignSystem.defaultPadding,
-          vertical: AppDesignSystem.defaultPadding,
+          horizontal: kDefaultPadding,
+          vertical: kDefaultPadding,
         ),
         child: ListView(
           children: [
@@ -44,15 +43,15 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
               style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1.2),
             ),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
-              child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
+              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+              child: SizedBox(height: kDividerHeight, width: double.infinity, child: Divider()),
             ),
             FutureBuilder(
               future: _askFriends,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator(
-                    color: AppColors.primary,
+                    color: kPrimaryColor,
                   ));
                 }
 
@@ -60,7 +59,7 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
                   return const Center(
                     child: Text(
                       'Une erreur est survenue lors du chargement des demandes',
-                      style: TextStyle(color: AppColors.red),
+                      style: TextStyle(color: kRedColor),
                     ),
                   );
                 }
@@ -146,9 +145,9 @@ class _FriendAddListPageState extends State<FriendAddListPage> {
         )
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: AppColors.lightPrimary,
-        selectedItemColor: AppColors.black,
-        unselectedItemColor: AppColors.white,
+        backgroundColor: kLightPrimaryColor,
+        selectedItemColor: kBlackColor,
+        unselectedItemColor: kWhiteColor,
         currentIndex: _currentIndex,
         items: const [
           BottomNavigationBarItem(

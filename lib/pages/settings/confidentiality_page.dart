@@ -12,7 +12,7 @@ class ConfidentialityPage extends StatelessWidget {
     fontWeight: FontWeight.bold,
   );
 
-  static const double _spacerHeight = AppDesignSystem.defaultPadding * 1.5;
+  static const double _spacerHeight = kDefaultPadding * 1.5;
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +25,16 @@ class ConfidentialityPage extends StatelessWidget {
 
       body: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppDesignSystem.defaultPadding * 1.5,
-          vertical: AppDesignSystem.defaultPadding,
+          horizontal: kDefaultPadding * 1.5,
+          vertical: kDefaultPadding,
         ),
         child: ListView(
           children: const [
-            Text('Dernière mise à jour: 13/03/2024', style: TextStyle(fontSize: 16, color: AppColors.grey),),
+            Text('Dernière mise à jour: 13/03/2024', style: TextStyle(fontSize: 16, color: kGreyColor),),
             Text('Attention, la politique de confidentialité ici présente n\'est pas définitive et n\'est pas à prendre'
                 ' en compte comme telles. Elle est là à titre d\'exemple.'
             ),
-            SizedBox(height: AppDesignSystem.defaultPadding * 2,), // Spacer
+            SizedBox(height: kDefaultPadding * 2,), // Spacer
             Text('1. Collecte des données', style: _subTitleTextStyle,),
             Text('Nous collectons les informations que vous nous fournissez volontairement, telles que votre nom '
                 'd\'utilisateur, votre adresse e-mail et votre mot de passe lorsque vous créez un compte utilisateur. '

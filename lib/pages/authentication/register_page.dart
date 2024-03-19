@@ -44,29 +44,29 @@ class RegisterPage extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(
               bottom: appBarHeight,
-              top: AppDesignSystem.defaultPadding,
-              left: AppDesignSystem.defaultPadding,
-              right: AppDesignSystem.defaultPadding,
+              top: kDefaultPadding,
+              left: kDefaultPadding,
+              right: kDefaultPadding,
             ),
             child: ListView(
               shrinkWrap: true,
-              padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+              padding: const EdgeInsets.all(kDefaultPadding),
               children: [
                 const Padding(
-                  padding: EdgeInsets.symmetric(vertical: AppDesignSystem.defaultPadding,),
+                  padding: EdgeInsets.symmetric(vertical: kDefaultPadding,),
                   child: Text('Inscription', style: TextStyle(fontSize: 24), textAlign: TextAlign.center),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: AppDesignSystem.defaultPadding),
+                  padding: const EdgeInsets.only(top: kDefaultPadding),
                   child: Form(
                     key: _registerFormKey,
                     child: Column(
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(
-                            left: AppDesignSystem.defaultPadding,
-                            right: AppDesignSystem.defaultPadding,
-                            bottom: AppDesignSystem.defaultPadding,
+                            left: kDefaultPadding,
+                            right: kDefaultPadding,
+                            bottom: kDefaultPadding,
                           ),
                           child: AppTextFormField(
                             controller: _displayNameController,
@@ -77,7 +77,7 @@ class RegisterPage extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding),
+                          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
                           child: AppTextFormField(
                             controller: _emailController,
                             hintText: 'Email',
@@ -87,7 +87,7 @@ class RegisterPage extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+                          padding: const EdgeInsets.all(kDefaultPadding),
                           child: AppTextFormField(
                             controller: _passwordController,
                             hintText: 'Mot de passe',
@@ -98,9 +98,9 @@ class RegisterPage extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(
-                            left: AppDesignSystem.defaultPadding,
-                            right: AppDesignSystem.defaultPadding,
-                            bottom: AppDesignSystem.defaultPadding,
+                            left: kDefaultPadding,
+                            right: kDefaultPadding,
+                            bottom: kDefaultPadding,
                           ),
                           child: AppTextFormField(
                             controller: _confirmPasswordController,
@@ -111,7 +111,7 @@ class RegisterPage extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+                          padding: const EdgeInsets.all(kDefaultPadding),
                           child: AppElevatedButton(
                             onPressed: () {
                               if (_registerFormKey.currentState!.validate()) {

@@ -12,8 +12,8 @@ class ToastUtil {
       gravity: ToastGravity.BOTTOM,
       webShowClose: true,
       timeInSecForIosWeb: 3,
-      backgroundColor:  AppColors.red,
-      textColor: AppColors.white,
+      backgroundColor: kRedColor,
+      textColor: kWhiteColor,
       fontSize: 18,
     );
   }
@@ -25,8 +25,8 @@ class ToastUtil {
       gravity: ToastGravity.BOTTOM,
       webShowClose: true,
       timeInSecForIosWeb: 3,
-      backgroundColor: AppColors.red,
-      textColor: AppColors.white,
+      backgroundColor: kRedColor,
+      textColor: kWhiteColor,
       fontSize: 18,
     );
   }
@@ -38,8 +38,8 @@ class ToastUtil {
       gravity: ToastGravity.BOTTOM,
       webShowClose: true,
       timeInSecForIosWeb: 3,
-      backgroundColor: AppColors.green,
-      textColor: AppColors.white,
+      backgroundColor: kGreenColor,
+      textColor: kWhiteColor,
       fontSize: 18,
     );
   }
@@ -52,7 +52,7 @@ class ToastUtil {
       webShowClose: true,
       timeInSecForIosWeb: 3,
       backgroundColor: const Color(0xFF2787D6),
-      textColor: AppColors.white,
+      textColor: kWhiteColor,
       fontSize: 18,
     );
   }
@@ -65,7 +65,7 @@ class ToastUtil {
       webShowClose: true,
       timeInSecForIosWeb: 3,
       backgroundColor: const Color(0xFF2787D6),
-      textColor: AppColors.white,
+      textColor: kWhiteColor,
       fontSize: 18,
     );
   }

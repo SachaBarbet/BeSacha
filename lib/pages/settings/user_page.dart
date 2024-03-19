@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:be_sacha/widgets/alert_dialogs/alert_warning_delete_account.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +10,7 @@ import '../../models/app_user.dart';
 import '../../services/app_user_service.dart';
 import '../../utilities/toast_util.dart';
 import '../../utilities/validators.dart';
+import '../../widgets/alert_dialogs/alert_warning_delete_account.dart';
 import '../../widgets/app_elevated_button.dart';
 import '../../widgets/app_text_form_field.dart';
 import '../../widgets/square_icon_button.dart';
@@ -23,8 +23,6 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
-  static const double _dividerHeight = 50;
-
   late Future<AppUser?> _appUser;
 
   final GlobalKey<FormState> _usernameFormKey = GlobalKey<FormState>();
@@ -39,8 +37,8 @@ class _UserPageState extends State<UserPage> {
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmNewPasswordController = TextEditingController();
 
-  Color _usernameButtonBackgroundColor = AppColors.grey;
-  Color _emailButtonBackgroundColor = AppColors.grey;
+  Color _usernameButtonBackgroundColor = kGreyColor;
+  Color _emailButtonBackgroundColor = kGreyColor;
 
   void openWarningDeleteAccountAlertDialog(BuildContext context) {
     showDialog(context: context, builder: (context) => const AlertWarningDeleteAccount(),);
@@ -76,14 +74,14 @@ class _UserPageState extends State<UserPage> {
 
           return Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppDesignSystem.defaultPadding * 1.5,
-              vertical: AppDesignSystem.defaultPadding,
+              horizontal: kDefaultPadding * 1.5,
+              vertical: kDefaultPadding,
             ),
             child: ListView(
               children: [
                 TextButton(
                   onPressed: () async {
-                    await Clipboard.setData(ClipboardData(text: appUser.username!));
+                    await Clipboard.setData(ClipboardData(text: appUser.username));
                     if (context.mounted) {
                       ToastUtil.showSuccessToast(context, 'Nom d\'utilisateur copié dans le presse-papier');
                     }
@@ -92,11 +90,11 @@ class _UserPageState extends State<UserPage> {
                     padding: EdgeInsets.zero,
                     alignment: Alignment.centerLeft,
                   ),
-                  child: Text('Appuie pour copier : ${appUser.username!}', style: const TextStyle(fontSize: 16), textAlign: TextAlign.left,),
+                  child: Text('Appuie pour copier : ${appUser.username}', style: const TextStyle(fontSize: 16), textAlign: TextAlign.left,),
                 ),
-                const SizedBox(height: _dividerHeight),
+                const SizedBox(height: kDividerHeight),
                 const Padding(
-                  padding: EdgeInsets.only(bottom: AppDesignSystem.defaultPadding * 0.6),
+                  padding: EdgeInsets.only(bottom: kDefaultPadding * 0.6),
                   child: Text('Nom d\'utilisateur', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                 ),
                 Form(
@@ -113,13 +111,13 @@ class _UserPageState extends State<UserPage> {
                           onChanged: () {
                             setState(() {
                               _usernameButtonBackgroundColor = _usernameFormKey.currentState!.validate() ?
-                                AppColors.primary : AppColors.grey;
+                                kPrimaryColor : kGreyColor;
                             });
                           },
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 4, left: AppDesignSystem.defaultPadding),
+                        padding: const EdgeInsets.only(top: 4, left: kDefaultPadding),
                         child: SquaredIconButton(
                           backgroundColor: _usernameButtonBackgroundColor,
                           onPressed: () {
@@ -145,11 +143,11 @@ class _UserPageState extends State<UserPage> {
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
-                  child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
+                  padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+                  child: SizedBox(height: kDividerHeight, width: double.infinity, child: Divider()),
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(bottom: AppDesignSystem.defaultPadding * 0.6),
+                  padding: EdgeInsets.only(bottom: kDefaultPadding * 0.6),
                   child: Text('Adresse email', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                 ),
                 Form(
@@ -166,13 +164,13 @@ class _UserPageState extends State<UserPage> {
                           onChanged: () {
                             setState(() {
                               _emailButtonBackgroundColor = _emailFormKey.currentState!.validate() ?
-                                AppColors.primary : AppColors.grey;
+                                kPrimaryColor : kGreyColor;
                             });
                           },
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 4, left: AppDesignSystem.defaultPadding),
+                        padding: const EdgeInsets.only(top: 4, left: kDefaultPadding),
                         child: SquaredIconButton(
                           backgroundColor: _emailButtonBackgroundColor,
                           onPressed: () {
@@ -198,11 +196,11 @@ class _UserPageState extends State<UserPage> {
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
-                  child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
+                  padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+                  child: SizedBox(height: kDividerHeight, width: double.infinity, child: Divider()),
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(bottom: AppDesignSystem.defaultPadding),
+                  padding: EdgeInsets.only(bottom: kDefaultPadding),
                   child: Text('Changer de mot de passe', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                 ),
                 Form(
@@ -216,7 +214,7 @@ class _UserPageState extends State<UserPage> {
                         obscureText: true,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: AppDesignSystem.defaultPadding),
+                        padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
                         child: AppTextFormField(
                           hintText: 'Nouveau mot de passe',
                           validator: (value) => Validators.validatePassword(value),
@@ -231,7 +229,7 @@ class _UserPageState extends State<UserPage> {
                         obscureText: true,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: AppDesignSystem.defaultPadding * 1.5),
+                        padding: const EdgeInsets.only(top: kDefaultPadding * 1.5),
                         child: AppElevatedButton(
                           onPressed: () {
                             if (!_passwordFormKey.currentState!.validate()) return;
@@ -250,15 +248,15 @@ class _UserPageState extends State<UserPage> {
                           },
                           buttonText: 'Changer de mot de passe',
                           buttonColor: PlatformDispatcher.instance.platformBrightness
-                              == Brightness.dark ? AppColors.black : AppColors.white,
+                              == Brightness.dark ? kBlackColor : kWhiteColor,
                         ),
                       )
                     ],
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
-                  child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
+                  padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+                  child: SizedBox(height: kDividerHeight, width: double.infinity, child: Divider()),
                 ),
                 AppElevatedButton(
                   onPressed: () {
@@ -274,8 +272,8 @@ class _UserPageState extends State<UserPage> {
                   buttonText: 'Se déconnecter',
                 ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
-                  child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
+                  padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+                  child: SizedBox(height: kDividerHeight, width: double.infinity, child: Divider()),
                 ),
                 AppElevatedButton(
                   onPressed: () => openWarningDeleteAccountAlertDialog(context),

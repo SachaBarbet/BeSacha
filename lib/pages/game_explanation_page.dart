@@ -11,19 +11,19 @@ class GameExplanationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Game Explanation'),
+        title: const Text('Règles du jeu'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppDesignSystem.defaultPadding * 1.5,
-          vertical: AppDesignSystem.defaultPadding,
+          horizontal: kDefaultPadding * 1.5,
+          vertical: kDefaultPadding,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Bienvenue dans le jeu Pokémon!',
+              'Bienvenue dans BeSacha !',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -36,11 +36,11 @@ class GameExplanationPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const Text(
-              'Si vous êtes connectez, vous découvrirez automatiquement un nouveau Pokémon chaque jour lorsque vous lancerez l\'application. Vous pouvez également échanger le Pokémon d\'aujourd\'hui avec un ami.',
+              'Si vous êtes connectez, vous découvrirez automatiquement un nouveau Pokémon chaque jour lorsque vous lancerez l\'application. Vous pouvez également échanger votre Pokémon d\'aujourd\'hui avec un ami.',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
-            RedirectButton(redirectName: 'authentication', buttonText: 'Je comprends les règle de jeu',
+            RedirectButton(redirectName: 'authentication', buttonText: 'Je comprends les règles de jeu',
                 onPressed: (){
               SharedPreferencesService.write('rules', true);
             }),

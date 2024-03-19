@@ -24,13 +24,13 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     if (_brightnessMode != 'system') {
-      _textColor = _brightnessMode == 'dark' ? AppColors.white : AppColors.black;
-      _dropdownColor = _brightnessMode == 'dark' ? AppColors.black : AppColors.lightGrey;
+      _textColor = _brightnessMode == 'dark' ? kWhiteColor : kBlackColor;
+      _dropdownColor = _brightnessMode == 'dark' ? kBlackColor : kLightGreyColor;
     } else {
       _textColor = MediaQuery.of(context).platformBrightness
-          == Brightness.dark ? AppColors.white : AppColors.black;
+          == Brightness.dark ? kWhiteColor : kBlackColor;
       _dropdownColor = MediaQuery.of(context).platformBrightness
-          == Brightness.dark ? AppColors.black : AppColors.lightGrey;
+          == Brightness.dark ? kBlackColor : kLightGreyColor;
     }
 
 
@@ -43,14 +43,14 @@ class _SettingsPageState extends State<SettingsPage> {
 
       body: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppDesignSystem.defaultPadding * 1.5,
-          vertical: AppDesignSystem.defaultPadding,
+          horizontal: kDefaultPadding * 1.5,
+          vertical: kDefaultPadding,
         ),
         child: ListView(
           children: [
             const Text('Thème', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppDesignSystem.defaultPadding),
+              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -77,13 +77,13 @@ class _SettingsPageState extends State<SettingsPage> {
                         _brightnessMode = value;
 
                         if (_brightnessMode != 'system') {
-                          _textColor = _brightnessMode == 'dark' ? AppColors.white : AppColors.black;
-                          _dropdownColor = _brightnessMode == 'dark' ? AppColors.black : AppColors.white;
+                          _textColor = _brightnessMode == 'dark' ? kWhiteColor : kBlackColor;
+                          _dropdownColor = _brightnessMode == 'dark' ? kBlackColor : kWhiteColor;
                         } else {
                           _textColor = MediaQuery.of(context).platformBrightness
-                              == Brightness.dark ? AppColors.white : AppColors.black;
+                              == Brightness.dark ? kWhiteColor : kBlackColor;
                           _dropdownColor = MediaQuery.of(context).platformBrightness
-                              == Brightness.dark ? AppColors.black : AppColors.white;
+                              == Brightness.dark ? kBlackColor : kWhiteColor;
                         }
                       });
                     },
@@ -92,7 +92,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
+              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
               child: SizedBox(height: SettingsPage._dividerHeight, width: double.infinity, child: Divider()),
             ),
             const Text('Notifications', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
@@ -102,7 +102,7 @@ class _SettingsPageState extends State<SettingsPage> {
               textAlign: TextAlign.left,
             ),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
+              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
               child: SizedBox(height: SettingsPage._dividerHeight, width: double.infinity, child: Divider()),
             ),
             const Text('', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),

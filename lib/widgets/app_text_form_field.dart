@@ -30,7 +30,7 @@ class AppTextFormField extends StatefulWidget {
 class _AppTextFormField extends State<AppTextFormField> {
   bool _obscureText = false;
 
-  String _brightnessMode = SettingsService.getBrightnessMode();
+  final String _brightnessMode = SettingsService.getBrightnessMode();
 
   static const double borderWidth = 2;
   Color? foregroundColor;
@@ -44,9 +44,9 @@ class _AppTextFormField extends State<AppTextFormField> {
   @override
   Widget build(BuildContext context) {
     if (_brightnessMode != 'system') {
-      foregroundColor = _brightnessMode == 'dark' ? AppColors.white : AppColors.black;
+      foregroundColor = _brightnessMode == 'dark' ? kWhiteColor : kBlackColor;
     } else {
-      foregroundColor = MediaQuery.of(context).platformBrightness == Brightness.dark ? AppColors.white : AppColors.black;
+      foregroundColor = MediaQuery.of(context).platformBrightness == Brightness.dark ? kWhiteColor : kBlackColor;
     }
     return TextFormField(
       enabled: widget.enabled,
@@ -54,34 +54,34 @@ class _AppTextFormField extends State<AppTextFormField> {
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-          borderSide: const BorderSide(color: AppColors.grey, width: borderWidth),
+          borderRadius: BorderRadius.circular(kDefaultBorderRadius),
+          borderSide: const BorderSide(color: kGreyColor, width: borderWidth),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-          borderSide: const BorderSide(color: AppColors.grey, width: borderWidth),
+          borderRadius: BorderRadius.circular(kDefaultBorderRadius),
+          borderSide: const BorderSide(color: kGreyColor, width: borderWidth),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
+          borderRadius: BorderRadius.circular(kDefaultBorderRadius),
           borderSide: BorderSide(color: foregroundColor!, width: borderWidth),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-          borderSide: const BorderSide(color: AppColors.red, width: borderWidth),
+          borderRadius: BorderRadius.circular(kDefaultBorderRadius),
+          borderSide: const BorderSide(color: kRedColor, width: borderWidth),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
-          borderSide: const BorderSide(color: AppColors.red, width: borderWidth),
+          borderRadius: BorderRadius.circular(kDefaultBorderRadius),
+          borderSide: const BorderSide(color: kRedColor, width: borderWidth),
         ),
-        errorStyle: const TextStyle(color: AppColors.red),
-        hintStyle: const TextStyle(color: AppColors.grey),
+        errorStyle: const TextStyle(color: kRedColor),
+        hintStyle: const TextStyle(color: kGreyColor),
         labelStyle: TextStyle(color: foregroundColor),
         hintText: widget.hintText,
-        fillColor: AppColors.grey.withOpacity(0.25),
+        fillColor: kGreyColor.withOpacity(0.25),
         filled: true,
-        contentPadding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+        contentPadding: const EdgeInsets.all(kDefaultPadding),
         suffixIcon: widget.obscureText ? Material(
-          borderRadius:const BorderRadius.horizontal(right: Radius.circular(AppDesignSystem.defaultBorderRadius)),
+          borderRadius:const BorderRadius.horizontal(right: Radius.circular(kDefaultBorderRadius)),
           color: Colors.transparent,
           child: IconButton(
             onPressed: () {

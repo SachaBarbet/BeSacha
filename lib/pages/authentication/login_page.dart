@@ -36,26 +36,26 @@ class LoginPage extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(
               bottom: _appBarHeight,
-              top: AppDesignSystem.defaultPadding,
-              left: AppDesignSystem.defaultPadding,
-              right: AppDesignSystem.defaultPadding,
+              top: kDefaultPadding,
+              left: kDefaultPadding,
+              right: kDefaultPadding,
             ),
             child: ListView(
               shrinkWrap: true,
-              padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+              padding: const EdgeInsets.all(kDefaultPadding),
               children: [
                 const Padding(
-                  padding: EdgeInsets.symmetric(vertical: AppDesignSystem.defaultPadding),
+                  padding: EdgeInsets.symmetric(vertical: kDefaultPadding),
                   child: Text('Connexion', style: TextStyle(fontSize: 24), textAlign: TextAlign.center),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: AppDesignSystem.defaultPadding),
+                  padding: const EdgeInsets.only(top: kDefaultPadding),
                   child: Form(
                     key: _loginFormKey,
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding),
+                          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
                           child: AppTextFormField(
                             controller: _emailController,
                             hintText: 'Email',
@@ -65,7 +65,7 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+                          padding: const EdgeInsets.all(kDefaultPadding),
                           child: AppTextFormField(
                             controller: _passwordController,
                             hintText: 'Mot de passe',
@@ -75,7 +75,7 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(AppDesignSystem.defaultPadding,),
+                          padding: const EdgeInsets.all(kDefaultPadding,),
                           child: AppElevatedButton(
                             onPressed: () {
                               if (!_loginFormKey.currentState!.validate()) return;

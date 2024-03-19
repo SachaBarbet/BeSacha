@@ -32,7 +32,7 @@ class _FriendsPageState extends State<FriendsPage> {
         title: const Text('Vos amis', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: AppDesignSystem.defaultPadding),
+            padding: const EdgeInsets.only(right: kDefaultPadding),
             child: IconButton(
               icon: const Icon(Icons.person_add),
               onPressed: () {
@@ -48,8 +48,8 @@ class _FriendsPageState extends State<FriendsPage> {
 
       body: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppDesignSystem.defaultPadding * 1.5,
-          vertical: AppDesignSystem.defaultPadding,
+          horizontal: kDefaultPadding * 1.5,
+          vertical: kDefaultPadding,
         ),
         child: FutureBuilder(
           future: _friends,
@@ -73,12 +73,12 @@ class _FriendsPageState extends State<FriendsPage> {
                 children: [
                   for (AppUser? friend in friends)
                     ListTile(
-                      tileColor: AppColors.lightPrimary,
+                      tileColor: kLightPrimaryColor,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppDesignSystem.defaultPadding),
+                        borderRadius: BorderRadius.circular(kDefaultPadding),
                       ),
                       leading: IconButton(
-                        icon: const Icon(Icons.close, color: AppColors.white),
+                        icon: const Icon(Icons.close, color: kWhiteColor),
                         onPressed: () async {
                           await FriendsService.removeFriend(friend!);
                           setState(() {

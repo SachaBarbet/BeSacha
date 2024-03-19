@@ -57,13 +57,13 @@ class _PokedexPageState extends State<PokedexPage> {
   @override
   Widget build(BuildContext context) {
     if (_brightnessMode != 'system') {
-      _textColor = _brightnessMode == 'dark' ? AppColors.white : AppColors.black;
-      _dropdownColor = _brightnessMode == 'dark' ? AppColors.black : AppColors.lightGrey;
+      _textColor = _brightnessMode == 'dark' ? kWhiteColor : kBlackColor;
+      _dropdownColor = _brightnessMode == 'dark' ? kBlackColor : kLightGreyColor;
     } else {
       _textColor = MediaQuery.of(context).platformBrightness
-          == Brightness.dark ? AppColors.white : AppColors.black;
+          == Brightness.dark ? kWhiteColor : kBlackColor;
       _dropdownColor = MediaQuery.of(context).platformBrightness
-          == Brightness.dark ? AppColors.black : AppColors.lightGrey;
+          == Brightness.dark ? kBlackColor : kLightGreyColor;
     }
 
     return Scaffold(
@@ -85,7 +85,7 @@ class _PokedexPageState extends State<PokedexPage> {
               }
 
               return Padding(
-                padding: const EdgeInsets.only(right: AppDesignSystem.defaultPadding * 1.25),
+                padding: const EdgeInsets.only(right: kDefaultPadding * 1.25),
                 child: Text('${appUser.pokemons!.length} / 1025'),
               );
             }
@@ -96,8 +96,8 @@ class _PokedexPageState extends State<PokedexPage> {
 
       body: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppDesignSystem.defaultPadding * 1.5,
-          vertical: AppDesignSystem.defaultPadding,
+          horizontal: kDefaultPadding * 1.5,
+          vertical: kDefaultPadding,
         ),
         child: FutureBuilder(
           future: _appUser,
@@ -139,7 +139,7 @@ class _PokedexPageState extends State<PokedexPage> {
                   controller: _searchController,
                   hintText: 'Rechercher un pokemon',
                   leading: IconButton(
-                    icon: const Icon(Icons.search, color: AppColors.white),
+                    icon: const Icon(Icons.search, color: kWhiteColor),
                     onPressed: () {
                       setState(() {
                         _pagingController.itemList = [];
@@ -155,7 +155,7 @@ class _PokedexPageState extends State<PokedexPage> {
                   },
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: AppDesignSystem.defaultPadding * 0.5),
+                  padding: const EdgeInsets.symmetric(vertical: kDefaultPadding * 0.5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -293,9 +293,9 @@ class _PokedexPageState extends State<PokedexPage> {
                       itemBuilder: (context, item, index) {
                         bool isUnlocked = unlockedPokemons.contains(item.id);
                         return Container(
-                          padding: const EdgeInsets.all(AppDesignSystem.defaultPadding),
+                          padding: const EdgeInsets.all(kDefaultPadding),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
+                            borderRadius: BorderRadius.circular(kDefaultBorderRadius),
                             color: _dropdownColor,
                           ),
                           child: Column(
@@ -316,8 +316,8 @@ class _PokedexPageState extends State<PokedexPage> {
                     ),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      crossAxisSpacing: AppDesignSystem.defaultPadding,
-                      mainAxisSpacing: AppDesignSystem.defaultPadding,
+                      crossAxisSpacing: kDefaultPadding,
+                      mainAxisSpacing: kDefaultPadding,
                     )
                   ),
                 ),
@@ -335,35 +335,3 @@ class _PokedexPageState extends State<PokedexPage> {
     super.dispose();
   }
 }
-
-//
-// class PokedexPage extends StatelessWidget {
-//   final Pokemon pokemon;
-//
-//   const PokedexPage({Key? key, required this.pokemon}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Pokedex'),
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             Image.network(pokemon.imageUrl),
-//             Text(
-//               'Pokémon de jour: ${pokemon.name}',
-//               style: TextStyle(
-//                 fontSize: 20,
-//                 fontWeight: FontWeight.bold,
-//               ),
-//             ),
-//             Text('Type: ${pokemon.type}'),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

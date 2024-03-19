@@ -6,8 +6,6 @@ import '../../widgets/redirect_button.dart';
 
 
 class SettingsHomePage extends StatelessWidget {
-  static const double _dividerHeight = 50;
-
   const SettingsHomePage({super.key});
 
   @override
@@ -21,23 +19,23 @@ class SettingsHomePage extends StatelessWidget {
 
       body: const Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: AppDesignSystem.defaultPadding * 1.5,
-          vertical: AppDesignSystem.defaultPadding,
+          horizontal: kDefaultPadding * 1.5,
+          vertical: kDefaultPadding,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: EdgeInsets.only(bottom: AppDesignSystem.defaultPadding * 0.6),
+              padding: EdgeInsets.only(bottom: kDefaultPadding * 0.6),
               child: RedirectButton(redirectName: 'user', buttonText: 'Vos informations',),
             ),
             RedirectButton(redirectName: 'setting', buttonText: 'Paramètres de l\'application',),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppDesignSystem.defaultPadding * 1.5),
-              child: SizedBox(height: _dividerHeight, width: double.infinity, child: Divider()),
+              padding: EdgeInsets.symmetric(horizontal: kDefaultPadding * 1.5),
+              child: SizedBox(height: kDividerHeight, width: double.infinity, child: Divider()),
             ),
             Padding(
-              padding: EdgeInsets.only(bottom: AppDesignSystem.defaultPadding * 0.6),
+              padding: EdgeInsets.only(bottom: kDefaultPadding * 0.6),
               child: RedirectButton(redirectName: 'cgu', buttonText: 'Conditions générales d\'utilisation',),
             ),
             RedirectButton(redirectName: 'confidentiality', buttonText: 'Politique de confidentialité',),

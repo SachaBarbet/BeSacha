@@ -19,8 +19,8 @@ class SquaredIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color backgroundColorB = backgroundColor ?? Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({MaterialState.pressed}) ?? AppColors.primary;
-    Color iconColorB = iconColor ?? Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed}) ?? AppColors.white;
+    Color backgroundColorB = backgroundColor ?? Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({MaterialState.pressed}) ?? kPrimaryColor;
+    Color iconColorB = iconColor ?? Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed}) ?? kWhiteColor;
 
     return InkWell(
       onTap: () {
@@ -30,7 +30,7 @@ class SquaredIconButton extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppDesignSystem.defaultBorderRadius),
+          borderRadius: BorderRadius.circular(kDefaultBorderRadius),
           color: backgroundColorB,
         ),
         child: Padding(

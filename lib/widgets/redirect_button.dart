@@ -26,18 +26,18 @@ class RedirectButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color buttonColorB = buttonColor ?? Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({MaterialState.pressed}) ?? AppColors.primary;
-    Color textColorB = textColor ?? Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed}) ?? AppColors.white;
+    Color buttonColorB = buttonColor ?? Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({MaterialState.pressed}) ?? kPrimaryColor;
+    Color textColorB = textColor ?? Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed}) ?? kWhiteColor;
     List<Widget> rowChildren = [
       Text(buttonText,
         style: TextStyle(fontWeight: FontWeight.bold, color: textColorB,
-          fontSize: isSmall ? AppDesignSystem.defaultFontSize * 0.8 : AppDesignSystem.defaultFontSize,
+          fontSize: isSmall ? kDefaultFontSize * 0.8 : kDefaultFontSize,
         ),
       ),
       Icon(
         Icons.arrow_forward,
         color: textColorB,
-        size: isSmall ? AppDesignSystem.defaultFontSize : AppDesignSystem.defaultFontSize * 1.5,
+        size: isSmall ? kDefaultFontSize : kDefaultFontSize * 1.5,
       )
     ];
 
@@ -51,8 +51,8 @@ class RedirectButton extends StatelessWidget {
       },
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: isSmall ? AppDesignSystem.defaultPadding * 0.25 : AppDesignSystem.defaultPadding * 0.5,
-          vertical: isSmall ? AppDesignSystem.defaultPadding * 0.75 : AppDesignSystem.defaultPadding * 1.5,
+          horizontal: isSmall ? kDefaultPadding * 0.25 : kDefaultPadding * 0.5,
+          vertical: isSmall ? kDefaultPadding * 0.75 : kDefaultPadding * 1.5,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

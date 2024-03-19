@@ -36,13 +36,13 @@ class _AddFriendPageState extends State<AddFriendPage> {
           controller: _searchController,
           hintText: 'Rechercher un ami',
           leading: BackButton(
-            color: AppColors.white,
+            color: kWhiteColor,
             onPressed: () => context.pop(),
-            style: ButtonStyle(iconColor: MaterialStateColor.resolveWith((states) => AppColors.white)),
+            style: ButtonStyle(iconColor: MaterialStateColor.resolveWith((states) => kWhiteColor)),
           ),
           trailing: [
             IconButton(
-              icon: const Icon(Icons.search, color: AppColors.white),
+              icon: const Icon(Icons.search, color: kWhiteColor),
               onPressed: () {
                 setState(() {
                   _friendsToAdd = FriendsService.searchNewFriend(_searchController.text);
@@ -60,8 +60,8 @@ class _AddFriendPageState extends State<AddFriendPage> {
 
       body: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppDesignSystem.defaultPadding * 1.5,
-          vertical: AppDesignSystem.defaultPadding,
+          horizontal: kDefaultPadding * 1.5,
+          vertical: kDefaultPadding,
         ),
         child: FutureBuilder(
           future: _friendsToAdd,
@@ -74,7 +74,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
               return const Center(
                 child: Text(
                   'Une erreur est survenue, Veuillez réessayer plus tard.',
-                  style: TextStyle(fontSize: 20, color: AppColors.primary),
+                  style: TextStyle(fontSize: 20, color: kPrimaryColor),
                   textAlign: TextAlign.center,
                 ),
               );

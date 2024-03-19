@@ -17,8 +17,8 @@ class AppElevatedButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     required this.buttonText,
-    this.buttonColor = AppColors.primary,
-    this.textColor = AppColors.white,
+    this.buttonColor = kPrimaryColor,
+    this.textColor = kWhiteColor,
     this.isSmall = false,
     this.enabled = true,
     this.prefixIcon,
@@ -38,7 +38,7 @@ class AppElevatedButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Text(buttonText,
           style: TextStyle(fontWeight: FontWeight.bold, color: textColor,
-            fontSize: isSmall ? AppDesignSystem.defaultFontSize * 0.8 : AppDesignSystem.defaultFontSize,
+            fontSize: isSmall ? kDefaultFontSize * 0.8 : kDefaultFontSize,
           ),
         ),
       ),
@@ -56,7 +56,7 @@ class AppElevatedButton extends StatelessWidget {
         if (onPressed != null && enabled) onPressed!();
       },
       child: Padding(
-        padding: EdgeInsets.all(isSmall ? AppDesignSystem.defaultPadding * 0.5 : AppDesignSystem.defaultPadding),
+        padding: EdgeInsets.all(isSmall ? kDefaultPadding * 0.5 : kDefaultPadding),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

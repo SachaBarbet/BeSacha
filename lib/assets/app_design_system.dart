@@ -1,8 +1,7 @@
-class AppDesignSystem {
-  static const double defaultBorderRadius = 12;
-  static const double defaultPadding = 16;
-  static const double defaultMargin = 16;
-  static const double defaultFontSize = 16;
-  static const double defaultIconSize = 16;
-  static const double defaultElevation = 4;
-}
+const double kDefaultBorderRadius = 12;
+const double kDefaultPadding = 16;
+const double kDefaultMargin = 16;
+const double kAppDefaultFontSize = 16;
+const double kDefaultIconSize = 16;
+const double kDefaultElevation = 4;
+const double kDividerHeight = 50;

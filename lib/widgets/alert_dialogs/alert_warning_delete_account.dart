@@ -29,19 +29,19 @@ class _AlertWarningDeleteAccount extends State<AlertWarningDeleteAccount> {
         mainAxisSize: MainAxisSize.max,
         children: [
           Padding(
-            padding: const EdgeInsets.only(right: AppDesignSystem.defaultPadding * 0.8),
+            padding: const EdgeInsets.only(right: kDefaultPadding * 0.8),
             child: IconButton(
               onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.close_outlined, size: AppDesignSystem.defaultIconSize * 2,),
+              icon: const Icon(Icons.close_outlined, size: kDefaultIconSize * 2,),
             ),
           ),
         ],
       ),
       iconPadding: const EdgeInsets.only(
-        top: AppDesignSystem.defaultPadding * 0.8,
+        top: kDefaultPadding * 0.8,
 
       ),
-      title: const Text('ATTENTION', style: TextStyle(color: AppColors.red), textAlign: TextAlign.center,),
+      title: const Text('ATTENTION', style: TextStyle(color: kRedColor), textAlign: TextAlign.center,),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -70,7 +70,7 @@ class _AlertWarningDeleteAccount extends State<AlertWarningDeleteAccount> {
                   child: Text(
                     'ANNULER',
                     style: TextStyle(color: PlatformDispatcher.instance.platformBrightness
-                        == Brightness.dark ? AppColors.white : AppColors.black,
+                        == Brightness.dark ? kWhiteColor : kBlackColor,
                     ),
                   ),
                 ),
@@ -94,7 +94,7 @@ class _AlertWarningDeleteAccount extends State<AlertWarningDeleteAccount> {
                       }
                     });
                   },
-                  child: const Text('SUPPRIMER', style: TextStyle(color: AppColors.red),),
+                  child: const Text('SUPPRIMER', style: TextStyle(color: kRedColor),),
                 ),
               ],
             ),
