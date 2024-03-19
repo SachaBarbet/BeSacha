@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../assets/app_colors.dart';
 import '../../assets/app_design_system.dart';
-import '../../services/app_firebase.dart';
 import '../../services/app_user_service.dart';
 import '../../utilities/validators.dart';
 import '../../widgets/app_elevated_button.dart';
@@ -86,7 +85,7 @@ class LoginPage extends StatelessWidget {
                                 if (value != null) {
                                   _emailController.clear();
                                   _passwordController.clear();
-                                  AppFirebase.updateUserConnected().then((value) {
+                                  AppUserService.updateUserConnected().then((value) {
                                     context.pop();
                                     context.go('/home');
                                   });

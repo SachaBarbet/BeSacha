@@ -22,8 +22,8 @@ class _PokedexPageState extends State<PokedexPage> {
   late final Future<AppUser?> _appUser;
 
   final PagingController<int, Pokemon> _pagingController = PagingController(firstPageKey: 1);
-
   final TextEditingController _searchController = TextEditingController();
+
   String _ownedDropdown = 'all';
   String _typeDropdown = 'all';
 
@@ -299,6 +299,7 @@ class _PokedexPageState extends State<PokedexPage> {
                             color: _dropdownColor,
                           ),
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -306,9 +307,10 @@ class _PokedexPageState extends State<PokedexPage> {
                                   Text('#${item.id.toString().padLeft(4, '0')}', style: const TextStyle(fontSize: 12,)),
                                 ],
                               ),
-                              Image.network(item.defaultSprite, color: isUnlocked ? null : Colors.black, height: 80, width: 80),
+                              Image.network(
+                                item.defaultSprite, color: isUnlocked ? null : Colors.black, height: 80, width: 80,
+                              ),
                               Text(isUnlocked ? item.name[0].toUpperCase() + item.name.substring(1) : '????'),
-                              Text('Type : ${isUnlocked ? item.type[0].toUpperCase() + item.type.substring(1) : '????'}'),
                             ],
                           ),
                         );

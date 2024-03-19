@@ -79,8 +79,7 @@ class _DailyPokemonScreenState extends State<DailyPokemonScreen> {
                   textColor: kBlackColor,
                   buttonText: 'Voir mon pokedex',
                   onPressed: () {
-                    context.pop();
-                    context.pushNamed('pokedex');
+                    context.pushReplacementNamed('pokedex');
                   },
                 ),
                 const SizedBox(height: 16),

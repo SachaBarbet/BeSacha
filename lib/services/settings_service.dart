@@ -5,7 +5,7 @@ import '../main.dart';
 
 class SettingsService {
 
-  static final Map<String, dynamic> _defaultSettings = {'brightnessMode': 'system',};
+  static final Map<String, dynamic> _defaultSettings = {'brightnessMode': 'system', 'rules': false};
 
   // Initialize the shared preferences and set the default settings
   static Future<void> init() async {

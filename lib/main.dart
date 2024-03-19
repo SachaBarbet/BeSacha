@@ -26,7 +26,6 @@ import 'pages/settings/settings_home_page.dart';
 import 'pages/settings/settings_page.dart';
 import 'pages/settings/user_page.dart';
 import 'properties/app_properties.dart';
-import 'services/app_firebase.dart';
 import 'services/app_user_service.dart';
 import 'services/pokemon_service.dart';
 import 'services/settings_service.dart';
@@ -36,7 +35,7 @@ import 'utilities/app_utils.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await AppFirebase.initFirebaseAuth();
+  await AppUserService.initFirebaseAuth();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await SharedPreferencesService.init();
   await SettingsService.init();
@@ -60,17 +59,14 @@ final GoRouter _router = GoRouter(
       path: '/',
       builder: (context, state) => const LoadingPage(),
       redirect: (_, __) {
-        bool? hadRules = SharedPreferencesService.read('rules');
-        return hadRules != null && hadRules ? AppFirebase.isUserConnected ? '/home' : '/authentication' : '/rules';
+        bool hadRules = SharedPreferencesService.read('rules');
+        return hadRules ? AppUserService.isUserConnected ? '/home' : '/authentication' : '/rules';
       },
     ),
-    GoRoute(path: '/rules',
-    name:'rules',
-    builder: (context, state) => const GameExplanationPage(),
-    redirect: (_, __) {
-        bool? hadRules = SharedPreferencesService.read('rules');
-        return hadRules != null && hadRules ? null : AppFirebase.isUserConnected ? '/home' : '/authentication';
-     },
+    GoRoute(
+      path: '/rules',
+      name:'rules',
+      builder: (context, state) => const GameExplanationPage(),
     ),
     GoRoute(
       path: '/home',
@@ -117,7 +113,7 @@ final GoRouter _router = GoRouter(
         GoRoute(
           path: 'settings',
           name: 'settings',
-          redirect: (_, __) => AppFirebase.isUserConnected ? null : '/authentication',
+          redirect: (_, __) => AppUserService.isUserConnected ? null : '/authentication',
           builder: (context, state) => const SettingsHomePage(),
           routes: [
             GoRoute(

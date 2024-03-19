@@ -1,28 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AskFriend {
-  late final String id;
-  late final String fromUser;
-  late final String toUser;
+class Trade {
+  late String id;
+  late List<dynamic> betweenUsers;
+  late String lastTradeDate;
 
-  AskFriend({this.id = '', required this.fromUser, required this.toUser});
+  Trade({
+    this.id = '',
+    required this.betweenUsers,
+    required this.lastTradeDate,
+  });
 
-  factory AskFriend.fromFirestore(
+  factory Trade.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
       SnapshotOptions? options,
       ) {
     Map<String, dynamic>? data = snapshot.data();
-    return AskFriend(
+    return Trade(
       id: snapshot.id,
-      fromUser: data?['from_user'],
-      toUser: data?['to_user'],
+      betweenUsers: data?['between_users'],
+      lastTradeDate: data?['last_trade_date'],
     );
   }
 
   Map<String, dynamic> toFirestore() {
     return {
-      'from_user': fromUser,
-      'to_user': toUser,
+      'between_users': betweenUsers,
+      'last_trade_date': lastTradeDate,
     };
   }
 }

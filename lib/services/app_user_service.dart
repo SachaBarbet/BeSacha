@@ -5,9 +5,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/app_user.dart';
 import '../utilities/app_utils.dart';
-import 'app_firebase.dart';
 
 class AppUserService {
+  static final CollectionReference<AppUser> userCollectionRef = FirebaseFirestore.instance.collection('users')
+      .withConverter(fromFirestore: AppUser.fromFirestore, toFirestore: (AppUser user, _) => user.toFirestore(),);
+
+  static bool isUserConnected = false;
+
+  static Future<void> initFirebaseAuth() async {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) async {
+      isUserConnected = await AppUserService.checkIfUserConnected();
+    });
+
+    isUserConnected = await AppUserService.checkIfUserConnected();
+  }
+
+  static Future<void> updateUserConnected() async {
+    isUserConnected = await AppUserService.checkIfUserConnected();
+  }
 
   /// Register a new user with email and password in Firebase Authentication and Firestore
   static Future<AppUser?> register(String email, String password, [String? displayName]) async {
@@ -24,7 +39,7 @@ class AppUserService {
       AppUser? appUserUsername;
       do {
         username = '$displayName#${getRandomString(4)}'.toLowerCase();
-        QuerySnapshot<AppUser> appUserUsernameList = await AppFirebase.userCollectionRef
+        QuerySnapshot<AppUser> appUserUsernameList = await userCollectionRef
             .where('username', isEqualTo: username).get();
         appUserUsername = appUserUsernameList.docs.isNotEmpty ? appUserUsernameList.docs.first.data() : null;
 
@@ -42,7 +57,7 @@ class AppUserService {
       );
 
       await user.updateDisplayName(displayName);
-      await AppFirebase.userCollectionRef.doc(user.uid).set(appUser);
+      await userCollectionRef.doc(user.uid).set(appUser);
       return appUser;
     } on FirebaseAuthException {
       return null;
@@ -55,7 +70,7 @@ class AppUserService {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
       User user = userCredential.user!;
-      return AppFirebase.userCollectionRef.doc(user.uid).get().then((value) => value.data());
+      return userCollectionRef.doc(user.uid).get().then((value) => value.data());
     } on FirebaseAuthException {
       return null;
     }
@@ -68,11 +83,11 @@ class AppUserService {
 
   static Future<void> deleteCurrentUser() async {
     String uuid = FirebaseAuth.instance.currentUser!.uid;
-    await AppFirebase.askFriendCollectionRef
+    await FirebaseFirestore.instance.collection('ask_friends')
         .where(Filter.or(Filter('from_user', isEqualTo: uuid), Filter('to_user', isEqualTo: uuid)))
         .get().then((value) => value.docs.map((element) async => await element.reference.delete()));
 
-    await AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid).delete();
+    await userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid).delete();
     await FirebaseAuth.instance.currentUser!.delete();
   }
 
@@ -85,12 +100,12 @@ class AppUserService {
 
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) return false;
-    return await AppFirebase.userCollectionRef.doc(user.uid).get().then((value) => value.exists);
+    return await userCollectionRef.doc(user.uid).get().then((value) => value.exists);
   }
 
   static Future<AppUser?> getUser([String? uid]) async {
     uid ??= FirebaseAuth.instance.currentUser!.uid;
-    return await AppFirebase.userCollectionRef.doc(uid).get().then((value) {
+    return await userCollectionRef.doc(uid).get().then((value) {
       AppUser? appUser = value.data();
       return appUser;
     });
@@ -103,7 +118,7 @@ class AppUserService {
     String tag = usernameSplit[1];
 
     username = '${displayName.toLowerCase().trim()}#${tag.trim()}';
-    QuerySnapshot<AppUser> snapshot = await AppFirebase.userCollectionRef
+    QuerySnapshot<AppUser> snapshot = await userCollectionRef
         .where('username', isEqualTo: username).get();
     return snapshot.docs.map((e) {
       AppUser appUser = e.data();
@@ -114,14 +129,14 @@ class AppUserService {
   static Future<void> updateDisplayName(String displayName) async {
     displayName = displayName.trim();
     await FirebaseAuth.instance.currentUser!.updateDisplayName(displayName);
-    await AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid)
+    await userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid)
         .update({'display_name': displayName});
   }
 
   static Future<void> updateEmail(String email) async {
     email = email.toLowerCase().trim();
     await FirebaseAuth.instance.currentUser!.updateEmail(email); // TODO : Check if email is already used, verify email
-    await AppFirebase.userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid)
+    await userCollectionRef.doc(FirebaseAuth.instance.currentUser!.uid)
         .update({'email': email});
   }
 
@@ -130,6 +145,6 @@ class AppUserService {
   }
 
   static updateUser(AppUser appUser) {
-    AppFirebase.userCollectionRef.doc(appUser.uid).set(appUser);
+    userCollectionRef.doc(appUser.uid).set(appUser);
   }
 }

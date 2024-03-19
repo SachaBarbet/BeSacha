@@ -3,10 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/app_user.dart';
 import '../models/ask_friend.dart';
-import 'app_firebase.dart';
 import 'app_user_service.dart';
 
 class FriendsService {
+  static final CollectionReference<AskFriend> askFriendCollectionRef = FirebaseFirestore.instance
+      .collection('ask-friends').withConverter(
+    fromFirestore: AskFriend.fromFirestore,
+    toFirestore: (AskFriend askFriend, _) => askFriend.toFirestore(),
+  );
+
 
   static Future<List<AppUser>> getFriends() async {
     AppUser? appUser = await AppUserService.getUser();
@@ -26,7 +31,7 @@ class FriendsService {
   static Future<List<AppUser>> getAskToFriends() async {
     String appUserId = FirebaseAuth.instance.currentUser!.uid;
 
-    List<AskFriend> askFriends = await AppFirebase.askFriendCollectionRef.where('from_user', isEqualTo: appUserId)
+    List<AskFriend> askFriends = await askFriendCollectionRef.where('from_user', isEqualTo: appUserId)
         .get().then((value) => value.docs.map((e) =>e.data()).toList());
 
     List<AppUser> users = [];
@@ -41,7 +46,7 @@ class FriendsService {
   static Future<List<AppUser>> getAskFromFriends() async {
     String appUserId = FirebaseAuth.instance.currentUser!.uid;
 
-    List<AskFriend> askFriends = await AppFirebase.askFriendCollectionRef.where('to_user', isEqualTo: appUserId)
+    List<AskFriend> askFriends = await askFriendCollectionRef.where('to_user', isEqualTo: appUserId)
         .get().then((value) => value.docs.map((e) =>e.data()).toList());
 
     List<AppUser> users = [];
@@ -110,15 +115,15 @@ class FriendsService {
       toUser: friend.uid,
     );
 
-    AppFirebase.askFriendCollectionRef.where('from_user', isEqualTo: appUser.uid).where('to_user', isEqualTo: friend.uid).get().then((value) {
+    askFriendCollectionRef.where('from_user', isEqualTo: appUser.uid).where('to_user', isEqualTo: friend.uid).get().then((value) {
       if (value.docs.isNotEmpty) return;
 
-      AppFirebase.askFriendCollectionRef.where('from_user', isEqualTo: friend.uid).where('to_user', isEqualTo: appUser.uid).get().then((value) {
+      askFriendCollectionRef.where('from_user', isEqualTo: friend.uid).where('to_user', isEqualTo: appUser.uid).get().then((value) {
         if (value.docs.isNotEmpty) {
-          AppFirebase.askFriendCollectionRef.doc(value.docs.first.id).delete();
+          askFriendCollectionRef.doc(value.docs.first.id).delete();
           addFriend(friend);
         } else {
-          AppFirebase.askFriendCollectionRef.add(askFriend);
+          askFriendCollectionRef.add(askFriend);
         }
       });
     });
@@ -128,12 +133,12 @@ class FriendsService {
     AppUser? connectedUser = await AppUserService.getUser();
     if (connectedUser == null) return;
 
-    AppFirebase.askFriendCollectionRef.where(
+    askFriendCollectionRef.where(
       Filter.or(
           Filter.and(Filter('from_user', isEqualTo: connectedUser.uid), Filter('to_user', isEqualTo: appUser.uid)),
           Filter.and(Filter('from_user', isEqualTo: appUser.uid), Filter('to_user', isEqualTo: connectedUser.uid)))
       ).get().then((value) {
-      if (value.docs.isNotEmpty) AppFirebase.askFriendCollectionRef.doc(value.docs.first.id).delete();
+      if (value.docs.isNotEmpty) askFriendCollectionRef.doc(value.docs.first.id).delete();
     });
   }
 

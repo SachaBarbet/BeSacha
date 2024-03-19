@@ -1,4 +1,6 @@
+import 'package:be_sacha/widgets/app_elevated_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../assets/app_design_system.dart';
 import '../services/shared_preferences_service.dart';
@@ -40,10 +42,14 @@ class GameExplanationPage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
-            RedirectButton(redirectName: 'authentication', buttonText: 'Je comprends les règles de jeu',
-                onPressed: (){
-              SharedPreferencesService.write('rules', true);
-            }),
+            AppElevatedButton(
+              buttonText: 'Je comprends les règles de jeu',
+              onPressed: () async {
+                await SharedPreferencesService.write('rules', true);
+                if (!context.mounted) return;
+                context.replaceNamed('authentication');
+              },
+            ),
           ],
         ),
       ),
