@@ -89,12 +89,12 @@ class _DailyPokemonScreenState extends State<DailyPokemonScreen> {
                     context.pushReplacementNamed('pokedex');
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: kDefaultPadding),
                 AppElevatedButton(
                   buttonColor: kBlackColor,
                   textColor: kWhiteColor,
                   onPressed: () {
-                    context.pop();
+                    context.replaceNamed('home');
                   },
                   buttonText: 'Continuer',
                 )

@@ -98,4 +98,12 @@ class PokemonService {
     await AppUserService.updateUser(appUser);
     return pokemon;
   }
+
+  static Future<Pokemon?> getUserDailyPokemon() async {
+    AppUser? appUser = await AppUserService.getUser();
+    if (appUser == null) {
+      return null;
+    }
+    return await fetchPokemon(appUser.dailyPokemonId);
+  }
 }

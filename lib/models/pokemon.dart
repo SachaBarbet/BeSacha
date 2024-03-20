@@ -1,3 +1,5 @@
+
+
 class Pokemon {
   final int id;
   final String name;
@@ -47,4 +49,5 @@ class Pokemon {
   String toString() {
     return 'Pokemon{id:$id, name: $name, imageUrl: $defaultSprite, type: $type}';
   }
+
 }
